@@ -55,12 +55,15 @@ function buildUrls(location: LocationProfile) {
 }
 
 export default function MeteobluePanel({ location }: Props) {
+  const [expanded, setExpanded] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const urls = useMemo(() => buildUrls(location), [location]);
 
   useEffect(() => {
     setLoaded(false);
+    setExpanded(false);
+    setFullscreen(false);
   }, [urls.widget]);
 
   useEffect(() => {
@@ -92,37 +95,46 @@ export default function MeteobluePanel({ location }: Props) {
   );
 
   return (
-    <section className="meteoblue-control" aria-labelledby="meteoblue-title">
+    <section className={`meteoblue-control ${expanded ? 'expanded' : 'collapsed'}`} aria-labelledby="meteoblue-title">
       <div className="meteoblue-heading">
         <div>
           <span className="eyebrow">Zusätzliche Kontrollquelle</span>
           <h3 id="meteoblue-title">Meteoblue Astronomy Seeing</h3>
+          <small className="meteoblue-collapsed-location">Standort: {urls.mode === 'fixed' ? location.name : 'automatische Meteoblue-Standorterkennung'}</small>
         </div>
+        <button type="button" className="secondary meteoblue-toggle" aria-expanded={expanded} onClick={() => setExpanded(value => !value)}>
+          {expanded ? 'Meteoblue einklappen' : 'Meteoblue anzeigen'} {expanded ? '⌃' : '⌄'}
+        </button>
+      </div>
+
+      {expanded && <div className="meteoblue-expanded-content">
         <div className="meteoblue-actions">
           <button type="button" className="secondary compact" onClick={() => setFullscreen(true)}>⛶ Großansicht</button>
           <a className="button-link compact" href={urls.page} target="_blank" rel="noopener noreferrer">Bei Meteoblue öffnen ↗</a>
         </div>
-      </div>
 
-      <div className="meteoblue-callout">
-        <strong>Meteoblue-Kontrollvorhersage – bitte mit dem Modellkonsens vergleichen.</strong>
-        <span>Die automatische App-Gesamtbewertung verwendet weiterhin ausschließlich DWD ICON, ECMWF IFS und NOAA GFS.</span>
-      </div>
+        <div className="meteoblue-callout">
+          <strong>Meteoblue-Kontrollvorhersage – bitte mit dem Modellkonsens vergleichen.</strong>
+          <span>Die automatische App-Gesamtbewertung verwendet weiterhin ausschließlich DWD ICON, ECMWF IFS und NOAA GFS.</span>
+        </div>
 
-      <div className="meteoblue-location-note">
-        <span>Standort für Meteoblue:</span>
-        <strong>{urls.mode === 'fixed' ? location.name : 'automatische Meteoblue-Standorterkennung'}</strong>
-        {urls.mode === 'detect' && <small>Bei GPS oder manuell eingegebenen Koordinaten kann Meteoblue einmalig nach der Standortfreigabe fragen.</small>}
-      </div>
+        <div className="meteoblue-location-note">
+          <span>Standort für Meteoblue:</span>
+          <strong>{urls.mode === 'fixed' ? location.name : 'automatische Meteoblue-Standorterkennung'}</strong>
+          {urls.mode === 'fixed'
+            ? <small>Die Meteoblue-Ansicht wurde auf den in der App ausgewählten Ort umgestellt.</small>
+            : <small>Für GPS oder nicht auflösbare manuelle Koordinaten nutzt das Widget seine eigene Standorterkennung.</small>}
+        </div>
 
-      <div className={`meteoblue-embed ${loaded ? 'loaded' : ''}`}>
-        {!loaded && <div className="meteoblue-loading">Meteoblue-Ansicht wird geladen …</div>}
-        {iframe()}
-      </div>
+        <div className={`meteoblue-embed ${loaded ? 'loaded' : ''}`}>
+          {!loaded && <div className="meteoblue-loading">Meteoblue-Ansicht wird für {location.name} geladen …</div>}
+          {iframe()}
+        </div>
 
-      <div className="meteoblue-credit">
-        <a href={urls.page} target="_blank" rel="noopener noreferrer">meteoblue</a>
-      </div>
+        <div className="meteoblue-credit">
+          <a href={urls.page} target="_blank" rel="noopener noreferrer">meteoblue</a>
+        </div>
+      </div>}
 
       {fullscreen && <div className="meteoblue-modal" role="dialog" aria-modal="true" aria-label="Meteoblue Astronomy Seeing Großansicht">
         <div className="meteoblue-modal-header">

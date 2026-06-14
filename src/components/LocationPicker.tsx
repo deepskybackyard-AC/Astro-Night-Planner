@@ -10,6 +10,14 @@ type Props = {
   onDelete: (id: string) => void;
 };
 
+function distanceKm(lat1: number, lon1: number, lat2: number, lon2: number) {
+  const toRad = (value: number) => value * Math.PI / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+  return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
 export default function LocationPicker({ locations, selectedId, onSelect, onAdd, onDelete }: Props) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<GeocodingResult[]>([]);
@@ -37,7 +45,7 @@ export default function LocationPicker({ locations, selectedId, onSelect, onAdd,
     } finally { setBusy(false); }
   }
 
-  function addManual() {
+  async function addManual() {
     const latitude = Number(manual.latitude);
     const longitude = Number(manual.longitude);
     const elevation = Number(manual.elevation);
@@ -45,14 +53,31 @@ export default function LocationPicker({ locations, selectedId, onSelect, onAdd,
       setMessage('Bitte Name sowie gültige Breiten- und Längengrade eingeben.');
       return;
     }
+    setBusy(true);
+    setMessage('');
+    let placeMetadata: Partial<LocationProfile> = {};
+    try {
+      const matches = await searchPlaces(manual.name.trim());
+      const nearest = matches
+        .map(match => ({ match, distance: distanceKm(latitude, longitude, match.latitude, match.longitude) }))
+        .sort((a, b) => a.distance - b.distance)[0];
+      if (nearest && nearest.distance <= 150) {
+        placeMetadata = { geonameId: nearest.match.geonameId, country: nearest.match.country };
+      }
+    } catch {
+      // Der Standort bleibt nutzbar; Meteoblue verwendet dann seine automatische Ortserkennung.
+    }
     onAdd({
       id: `manual-${Date.now()}`,
       name: manual.name.trim(), latitude, longitude,
       elevation: Number.isFinite(elevation) ? elevation : 0,
       timezone: manual.timezone || 'UTC',
+      ...placeMetadata,
     });
     setShowManual(false);
     setManual({ ...manual, name: '', latitude: '', longitude: '' });
+    setMessage(placeMetadata.geonameId ? 'Standort gespeichert und für Meteoblue zugeordnet.' : 'Standort gespeichert. Meteoblue nutzt für diesen Eintrag die automatische Standorterkennung.');
+    setBusy(false);
   }
 
   return (

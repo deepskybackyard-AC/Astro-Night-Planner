@@ -1,4 +1,4 @@
-# Astro Night Planner 0.3
+# Astro Night Planner 0.5
 
 Eine installierbare, mobile Web-App für astronomisches Wetter, Mond-/Dämmerungsdaten, Deep-Sky-Objektbewertung, vollständige Aufnahmekataloge und persönliche Kamera-/Teleskopprofile. Die App benötigt weder einen kostenpflichtigen Dienst noch einen API-Schlüssel.
 
@@ -12,12 +12,13 @@ Eine installierbare, mobile Web-App für astronomisches Wetter, Mond-/Dämmerung
 - Wettervergleich aus DWD ICON, ECMWF IFS und NOAA GFS via Open-Meteo
 - tiefe, mittlere und hohe Wolken, Wind, Böen, Feuchte, Taupunkt, Sichtweite, Niederschlag und Jetstream
 - Modellmedian, Modellstreuung und gemeinsamer Nachtwert
-- eingebettete Meteoblue-Astronomy-Seeing-Kontrollansicht mit mobiler Vollbilddarstellung
+- standardmäßig eingeklappte Meteoblue-Astronomy-Seeing-Kontrollansicht mit mobiler Vollbilddarstellung und Standortübernahme
 - abgeleitete Seeing- und Transparenz-Tendenzen
 - Höhe, Meridian, Sichtbarkeitsdauer, Mondabstand und Objekt-Rangliste
 - persönliche Teleskope und Kameras pro Browser/Endgerät
 - Bildfeld und Pixelmaßstab
 - interaktive Aladin-Lite-Himmelsansicht mit verschiebbarem und rotierbarem Kamerarahmen
+- gekoppelte Uhrzeitauswahl mit Höhenkurve, lokaler Horizontansicht, Boden-Schalter und stündlicher Objektposition
 - responsive Smartphone-Oberfläche und PWA-Manifest
 
 ## Integrierte Objektkataloge
@@ -82,7 +83,7 @@ Ausführliche Herkunfts- und Lizenzangaben stehen in `CATALOG_SOURCES.md`.
 
 ## Meteoblue-Kontrollansicht
 
-Meteoblue wird als zusätzliche, unabhängige Vergleichsansicht direkt in der Wetterseite angezeigt. Bei Orten aus der Ortssuche wird die GeoNames-Ortskennung automatisch in die Meteoblue-URL übernommen. Für GPS-Standorte nutzt das Widget seine eigene Standorterkennung. Die Schaltfläche **Großansicht** öffnet auf Smartphones eine bildschirmfüllende Darstellung.
+Meteoblue wird als zusätzliche, unabhängige Vergleichsansicht direkt in der Wetterseite angezeigt. Bei Orten aus der Ortssuche wird die GeoNames-Ortskennung automatisch in die Meteoblue-URL übernommen. Für GPS-Standorte nutzt das Widget seine eigene Standorterkennung. Die Kontrollansicht ist beim Start eingeklappt. Beim Aufklappen wird sie für den aktuell ausgewählten Ort neu geladen; die Schaltfläche **Großansicht** öffnet auf Smartphones eine bildschirmfüllende Darstellung. Auch manuell gespeicherte Orte werden anhand ihres Namens möglichst einer GeoNames-Ortskennung zugeordnet.
 
 Die Meteoblue-Werte werden bewusst nicht aus dem eingebetteten Widget ausgelesen und nicht in die automatische Punktzahl eingerechnet. Der App-Konsens bleibt transparent aus DWD ICON, ECMWF IFS und NOAA GFS berechnet.
 
@@ -91,3 +92,10 @@ Die Meteoblue-Werte werden bewusst nicht aus dem eingebetteten Widget ausgelesen
 - Seeing und Transparenz sind Schätzindizes von 0 bis 100 und keine exakten Werte in Bogensekunden.
 - Viele schwache Katalogobjekte besitzen keine verlässliche integrierte Magnitude oder Winkelgröße. Solche fehlenden Werte werden nicht erfunden und als „–“ beziehungsweise „nicht katalogisiert“ angezeigt.
 - Der Rahmen in Aladin nutzt für kleine und mittlere Bildfelder eine Tangentialebenen-Näherung. Für sehr große Bildfelder und Mosaike sollte später eine sphärische Framing-Bibliothek ergänzt werden.
+
+
+## Uhrzeit, Höhenkurve und Horizontansicht
+
+Bei einem geöffneten Objekt verwenden Höhenkurve und Horizontansicht dieselbe gewählte Uhrzeit. Die Uhrzeit kann über ein Zeitfeld, einen Nacht-Regler, 15-Minuten-Schritte, die Höhenkurve oder die stündlichen Schaltflächen geändert werden. Höhe, Azimut, Markierung in der Kurve und lokale Horizontansicht aktualisieren sich gemeinsam.
+
+Der Boden ist standardmäßig sichtbar und kann abgeschaltet werden. Die dargestellte Horizontlinie ist der mathematische Horizont des gewählten Standorts; Bäume, Gebäude und Berge sind noch kein individuelles Horizontprofil.

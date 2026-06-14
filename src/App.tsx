@@ -236,13 +236,13 @@ export default function App() {
 
           <WeatherPanel summary={weatherSummary} night={night} timezone={location.timezone} models={models} errors={weatherErrors} loading={weatherLoading} error={weatherError} location={location} />
 
-          <ObjectList objects={objectResult.items} stats={objectResult.stats} filters={filters} onFiltersChange={setFilters} timezone={location.timezone} telescope={selectedTelescope} camera={selectedCamera} search={search} onSearchChange={setSearch} />
+          <ObjectList objects={objectResult.items} stats={objectResult.stats} filters={filters} onFiltersChange={setFilters} timezone={location.timezone} telescope={selectedTelescope} camera={selectedCamera} search={search} onSearchChange={setSearch} night={night} location={location} />
         </>}
 
         {tab === 'equipment' && <EquipmentManager equipment={equipment} onChange={setEquipment} />}
 
         {tab === 'about' && <section className="panel about-panel">
-          <span className="eyebrow">Version 0.3</span><h2>Über diese Entwicklungsfassung</h2>
+          <span className="eyebrow">Version 0.5</span><h2>Über diese Entwicklungsfassung</h2>
           <p>Die App läuft vollständig im Browser. Standorte, Filter, Teleskope und Kameras werden nur im lokalen Speicher des jeweiligen Geräts abgelegt.</p>
           <h3>Daten und Berechnungen</h3>
           <p>Wetterdaten werden ohne API-Schlüssel von Open-Meteo abgerufen und aus DWD ICON, ECMWF IFS und NOAA GFS zu einem Median mit Modellstreuung zusammengeführt. Sonnen-, Mond- und Positionsdaten werden lokal mit Astronomy Engine berechnet. Die verschiebbare Himmelsansicht stammt von Aladin Lite. Meteoblue Astronomy Seeing ist als zusätzliche Kontrollansicht eingebettet und fließt nicht in die automatische Punktzahl ein.</p>

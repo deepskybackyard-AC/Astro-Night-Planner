@@ -267,3 +267,131 @@ main { display: grid; gap: 18px; }
 @media (max-width: 390px) {
   .meteoblue-actions { grid-template-columns: 1fr; }
 }
+
+/* Version 0.4: Höhenkurve und zuverlässiger Setup-Rahmen */
+.altitude-section { margin: 16px 0; padding: 15px; border: 1px solid var(--line); border-radius: 17px; background: rgba(4, 12, 22, .72); }
+.altitude-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; margin-bottom: 10px; }
+.altitude-heading h3, .sky-viewer-heading h3 { margin: 3px 0 0; }
+.altitude-selected { display: grid; justify-items: end; gap: 3px; padding: 9px 12px; border-radius: 12px; background: rgba(85,199,255,.08); border: 1px solid rgba(85,199,255,.16); }
+.altitude-selected strong { color: var(--cyan); }
+.altitude-selected span { color: var(--muted); font-size: .72rem; }
+.altitude-chart-scroll { overflow-x: auto; overscroll-behavior-inline: contain; -webkit-overflow-scrolling: touch; border-radius: 13px; border: 1px solid rgba(255,255,255,.055); background: #050d17; }
+.altitude-chart { display: block; width: 100%; min-width: 720px; height: auto; touch-action: pan-x; cursor: crosshair; }
+.twilight-band.civil { fill: rgba(239, 165, 72, .18); }
+.twilight-band.nautical { fill: rgba(71, 115, 183, .18); }
+.twilight-band.astronomical { fill: rgba(70, 64, 145, .20); }
+.twilight-band.dark { fill: rgba(5, 10, 22, .55); }
+.twilight-label { fill: rgba(223, 232, 244, .62); font-size: 10px; letter-spacing: .03em; }
+.altitude-grid-line { stroke: rgba(190, 210, 230, .13); stroke-width: 1; }
+.hour-grid-line { stroke: rgba(190, 210, 230, .08); stroke-width: 1; }
+.altitude-y-label, .altitude-x-label { fill: rgba(190, 210, 230, .66); font-size: 11px; }
+.minimum-altitude-line { stroke: rgba(255, 157, 91, .8); stroke-width: 1.5; stroke-dasharray: 6 5; }
+.minimum-altitude-label { fill: #ffb17b; font-size: 10px; }
+.altitude-curve { fill: none; stroke: #55c7ff; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+.max-altitude-line { stroke: rgba(255, 213, 90, .55); stroke-width: 1.5; stroke-dasharray: 5 5; }
+.max-altitude-point { fill: #ffd55a; stroke: #07111e; stroke-width: 3; }
+.max-altitude-label { fill: #ffe58b; font-size: 12px; font-weight: 800; paint-order: stroke; stroke: #06101d; stroke-width: 4px; }
+.selected-altitude-line { stroke: rgba(255,255,255,.38); stroke-width: 1; }
+.selected-altitude-point { fill: #ffffff; stroke: #55c7ff; stroke-width: 3; }
+.twilight-legend { display: flex; flex-wrap: wrap; gap: 7px 14px; padding: 10px 2px 4px; color: var(--muted); font-size: .7rem; }
+.twilight-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.twilight-legend i { width: 13px; height: 13px; border-radius: 4px; border: 1px solid rgba(255,255,255,.14); }
+.twilight-legend i.civil { background: rgba(239, 165, 72, .45); }
+.twilight-legend i.nautical { background: rgba(71, 115, 183, .48); }
+.twilight-legend i.astronomical { background: rgba(70, 64, 145, .55); }
+.twilight-legend i.dark { background: #070d1c; }
+.hourly-altitudes { display: flex; gap: 7px; overflow-x: auto; padding: 8px 1px 5px; -webkit-overflow-scrolling: touch; }
+.hourly-altitudes button { flex: 0 0 70px; min-height: 62px; padding: 7px; display: grid; gap: 1px; place-items: center; color: var(--text); background: rgba(255,255,255,.035); border: 1px solid var(--line); }
+.hourly-altitudes button.active { border-color: rgba(85,199,255,.72); background: rgba(85,199,255,.13); box-shadow: inset 0 0 0 1px rgba(85,199,255,.22); }
+.hourly-altitudes button span { color: var(--cyan); font-size: 1rem; font-weight: 800; }
+.hourly-altitudes button small { color: var(--muted); }
+.altitude-help { display: block; margin-top: 7px; color: var(--muted); }
+
+.sky-viewer-heading { padding: 13px 14px 11px; display: flex; justify-content: space-between; align-items: center; gap: 12px; border-bottom: 1px solid var(--line); }
+.frame-legend { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; font-size: .7rem; }
+.frame-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.frame-legend span::before { content: ''; width: 18px; height: 10px; border-radius: 2px; border: 3px solid; }
+.setup-frame-key::before { border-color: #34d8ff !important; }
+.object-frame-key::before { border-color: #ffd45a !important; border-radius: 50% !important; }
+.fov-summary { flex: 1 1 260px; }
+.fov-summary strong { color: var(--cyan); }
+.rotation-control { flex: 1 1 260px !important; }
+.frame-toggle { flex: 0 1 auto !important; white-space: nowrap; }
+.frame-toggle input { min-height: 0; width: auto; }
+.sky-button-row { flex: 1 1 100%; display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; }
+.sky-button-row button { width: 100%; margin: 0; }
+.frame-help { flex: 1 1 100%; color: var(--muted); line-height: 1.45; }
+
+@media (max-width: 620px) {
+  .altitude-section { padding: 12px 8px; margin-inline: -3px; }
+  .altitude-heading { display: grid; }
+  .altitude-selected { justify-items: start; }
+  .altitude-chart { min-width: 700px; }
+  .sky-viewer-heading { display: grid; }
+  .frame-legend { justify-content: flex-start; }
+  .sky-button-row { grid-template-columns: 1fr; }
+  .rotation-control, .frame-toggle, .fov-summary { flex-basis: 100% !important; }
+}
+
+/* Version 0.5: gekoppelte Uhrzeit, lokale Horizontansicht und einklappbares Meteoblue */
+.horizon-preview { padding: 14px; border-bottom: 1px solid var(--line); background: linear-gradient(180deg, rgba(13, 31, 53, .72), rgba(3, 10, 18, .92)); }
+.time-control-bar { display: grid; grid-template-columns: minmax(210px, 1.2fr) minmax(120px, .45fr) auto auto; gap: 10px; align-items: end; margin-bottom: 10px; }
+.selected-time-summary { display: grid; gap: 3px; }
+.selected-time-summary > span, .clock-control { color: var(--muted); font-size: .72rem; }
+.selected-time-summary strong { color: var(--cyan); font-size: 1.05rem; }
+.selected-time-summary small { color: #c7d8e9; }
+.clock-control { display: grid; gap: 5px; }
+.clock-control input[type="time"] { min-height: 42px; color: var(--text); color-scheme: dark; }
+.time-step-buttons { display: flex; gap: 7px; }
+.time-step-buttons button { white-space: nowrap; }
+.ground-toggle { min-height: 42px; padding: 8px 10px; display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line); border-radius: 11px; color: var(--text); background: rgba(255,255,255,.035); font-size: .75rem; white-space: nowrap; }
+.ground-toggle input { width: auto; min-height: 0; }
+.night-time-slider { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; color: var(--muted); font-size: .72rem; margin-bottom: 10px; }
+.night-time-slider input { min-height: 20px; padding: 0; border: 0; }
+.horizon-scroll { overflow-x: auto; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; background: #07111e; -webkit-overflow-scrolling: touch; }
+.horizon-svg { display: block; width: 100%; min-width: 720px; height: auto; }
+.horizon-alt-line { stroke: rgba(220,235,250,.13); stroke-width: 1; stroke-dasharray: 5 7; }
+.horizon-az-line { stroke: rgba(220,235,250,.075); stroke-width: 1; }
+.horizon-alt-label { fill: rgba(229,239,249,.58); font-size: 11px; }
+.mathematical-horizon { stroke: #ffd785; stroke-width: 2.5; }
+.ground-fill { opacity: .96; }
+.ground-label { fill: rgba(219,231,216,.58); font-size: 11px; }
+.compass-labels text { fill: #f5dc9d; font-size: 13px; font-weight: 800; paint-order: stroke; stroke: #08111d; stroke-width: 4px; }
+.horizon-fov-frame { fill: rgba(52,216,255,.08); stroke: #34d8ff; stroke-width: 3; }
+.object-marker-stem { stroke: rgba(255,255,255,.62); stroke-width: 1.5; }
+.horizon-object-point { fill: #ffd45a; stroke: #08111e; stroke-width: 4; }
+.horizon-object-point.below { fill: #ff806b; }
+.horizon-object-label { fill: #fff1ad; font-size: 13px; font-weight: 800; paint-order: stroke; stroke: #07111e; stroke-width: 5px; }
+.horizon-time-stamp rect { fill: rgba(3,10,18,.78); stroke: rgba(85,199,255,.28); }
+.horizon-time-stamp text { fill: #e8f4ff; font-size: 13px; font-weight: 700; }
+.horizon-time-stamp text + text { fill: #9fdfff; font-size: 11px; font-weight: 600; }
+.horizon-help { display: block; margin-top: 7px; color: var(--muted); line-height: 1.45; }
+.sky-image-stack { position: relative; }
+.aladin-time-overlay { position: absolute; z-index: 5; top: 12px; right: 12px; min-width: 96px; padding: 8px 11px; display: grid; gap: 2px; border-radius: 11px; border: 1px solid rgba(85,199,255,.32); color: #eef8ff; background: rgba(3,10,18,.78); backdrop-filter: blur(8px); pointer-events: none; box-shadow: 0 7px 22px rgba(0,0,0,.35); }
+.aladin-time-overlay strong { color: var(--cyan); font-size: 1rem; }
+.aladin-time-overlay span { color: #c8d8e8; font-size: .7rem; }
+
+.meteoblue-control.collapsed { padding-bottom: 0; }
+.meteoblue-control.collapsed .meteoblue-heading { margin-bottom: 0; }
+.meteoblue-collapsed-location { display: block; margin-top: 5px; color: var(--muted); font-size: .72rem; }
+.meteoblue-toggle { white-space: nowrap; }
+.meteoblue-expanded-content { animation: meteoblue-open .18s ease-out; }
+.meteoblue-expanded-content > .meteoblue-actions { margin-bottom: 12px; }
+@keyframes meteoblue-open { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 900px) {
+  .time-control-bar { grid-template-columns: 1fr 150px; }
+  .time-step-buttons, .ground-toggle { align-self: stretch; }
+  .ground-toggle { justify-content: center; }
+}
+
+@media (max-width: 620px) {
+  .horizon-preview { padding: 11px 8px; }
+  .time-control-bar { grid-template-columns: 1fr; align-items: stretch; }
+  .time-step-buttons { display: grid; grid-template-columns: 1fr 1fr; }
+  .time-step-buttons button { width: 100%; }
+  .ground-toggle { justify-content: flex-start; }
+  .horizon-svg { min-width: 680px; }
+  .aladin-time-overlay { top: 9px; right: 9px; }
+  .meteoblue-toggle { width: 100%; }
+}

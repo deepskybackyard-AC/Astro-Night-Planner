@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import type { Camera, CatalogName, ObjectFilters, ObjectNightData, ObjectResultStats, ObjectType, Telescope } from '../types';
+import type { Camera, CatalogName, LocationProfile, NightWindow, ObjectFilters, ObjectNightData, ObjectResultStats, ObjectType, Telescope } from '../types';
 import { CATALOGS, CATALOG_COUNTS, CATALOG_LABELS, OBJECT_TYPES } from '../data/objects';
 import { formatTime } from '../lib/time';
 import SkyViewer from './SkyViewer';
+import AltitudeChart from './AltitudeChart';
 
 type Props = {
   objects: ObjectNightData[];
@@ -14,6 +15,8 @@ type Props = {
   camera?: Camera;
   search: string;
   onSearchChange: (value: string) => void;
+  night: NightWindow;
+  location: LocationProfile;
 };
 
 function scoreClass(score: number) {
@@ -29,9 +32,10 @@ function formatSize(value: number) {
   return `${Number(value.toFixed(1)).toLocaleString('de-DE')}′`;
 }
 
-export default function ObjectList({ objects, stats, filters, onFiltersChange, timezone, telescope, camera, search, onSearchChange }: Props) {
+export default function ObjectList({ objects, stats, filters, onFiltersChange, timezone, telescope, camera, search, onSearchChange, night, location }: Props) {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [selectedTimes, setSelectedTimes] = useState<Record<string, number>>({});
 
   function toggleType(type: ObjectType) {
     const types = filters.types.includes(type) ? filters.types.filter(item => item !== type) : [...filters.types, type];
@@ -102,6 +106,12 @@ export default function ObjectList({ objects, stats, filters, onFiltersChange, t
         {objects.map(item => {
           const open = expanded === item.object.id;
           const aliases = item.object.aliases.filter(alias => alias !== item.object.name).slice(0, 5);
+          const rangeStart = (night.sunset ?? new Date(night.darknessStart.getTime() - 2 * 3600_000)).getTime();
+          const rangeEnd = (night.sunrise ?? new Date(night.darknessEnd.getTime() + 2 * 3600_000)).getTime();
+          const storedTime = selectedTimes[item.object.id];
+          const selectedTimeMs = storedTime != null && storedTime >= rangeStart && storedTime <= rangeEnd ? storedTime : item.bestTime.getTime();
+          const selectedTime = new Date(selectedTimeMs);
+          const setSelectedTime = (time: Date) => setSelectedTimes(current => ({ ...current, [item.object.id]: time.getTime() }));
           return <article className={`object-card ${open ? 'open' : ''}`} key={item.object.id}>
             <button type="button" className="object-card-main" onClick={() => setExpanded(open ? null : item.object.id)}>
               <div className={`object-score ${scoreClass(item.score)}`}><strong>{Math.round(item.score)}</strong><span>/100</span></div>
@@ -132,7 +142,8 @@ export default function ObjectList({ objects, stats, filters, onFiltersChange, t
                 <div><span>Filter</span><strong>{item.object.recommendedFilters.join(', ')}</strong></div>
               </div>
               <div className="reason-list">{item.reasons.map(reason => <span key={reason}>✓ {reason}</span>)}</div>
-              <SkyViewer object={item.object} telescope={telescope} camera={camera} />
+              <AltitudeChart object={item.object} night={night} location={location} timezone={timezone} minAltitude={filters.minAltitude} selectedTime={selectedTime} onSelectedTimeChange={setSelectedTime} />
+              <SkyViewer object={item.object} telescope={telescope} camera={camera} night={night} location={location} timezone={timezone} selectedTime={selectedTime} onSelectedTimeChange={setSelectedTime} />
             </div>}
           </article>;
         })}

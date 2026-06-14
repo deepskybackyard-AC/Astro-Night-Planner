@@ -1,0 +1,13 @@
+{
+  "name": "Astro Night Planner",
+  "short_name": "AstroPlanner",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#07111f",
+  "theme_color": "#07111f",
+  "description": "Astronomische Wetter- und Objektplanung",
+  "icons": [
+    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import type { LocationProfile, NightWindow, WeatherModelResult, WeatherNightSummary } from '../types';
 import MeteobluePanel from './MeteobluePanel';
 import { formatTime } from '../lib/time';
@@ -31,7 +32,15 @@ function value(value: number | null, digits = 0) {
   return value == null ? '–' : value.toFixed(digits).replace('.', ',');
 }
 
+function percentCell(valueToShow: number | null): CSSProperties {
+  const level = valueToShow == null ? 0 : Math.max(0, Math.min(100, valueToShow));
+  return { '--weather-level': `${level}%` } as CSSProperties;
+}
+
 export default function WeatherPanel({ summary, night, timezone, models, errors, loading, error, location }: Props) {
+  const sunset = night.sunset ?? night.darknessStart;
+  const sunrise = night.sunrise ?? night.darknessEnd;
+
   return (
     <section className="panel weather-panel">
       <div className="section-heading">
@@ -42,7 +51,7 @@ export default function WeatherPanel({ summary, night, timezone, models, errors,
       {error && <div className="notice warning">{error}</div>}
       {summary && <>
         <div className="weather-summary-grid">
-          <div><span>Bestes Fenster</span><strong>{formatTime(summary.bestStart, timezone)}–{formatTime(summary.bestEnd, timezone)}</strong></div>
+          <div><span>Bestes dunkles Fenster</span><strong>{formatTime(summary.bestStart, timezone)}–{formatTime(summary.bestEnd, timezone)}</strong></div>
           <div><span>Bewölkung</span><strong>{Math.round(summary.meanCloud)} %</strong></div>
           <div><span>Hohe Wolken</span><strong>{Math.round(summary.meanHighCloud)} %</strong></div>
           <div><span>Wind</span><strong>{summary.meanWind.toFixed(0)} km/h</strong></div>
@@ -55,26 +64,59 @@ export default function WeatherPanel({ summary, night, timezone, models, errors,
           <span>Verwendet:</span>{models.map(model => <span key={model.id} className="model-chip">{model.label}</span>)}
         </div>
         {errors.length > 0 && <details className="model-errors"><summary>Nicht verfügbare Modelle ({errors.length})</summary>{errors.map(item => <div key={item}>{item}</div>)}</details>}
-        <div className="hourly-scroll" aria-label="Stündliche astronomische Wetterdaten">
-          {summary.hours.map(hour => {
-            const dewGap = hour.temperature != null && hour.dewPoint != null ? hour.temperature - hour.dewPoint : null;
-            return <div className={`hour-card ${scoreClass(hour.astroScore)}`} key={hour.time.toISOString()}>
-              <strong>{formatTime(hour.time, timezone)}</strong>
-              <div className="hour-score">{Math.round(hour.astroScore)}</div>
-              <dl>
-                <div><dt>Wolken</dt><dd>{value(hour.cloudTotal)} %</dd></div>
-                <div><dt>tief/mittel/hoch</dt><dd>{value(hour.cloudLow)}/{value(hour.cloudMid)}/{value(hour.cloudHigh)}</dd></div>
-                <div><dt>Temp.</dt><dd>{value(hour.temperature, 1)} °C</dd></div>
-                <div><dt>Tauabstand</dt><dd>{dewGap == null ? '–' : `${value(dewGap, 1)} °C`}</dd></div>
-                <div><dt>Wind/Böen</dt><dd>{value(hour.windSpeed)}/{value(hour.windGust)} km/h</dd></div>
-                <div><dt>Jetstream</dt><dd>{value(hour.jetstreamSpeed)} km/h</dd></div>
-                <div><dt>Seeing*</dt><dd>{Math.round(hour.seeingScore)}/100</dd></div>
-                <div><dt>Transparenz*</dt><dd>{Math.round(hour.transparencyScore)}/100</dd></div>
-              </dl>
-            </div>;
-          })}
+
+        <div className="weather-table-heading">
+          <div>
+            <span className="eyebrow">Stündlicher Konsens</span>
+            <h3>Sonnenuntergang bis Sonnenaufgang</h3>
+          </div>
+          <strong>{formatTime(sunset, timezone)}–{formatTime(sunrise, timezone)}</strong>
         </div>
-        <p className="footnote">* Seeing und Transparenz sind in dieser ersten Version abgeleitete Tendenzen, keine gemessenen Bogensekundenwerte. Nachtfenster: {formatTime(night.darknessStart, timezone)}–{formatTime(night.darknessEnd, timezone)}.</p>
+
+        <div className="weather-table-scroll" aria-label="Stündliche astronomische Wetterdaten von Sonnenuntergang bis Sonnenaufgang">
+          <table className="weather-hourly-table">
+            <thead>
+              <tr>
+                <th rowSpan={2} className="sticky-time-column">Uhrzeit</th>
+                <th colSpan={3}>Wolken</th>
+                <th rowSpan={2}>Temp.</th>
+                <th rowSpan={2}>Tauabstand</th>
+                <th rowSpan={2}>Wind</th>
+                <th rowSpan={2}>Böen</th>
+                <th rowSpan={2}>Jetstream</th>
+                <th rowSpan={2}>Seeing*</th>
+                <th rowSpan={2}>Transparenz*</th>
+              </tr>
+              <tr>
+                <th>tief</th>
+                <th>mittel</th>
+                <th>hoch</th>
+              </tr>
+            </thead>
+            <tbody>
+              {summary.hours.map(hour => {
+                const dewGap = hour.temperature != null && hour.dewPoint != null ? hour.temperature - hour.dewPoint : null;
+                return <tr className={scoreClass(hour.astroScore)} key={hour.time.toISOString()}>
+                  <th scope="row" className="sticky-time-column">
+                    <strong>{formatTime(hour.time, timezone)}</strong>
+                    <span className={`hour-table-score ${scoreClass(hour.astroScore)}`}>{Math.round(hour.astroScore)}</span>
+                  </th>
+                  <td className="weather-percent-cell" style={percentCell(hour.cloudLow)}>{value(hour.cloudLow)} %</td>
+                  <td className="weather-percent-cell" style={percentCell(hour.cloudMid)}>{value(hour.cloudMid)} %</td>
+                  <td className="weather-percent-cell" style={percentCell(hour.cloudHigh)}>{value(hour.cloudHigh)} %</td>
+                  <td>{value(hour.temperature, 1)} °C</td>
+                  <td>{dewGap == null ? '–' : `${value(dewGap, 1)} °C`}</td>
+                  <td>{value(hour.windSpeed)} km/h</td>
+                  <td>{value(hour.windGust)} km/h</td>
+                  <td>{value(hour.jetstreamSpeed)} km/h</td>
+                  <td><span className={`weather-index ${scoreClass(hour.seeingScore)}`}>{Math.round(hour.seeingScore)}</span></td>
+                  <td><span className={`weather-index ${scoreClass(hour.transparencyScore)}`}>{Math.round(hour.transparencyScore)}</span></td>
+                </tr>;
+              })}
+            </tbody>
+          </table>
+        </div>
+        <p className="footnote">Die Tabelle zeigt die vollen Prognosestunden zwischen Sonnenuntergang und Sonnenaufgang. Die automatische Nachtbewertung und das beste Fenster beziehen sich weiterhin auf die astronomische Dunkelheit von {formatTime(night.darknessStart, timezone)} bis {formatTime(night.darknessEnd, timezone)}. * Seeing und Transparenz sind abgeleitete Tendenzen, keine gemessenen Bogensekundenwerte.</p>
       </>}
       <MeteobluePanel location={location} />
     </section>

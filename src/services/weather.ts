@@ -157,8 +157,15 @@ export function buildConsensus(models: WeatherModelResult[]): WeatherConsensusHo
 }
 
 export function summarizeNight(consensus: WeatherConsensusHour[], night: NightWindow): WeatherNightSummary {
-  const hours = consensus.filter(hour => hour.time >= night.darknessStart && hour.time <= night.darknessEnd);
-  const source = hours.length ? hours : consensus.slice(0, 8);
+  const displayStart = night.sunset ?? night.darknessStart;
+  const displayEnd = night.sunrise ?? night.darknessEnd;
+  const displayHours = consensus.filter(hour => hour.time >= displayStart && hour.time <= displayEnd);
+
+  // Die automatische Qualitätsbewertung bleibt auf die astronomisch nutzbare Dunkelphase
+  // begrenzt. Die Tabelle zeigt dagegen bewusst die gesamte Nacht von Sonnenuntergang
+  // bis Sonnenaufgang, damit Aufbau, Dämmerung und Abbau mit beurteilt werden können.
+  const darknessHours = consensus.filter(hour => hour.time >= night.darknessStart && hour.time <= night.darknessEnd);
+  const source = darknessHours.length ? darknessHours : (displayHours.length ? displayHours : consensus.slice(0, 8));
   let bestHours: WeatherConsensusHour[] = [];
   let bestAverage = -1;
   const windowSize = Math.min(3, source.length);
@@ -175,7 +182,7 @@ export function summarizeNight(consensus: WeatherConsensusHour[], night: NightWi
   const dewGaps = source.map(h => h.temperature != null && h.dewPoint != null ? h.temperature - h.dewPoint : 99);
 
   return {
-    hours: source,
+    hours: displayHours.length ? displayHours : source,
     score: bestAverage >= 0 ? bestAverage : 0,
     bestStart: bestHours[0]?.time,
     bestEnd: bestHours.at(-1) ? new Date(bestHours.at(-1)!.time.getTime() + 3600_000) : undefined,

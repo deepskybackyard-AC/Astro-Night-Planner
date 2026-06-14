@@ -395,3 +395,43 @@ main { display: grid; gap: 18px; }
   .aladin-time-overlay { top: 9px; right: 9px; }
   .meteoblue-toggle { width: 100%; }
 }
+
+/* Version 0.6: kompakte Wettertabelle und robuster Setup-Rahmen */
+.weather-table-heading { margin-top: 17px; display: flex; justify-content: space-between; align-items: end; gap: 14px; }
+.weather-table-heading h3 { margin: 3px 0 0; font-size: 1.05rem; }
+.weather-table-heading > strong { color: var(--cyan); white-space: nowrap; }
+.weather-table-scroll { margin-top: 10px; overflow: auto; overscroll-behavior-inline: contain; border: 1px solid var(--line); border-radius: 15px; background: rgba(3, 10, 18, .74); -webkit-overflow-scrolling: touch; }
+.weather-hourly-table { width: 100%; min-width: 1040px; border-collapse: separate; border-spacing: 0; font-size: .78rem; font-variant-numeric: tabular-nums; }
+.weather-hourly-table th, .weather-hourly-table td { min-width: 88px; padding: 9px 10px; text-align: center; white-space: nowrap; border-right: 1px solid rgba(151,191,230,.12); border-bottom: 1px solid rgba(151,191,230,.12); }
+.weather-hourly-table thead th { position: sticky; z-index: 3; top: 0; color: #dcecff; background: #10223a; font-size: .72rem; letter-spacing: .02em; }
+.weather-hourly-table thead tr:nth-child(2) th { top: 34px; color: var(--muted); background: #0b1b2f; }
+.weather-hourly-table tbody th, .weather-hourly-table tbody td { background-color: rgba(5,14,25,.94); }
+.weather-hourly-table tbody tr:hover th, .weather-hourly-table tbody tr:hover td { background-color: rgba(31,64,95,.65); }
+.weather-hourly-table th:last-child, .weather-hourly-table td:last-child { border-right: 0; }
+.weather-hourly-table tbody tr:last-child th, .weather-hourly-table tbody tr:last-child td { border-bottom: 0; }
+.weather-hourly-table .sticky-time-column { position: sticky; left: 0; z-index: 4; min-width: 105px; background: #0b1a2c; box-shadow: 5px 0 12px rgba(0,0,0,.24); }
+.weather-hourly-table thead .sticky-time-column { z-index: 6; background: #132a46; }
+.weather-hourly-table tbody .sticky-time-column { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.hour-table-score { min-width: 30px; height: 25px; padding: 0 5px; display: inline-grid; place-items: center; border-radius: 999px; font-size: .68rem; color: #06111b; font-weight: 900; }
+.hour-table-score.good, .weather-index.good { background: var(--good); }
+.hour-table-score.medium, .weather-index.medium { background: var(--medium); }
+.hour-table-score.bad, .weather-index.bad { background: var(--bad); }
+.weather-percent-cell { position: relative; isolation: isolate; overflow: hidden; }
+.weather-percent-cell::before { content: ''; position: absolute; z-index: -1; left: 0; right: 0; bottom: 0; height: var(--weather-level); max-height: 100%; background: linear-gradient(180deg, rgba(108,151,190,.08), rgba(108,151,190,.36)); }
+.weather-index { min-width: 39px; min-height: 26px; padding: 3px 7px; display: inline-grid; place-items: center; border-radius: 8px; color: #06111b; font-weight: 900; }
+
+.aladin-framing-overlay { position: absolute; z-index: 8; inset: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none; }
+.aladin-setup-frame-shadow { fill: rgba(52,216,255,.035); stroke: rgba(0,0,0,.92); stroke-width: 9; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.aladin-setup-frame { fill: rgba(52,216,255,.025); stroke: #35e5ff; stroke-width: 4; stroke-linejoin: round; vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 4px rgba(53,229,255,.95)); }
+.aladin-frame-corner-shadow { fill: rgba(0,0,0,.96); }
+.aladin-frame-corner { fill: #ffffff; stroke: #35e5ff; stroke-width: 3; vector-effect: non-scaling-stroke; }
+.aladin-frame-label { position: absolute; z-index: 9; left: 12px; bottom: 12px; padding: 6px 9px; border: 1px solid rgba(53,229,255,.62); border-radius: 8px; color: #baf7ff; background: rgba(3,10,18,.82); box-shadow: 0 4px 18px rgba(0,0,0,.42); font-size: .69rem; font-weight: 900; letter-spacing: .035em; pointer-events: none; }
+.aladin-frame-label[hidden] { display: none; }
+
+@media (max-width: 620px) {
+  .weather-table-heading { display: grid; align-items: start; }
+  .weather-hourly-table { min-width: 960px; font-size: .74rem; }
+  .weather-hourly-table th, .weather-hourly-table td { padding: 8px; min-width: 80px; }
+  .weather-hourly-table .sticky-time-column { min-width: 96px; }
+  .aladin-frame-label { left: 9px; bottom: 9px; max-width: calc(100% - 18px); }
+}

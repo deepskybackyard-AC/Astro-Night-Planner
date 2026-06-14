@@ -96,6 +96,7 @@ export default function SkyViewer({ object, telescope, camera, night, location, 
   const [frameVisible, setFrameVisible] = useState(true);
   const [groundVisible, setGroundVisible] = useState(true);
   const [frameMessage, setFrameMessage] = useState('Rahmen ist auf das Objekt zentriert.');
+  const [screenFrame, setScreenFrame] = useState<{ points: string; corners: Array<[number, number]>; width: number; height: number } | null>(null);
   const fov = useMemo(() => calculateFov(telescope, camera), [telescope, camera]);
   const observer = useMemo(() => makeObserver(location), [location]);
   const horizontal = useMemo(() => horizontalForObject(object, selectedTime, observer), [object, selectedTime, observer]);
@@ -141,6 +142,37 @@ export default function SkyViewer({ object, telescope, camera, night, location, 
     overlayRef.current = null;
   }
 
+  function updateScreenFrame() {
+    const aladin = aladinRef.current;
+    if (!aladin || !fov || !frameVisible || typeof aladin.world2pix !== 'function') {
+      setScreenFrame(null);
+      return;
+    }
+    try {
+      const skyCorners = rectangleCorners(
+        frameCenterRef.current[0],
+        frameCenterRef.current[1],
+        fov.widthDeg,
+        fov.heightDeg,
+        rotation,
+      ).slice(0, 4);
+      const corners = skyCorners.map(([ra, dec]) => aladin.world2pix(ra, dec)) as Array<[number, number] | null>;
+      if (corners.some(point => !point || !Number.isFinite(point[0]) || !Number.isFinite(point[1]))) {
+        setScreenFrame(null);
+        return;
+      }
+      const validCorners = corners as Array<[number, number]>;
+      const size = aladin.getSize?.() ?? [containerRef.current?.clientWidth ?? 1000, containerRef.current?.clientHeight ?? 500];
+      const points = validCorners.map(([x, y]) => `${x.toFixed(2)},${y.toFixed(2)}`).join(' ');
+      setScreenFrame(previous => previous?.points === points && previous.width === size[0] && previous.height === size[1]
+        ? previous
+        : { points, corners: validCorners, width: size[0], height: size[1] });
+    } catch (cause) {
+      console.warn('Setup-Rahmen konnte nicht auf Bildschirmkoordinaten abgebildet werden.', cause);
+      setScreenFrame(null);
+    }
+  }
+
   function drawFrame(center?: number[]) {
     const A = window.A;
     const aladin = aladinRef.current;
@@ -150,9 +182,20 @@ export default function SkyViewer({ object, telescope, camera, night, location, 
     }
     try {
       clearOverlay(aladin);
-      const overlay = A.graphicOverlay({ color: '#34d8ff', lineWidth: 5 });
+      const overlay = A.graphicOverlay({ color: '#ffd45a', lineWidth: 3 });
+      // Laut Aladin-Lite-API wird die Ebene zuerst an die Ansicht angehängt und
+      // anschließend mit Formen befüllt. Der Setup-Rahmen selbst wird zusätzlich
+      // als eigenes SVG über dem Viewer gezeichnet, damit er auf allen Geräten
+      // und nach Zoom-/Verschiebevorgängen zuverlässig sichtbar bleibt.
+      aladin.addOverlay(overlay);
       if (frameVisible && fov) {
-        overlay.add(A.polyline(rectangleCorners(frameCenterRef.current[0], frameCenterRef.current[1], fov.widthDeg, fov.heightDeg, rotation), {
+        overlay.add(A.polyline(rectangleCorners(
+          frameCenterRef.current[0],
+          frameCenterRef.current[1],
+          fov.widthDeg,
+          fov.heightDeg,
+          rotation,
+        ), {
           color: '#34d8ff',
           lineWidth: 5,
         }));
@@ -163,8 +206,8 @@ export default function SkyViewer({ object, telescope, camera, night, location, 
           lineWidth: 3,
         }));
       }
-      aladin.addOverlay(overlay);
       overlayRef.current = overlay;
+      window.setTimeout(updateScreenFrame, 20);
     } catch (cause) {
       console.warn('Framing-Overlay konnte nicht gezeichnet werden.', cause);
       setFrameMessage('Der Rahmen konnte nicht gezeichnet werden. Bitte Ansicht neu öffnen.');
@@ -180,13 +223,14 @@ export default function SkyViewer({ object, telescope, camera, night, location, 
     const aspect = Math.max(1, size[0] / Math.max(1, size[1]));
     const horizontalFov = Math.max(fov.widthDeg, fov.heightDeg * aspect) * 1.35;
     aladin.setFov?.(Math.min(40, Math.max(0.15, horizontalFov)));
-    window.setTimeout(() => drawFrame(), 80);
+    window.setTimeout(() => { drawFrame(); updateScreenFrame(); }, 80);
   }
 
   function centerFrameOnImage() {
     const center = aladinRef.current?.getRaDec?.();
     if (!center) return;
     drawFrame(center);
+    updateScreenFrame();
     setFrameMessage('Rahmen wurde auf die aktuelle Bildmitte gesetzt. Bild verschieben und erneut klicken, um das Framing anzupassen.');
   }
 
@@ -195,6 +239,7 @@ export default function SkyViewer({ object, telescope, camera, night, location, 
     frameCenterRef.current = center;
     aladinRef.current?.gotoRaDec?.(center[0], center[1]);
     drawFrame(center);
+    updateScreenFrame();
     setFrameMessage('Rahmen ist wieder auf das Objekt zentriert.');
   }
 
@@ -239,9 +284,26 @@ export default function SkyViewer({ object, telescope, camera, night, location, 
   }, [object.id, fov?.widthDeg, fov?.heightDeg]);
 
   useEffect(() => {
-    if (aladinRef.current) drawFrame();
+    if (aladinRef.current) {
+      drawFrame();
+      updateScreenFrame();
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rotation, frameVisible]);
+
+  useEffect(() => {
+    if (!fov || !frameVisible) {
+      setScreenFrame(null);
+      return;
+    }
+    // Aladin Lite dokumentiert world2pix(), aber keinen allgemeinen Listener für
+    // jede Verschiebe- und Zoomänderung. Ein leichter Abgleich hält den Rahmen
+    // deshalb auch beim Ziehen, Zoomen, Vollbildwechsel und Drehen synchron.
+    const timer = window.setInterval(updateScreenFrame, 140);
+    updateScreenFrame();
+    return () => window.clearInterval(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [object.id, fov?.widthDeg, fov?.heightDeg, rotation, frameVisible]);
 
   const horizonWidth = 900;
   const horizonHeight = 300;
@@ -339,6 +401,20 @@ export default function SkyViewer({ object, telescope, camera, night, location, 
 
       <div className="sky-image-stack">
         {error ? <div className="notice warning">{error}</div> : <div ref={containerRef} className="aladin-container" />}
+        {screenFrame && frameVisible && <svg
+          className="aladin-framing-overlay"
+          viewBox={`0 0 ${screenFrame.width} ${screenFrame.height}`}
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <polygon className="aladin-setup-frame-shadow" points={screenFrame.points} />
+          <polygon className="aladin-setup-frame" points={screenFrame.points} />
+          {screenFrame.corners.map(([x, y], index) => <g key={`${x}-${y}-${index}`}>
+            <circle className="aladin-frame-corner-shadow" cx={x} cy={y} r="6" />
+            <circle className="aladin-frame-corner" cx={x} cy={y} r="4" />
+          </g>)}
+        </svg>}
+        <div className="aladin-frame-label" hidden={!screenFrame || !frameVisible}>SETUP {fov ? `${fov.widthDeg.toFixed(2)}° × ${fov.heightDeg.toFixed(2)}°` : ''}</div>
         <div className="aladin-time-overlay">
           <strong>{formatTime(selectedTime, timezone)}</strong>
           <span>{Math.round(horizontal.altitude)}° · {direction(horizontal.azimuth)}</span>

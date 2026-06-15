@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { DeepSkyObject, EquipmentState, LocationProfile, NightWindow } from '../types';
-import { calculateFov, horizontalForObject, makeObserver } from '../lib/astro';
+import { calculateFov, horizonAltitudeAtAzimuth, horizontalForObject, makeObserver } from '../lib/astro';
+import { loadJson, saveJson, STORAGE_KEYS } from '../lib/storage';
 import { addDaysToDateKey, dateKeyInZone, formatTime, zonedLocalToUtc } from '../lib/time';
 
 let aladinLoader: Promise<void> | null = null;
@@ -79,6 +80,8 @@ export default function SkyViewer({ object, equipment, onEquipmentChange, night,
   const [error, setError] = useState('');
   const [rotation, setRotation] = useState(0);
   const [frameVisible, setFrameVisible] = useState(true);
+  const [objectSizeVisible, setObjectSizeVisible] = useState(() => loadJson(STORAGE_KEYS.objectSizeVisible, false));
+  const [objectRotations, setObjectRotations] = useState<Record<string, number>>(() => loadJson(STORAGE_KEYS.objectRotations, {}));
   const [groundVisible, setGroundVisible] = useState(true);
   const [frameMessage, setFrameMessage] = useState('Rahmen ist auf das Objekt zentriert.');
   const [screenFrame, setScreenFrame] = useState<{ cx: number; cy: number; frameWidth: number; frameHeight: number; angle: number; corners: Array<[number, number]>; canvasWidth: number; canvasHeight: number } | null>(null);
@@ -87,6 +90,10 @@ export default function SkyViewer({ object, equipment, onEquipmentChange, night,
   const fov = useMemo(() => calculateFov(telescope, camera), [telescope, camera]);
   const observer = useMemo(() => makeObserver(location), [location]);
   const horizontal = useMemo(() => horizontalForObject(object, selectedTime, observer), [object, selectedTime, observer]);
+  const objectRotation = objectRotations[object.id] ?? object.positionAngleDeg ?? 0;
+
+  useEffect(() => saveJson(STORAGE_KEYS.objectSizeVisible, objectSizeVisible), [objectSizeVisible]);
+  useEffect(() => saveJson(STORAGE_KEYS.objectRotations, objectRotations), [objectRotations]);
 
   const timeRange = useMemo(() => {
     const start = night.sunset ?? new Date(night.darknessStart.getTime() - 2 * 3600_000);
@@ -193,8 +200,8 @@ export default function SkyViewer({ object, equipment, onEquipmentChange, night,
       // Der Sensorrahmen wird als echtes Rechteck in einer eigenen SVG-Ebene gezeichnet.
       // Dadurch bleiben alle vier Winkel exakt 90°, auch bei großen Bildfeldern.
       aladin.addOverlay(overlay);
-      if (object.majorArcMin > 0 && object.minorArcMin > 0) {
-        overlay.add(A.ellipse(object.raHours * 15, object.decDeg, object.majorArcMin / 120, object.minorArcMin / 120, 0, {
+      if (objectSizeVisible && object.majorArcMin > 0 && object.minorArcMin > 0) {
+        overlay.add(A.ellipse(object.raHours * 15, object.decDeg, object.majorArcMin / 120, object.minorArcMin / 120, objectRotation, {
           color: '#ffd45a',
           lineWidth: 2,
         }));
@@ -286,7 +293,7 @@ export default function SkyViewer({ object, equipment, onEquipmentChange, night,
       updateScreenFrame();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rotation, frameVisible]);
+  }, [rotation, frameVisible, objectSizeVisible, objectRotation]);
 
   useEffect(() => {
     if (!fov || !frameVisible || !framingExpanded) {
@@ -316,6 +323,12 @@ export default function SkyViewer({ object, equipment, onEquipmentChange, night,
   const frameWidth = fov ? Math.max(8, fov.widthDeg / 360 * horizonWidth) : 0;
   const frameHeight = fov ? Math.max(7, fov.heightDeg / 90 * (horizonY - skyTop)) : 0;
   const horizonId = object.id.replace(/[^a-z0-9]/gi, '');
+  const personalHorizonPoints = Array.from({ length: 73 }, (_, index) => {
+    const azimuth = index * 5;
+    return { x: azimuth / 360 * horizonWidth, y: yForAltitude(horizonAltitudeAtAzimuth(location, azimuth)) };
+  });
+  const personalHorizonPath = personalHorizonPoints.map((point, index) => `${index ? 'L' : 'M'} ${point.x.toFixed(1)} ${point.y.toFixed(1)}`).join(' ');
+  const personalGroundPath = `${personalHorizonPath} L ${horizonWidth} ${horizonHeight} L 0 ${horizonHeight} Z`;
 
   return (
     <div className="sky-viewer">
@@ -368,8 +381,9 @@ export default function SkyViewer({ object, equipment, onEquipmentChange, night,
               {[0, 45, 90, 135, 180, 225, 270, 315, 360].map(azimuth => <line key={azimuth} className="horizon-az-line" x1={azimuth / 360 * horizonWidth} x2={azimuth / 360 * horizonWidth} y1={skyTop} y2={horizonY} />)}
               <line className="mathematical-horizon" x1="0" x2={horizonWidth} y1={horizonY} y2={horizonY} />
               {groundVisible && <>
-                <path className="ground-fill" d={`M 0 ${horizonY} L 0 ${horizonY - 8} L 80 ${horizonY - 20} L 150 ${horizonY - 7} L 230 ${horizonY - 28} L 330 ${horizonY - 10} L 430 ${horizonY - 18} L 520 ${horizonY - 5} L 610 ${horizonY - 25} L 700 ${horizonY - 9} L 790 ${horizonY - 22} L 900 ${horizonY - 7} L 900 ${horizonHeight} L 0 ${horizonHeight} Z`} fill={`url(#ground-gradient-${horizonId})`} />
-                <text className="ground-label" x="450" y="278" textAnchor="middle">schematischer Boden · lokale Hindernisse nicht berücksichtigt</text>
+                <path className="ground-fill" d={personalGroundPath} fill={`url(#ground-gradient-${horizonId})`} />
+                <path className="personal-horizon-line" d={personalHorizonPath} />
+                <text className="ground-label" x="450" y="278" textAnchor="middle">persönliches Horizontprofil und gespeicherte Hindernisse</text>
               </>}
               <g className="compass-labels">
                 <text x="4" y={horizonY + 18}>N</text><text x="225" y={horizonY + 18} textAnchor="middle">O</text><text x="450" y={horizonY + 18} textAnchor="middle">S</text><text x="675" y={horizonY + 18} textAnchor="middle">W</text><text x="896" y={horizonY + 18} textAnchor="end">N</text>
@@ -386,7 +400,7 @@ export default function SkyViewer({ object, equipment, onEquipmentChange, night,
               </g>
             </svg>
           </div>
-          <small className="horizon-help">Die Ansicht zeigt den mathematischen Horizont am gewählten Standort. Ein eigenes Profil für Bäume, Häuser oder Berge kann später ergänzt werden.</small>
+          <small className="horizon-help">Die grüne Linie zeigt das persönliche Horizontprofil; gespeicherte Bäume, Gebäude und Berge werden als zusätzliche Hindernisse berücksichtigt.</small>
         </div>}
       </section>
 
@@ -397,7 +411,7 @@ export default function SkyViewer({ object, equipment, onEquipmentChange, night,
         </button>
 
         {framingExpanded && <>
-          <div className="frame-legend inline-frame-legend"><span className="setup-frame-key">Setup</span><span className="object-frame-key">Objektgröße</span></div>
+          <div className="frame-legend inline-frame-legend"><span className="setup-frame-key">Setup</span>{objectSizeVisible && <span className="object-frame-key">Objektgröße</span>}</div>
           <div className="sky-image-stack">
             {error ? <div className="notice warning">{error}</div> : <div ref={containerRef} className="aladin-container" />}
             {screenFrame && frameVisible && <svg className="aladin-framing-overlay" viewBox={`0 0 ${screenFrame.canvasWidth} ${screenFrame.canvasHeight}`} preserveAspectRatio="none" aria-hidden="true">
@@ -410,8 +424,10 @@ export default function SkyViewer({ object, equipment, onEquipmentChange, night,
                 </g>)}
               </g>
             </svg>}
-            <div className="aladin-frame-label" hidden={!screenFrame || !frameVisible}>SETUP {fov ? `${fov.widthDeg.toFixed(2)}° × ${fov.heightDeg.toFixed(2)}°` : ''}</div>
-            <div className="aladin-time-overlay"><strong>{formatTime(selectedTime, timezone)}</strong><span>{Math.round(horizontal.altitude)}° · {direction(horizontal.azimuth)}</span></div>
+            <div className="aladin-info-stack">
+              <div className="aladin-time-overlay"><strong>{formatTime(selectedTime, timezone)}</strong><span>{Math.round(horizontal.altitude)}° · {direction(horizontal.azimuth)}</span></div>
+              <div className="aladin-frame-label" hidden={!screenFrame || !frameVisible}>SETUP {fov ? `${fov.widthDeg.toFixed(2)}° × ${fov.heightDeg.toFixed(2)}°` : ''}</div>
+            </div>
           </div>
           <div className="sky-tools">
             <div className="inline-equipment-selectors">
@@ -430,6 +446,8 @@ export default function SkyViewer({ object, equipment, onEquipmentChange, night,
               <span className="fov-summary">Bildfeld <strong>{fov.widthDeg.toFixed(2)}° × {fov.heightDeg.toFixed(2)}°</strong> · {fov.pixelScale.toFixed(2)}″/px</span>
               <label className="rotation-control">Rotation<input type="range" min="0" max="180" value={rotation} onChange={event => setRotation(Number(event.target.value))} /><strong>{rotation}°</strong></label>
               <label className="frame-toggle"><input type="checkbox" checked={frameVisible} onChange={event => setFrameVisible(event.target.checked)} /> Setup-Rahmen anzeigen</label>
+              <label className="frame-toggle"><input type="checkbox" checked={objectSizeVisible} onChange={event => setObjectSizeVisible(event.target.checked)} /> Objektgröße anzeigen</label>
+              {objectSizeVisible && <label className="rotation-control object-rotation-control">Objektrotation<input type="range" min="0" max="180" value={objectRotation} onChange={event => setObjectRotations(current => ({ ...current, [object.id]: Number(event.target.value) }))} /><strong>{Math.round(objectRotation)}°</strong></label>}
               <div className="sky-button-row">
                 <button type="button" className="secondary" onClick={centerFrameOnImage}>Rahmen auf Bildmitte</button>
                 <button type="button" className="secondary" onClick={centerFrameOnObject}>Rahmen auf Objekt</button>

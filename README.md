@@ -1,41 +1,117 @@
-# Astro Night Planner 0.7
+# Astro Night Planner 0.8
 
-Eine installierbare, für Smartphones optimierte Web-App zur Planung von Deep-Sky-Aufnahmen. Sie verbindet Wettermodelle, Sonne/Mond, Dämmerungszeiten, Objektkataloge, Sichtbarkeit und das Bildfeld persönlicher Kamera-/Teleskop-Kombinationen. Für die aktuelle Version sind weder ein kostenpflichtiger Dienst noch ein API-Schlüssel erforderlich.
+Eine installierbare, für Smartphones optimierte Web-App zur Planung von Deep-Sky-Aufnahmen. Sie verbindet Wettermodelle, Sonne/Mond, Dämmerungszeiten, vollständige Objektkataloge, persönliche Standorte und Horizontprofile sowie das Bildfeld eigener Kamera-/Teleskop-Kombinationen. Für diese Version sind weder ein kostenpflichtiger Dienst noch ein persönlicher API-Schlüssel erforderlich.
 
-## Neu in Version 0.7
+## Neu in Version 0.8
 
-- frei wählbarer Bezugszeitraum für Höhe, Sichtbarkeit und Objektbewertung
-  - Sonnenuntergang bis Sonnenaufgang
-  - nautischer Planungszeitraum: Sonne unter −6° (Standard)
-  - astronomischer Planungszeitraum: Sonne unter −12°
-  - astronomische Nacht: Sonne unter −18°
-- die Auswahl des Bezugszeitraums wird im Browser gespeichert
-- filterbare, aufklappbare Objekt-Auswahlliste mit Maximalhöhe, Sichtbarkeitsdauer, Meridianzeit, Framing und kleiner Höhenkurve
-- Höhenkurve ohne Beschriftung innerhalb der Dämmerungsflächen; die Legende bleibt erhalten
-- dünnere Höhenkurve
-- Setup-Rahmen wird als geometrisch echtes Rechteck mit vier 90°-Winkeln dargestellt
-- dünnere Rahmenlinie und kleinere Eckpunkte
-- Teleskop und Kamera können direkt unterhalb der Rahmung gewechselt werden
-- Höhenkurve, Horizontansicht und Rahmung sind einzeln ein- und ausklappbar
-- der Zustand dieser drei Bereiche wird für den nächsten Aufruf gespeichert
-- beim Wechsel zwischen Planung, Ausrüstung und Info bleibt die Scrollposition einschließlich des geöffneten Objekts erhalten
+### Einstellungen statt separater Ausrüstungsseite
 
-## Enthaltene Funktionen
+Der bisherige Hauptbereich **Ausrüstung** heißt jetzt **Einstellungen**. Darin stehen vier erweiterbare Tabs zur Verfügung:
+
+- **Ausrüstung**
+- **Zentrale Einstellungen**
+- **Standorte & Horizont**
+- **Info**
+
+Der zuletzt verwendete Einstellungstab wird lokal gespeichert.
+
+### Zentrale Einheiten und Grenzwerte
+
+- gemeinsame Einheit für Wind, Böen und Jetstream
+- Standard: **km/h**
+- alternativ m/s
+- intern werden die Werte weiterhin in m/s gespeichert
+- Presets für Wind und Böen:
+  - leichtes Reisesetup
+  - normales Setup
+  - robuste Säule / Montierung
+- anschließend freie Anpassung aller Grenzen
+- farbliche Bewertung der Wettertabelle:
+  - Tauabstand: grün über 5 °C, gelb 2–5 °C, rot unter 2 °C
+  - Jetstream: grün unter 10 m/s, gelb 10–20 m/s, rot über 20 m/s
+  - Wind und Böen gemäß ausgewähltem Preset oder eigenen Grenzen
+
+Die Farben bewerten die erwartete Aufnahmequalität und stellen keine Sicherheitsfreigabe für die Ausrüstung dar.
+
+### Einstellbare Gesamtbewertung
+
+Das Standardprofil **Deep-Sky** verwendet:
+
+- Wolken 30 %
+- Transparenz 15 %
+- Seeing 10 %
+- Wind und Böen 10 %
+- Tauabstand 10 %
+- Mond 10 %
+- Objekthöhe 10 %
+- Sichtbarkeitsdauer 5 %
+
+Alle Gewichte können verändert und automatisch auf 100 % normiert werden. Die Objekt- und Wetterbewertung verwendet unmittelbar die gespeicherten Werte.
+
+### Standorte und persönlicher Horizont
+
+Für jeden gespeicherten Standort können verwaltet werden:
+
+- Standardstandort
+- Verhalten der Standortauswahl beim Start
+- Horizontpunkte aus Azimut und Höhe
+- Hindernisse wie Bäume, Gebäude oder Berge
+- grafische Vorschau des Horizontprofils
+
+Das persönliche Horizontprofil wird bei Sichtbarkeitsdauer, Objektfilterung und Horizontansicht berücksichtigt.
+
+### Paginierte und konfigurierbare Objektliste
+
+- der zusätzliche Button „Objektliste öffnen“ wurde entfernt
+- die zentrale Ergebnisliste wird seitenweise dargestellt
+- wählbar sind 10, 20, 50 oder 100 Objekte pro Seite
+- Standard: 20
+- Seitennavigation oberhalb und unterhalb der Liste
+- vereinfachte große Navigation auf Smartphones
+- Filteränderungen setzen die Liste auf Seite 1 zurück
+- aktuelle Seite wird gespeichert
+- Darstellungsprofile: Kompakt, Standard und Detailliert
+- sichtbare Spalten können einzeln gewählt werden
+- Reihenfolge per Drag-and-drop oder Pfeiltasten
+- Standardansicht wiederherstellbar
+
+Das neue Mini-Höhenprofil besitzt eine echte 0–90°-Proportion, Mindesthöhenlinie, Start-/Endpunkte und einen markierten Höchstpunkt. Es verwendet den aktuell gewählten Planungszeitraum.
+
+### Überarbeitete Rahmung
+
+- eigene Informationsfelder liegen am rechten mittleren Rand und verdecken die Aladin-Bedienelemente nicht mehr
+- Objektgröße kann unabhängig vom Setup-Rahmen ein- und ausgeblendet werden
+- Objektgröße ist standardmäßig deaktiviert
+- bekannte Positionswinkel werden automatisch verwendet
+- eigener Rotationsregler für die Objektgröße als Korrektur oder Fallback
+- Objektrotation und Kamerarahmenrotation sind voneinander unabhängig
+
+### Info-Bereich
+
+Der Info-Tab erläutert:
+
+- Datenquellen und Wettermodelle
+- Gesamtbewertung
+- Seeing, Jetstream und Tauabstand
+- Windbewertung und Sicherheitshinweis
+- Objektkataloge und Lizenzen
+- Datenschutz und lokale Speicherung
+- Projekt- und Fehlerlink
+
+## Bereits enthaltene Kernfunktionen
 
 - GPS, Ortssuche und direkte Koordinateneingabe
-- mehrere lokal gespeicherte Beobachtungsorte
 - heutige Nacht plus sieben weitere Nächte
 - Sonnenuntergang, Dämmerungsgrenzen und Sonnenaufgang
-- Mondaufgang, Mondkulmination, maximale Höhe, Monduntergang und Beleuchtung
+- Mondaufgang, Kulmination, maximale Höhe, Untergang und Beleuchtung
 - Wettervergleich aus DWD ICON, ECMWF IFS und NOAA GFS via Open-Meteo
-- tiefe, mittlere und hohe Wolken, Temperatur, Taupunktabstand, Wind, Böen, Jetstream, Seeing- und Transparenz-Tendenz
 - stündliche Wettertabelle von Sonnenuntergang bis Sonnenaufgang
-- Meteoblue Astronomy Seeing als einklappbare Kontrollansicht
-- Objektbewertung anhand des gewählten Planungszeitraums
+- Meteoblue Astronomy Seeing als standardmäßig eingeklappte Kontrollansicht
+- Messier-, NGC-, IC-, Sharpless-2- und Abell-PN-Kataloge
+- wählbarer Planungszeitraum; Standard ist der nautische Zeitraum
 - persönliche Teleskope und Kameras
-- Bildfeld und Pixelmaßstab
-- interaktive Aladin-Lite-Himmelsansicht mit verschiebbarem und rotierbarem Sensorrahmen
-- gekoppelte Uhrzeit für Höhenkurve und Horizontansicht
+- Bildfeld, Pixelmaßstab und interaktive Aladin-Lite-Rahmung
+- große Höhenkurve, gekoppelte Uhrzeit und persönliche Horizontansicht
 - PWA-Manifest und GitHub-Pages-Workflow
 
 ## Integrierte Objektkataloge
@@ -46,7 +122,7 @@ Eine installierbare, für Smartphones optimierte Web-App zur Planung von Deep-Sk
 - Abell-Katalog planetarischer Nebel: 83 Einträge
 - zusätzliche gebräuchliche Deep-Sky-Ziele
 
-Die Katalogdaten liegen lokal in der App. Die Textsuche arbeitet über den gesamten Katalog. Für eine flüssige Smartphone-Nutzung werden anschließend nur die aussichtsreichsten Kandidaten astronomisch im Detail berechnet.
+Die Katalogdaten liegen lokal in der App. Fehlende Werte wie Magnitude, Flächenhelligkeit, Größe oder Positionswinkel werden nicht erfunden.
 
 ## Lokal starten
 
@@ -57,9 +133,10 @@ npm install
 npm run dev
 ```
 
-## Produktions-Build
+## Prüfung und Produktions-Build
 
 ```bash
+npm run check
 npm run build
 npm run preview
 ```
@@ -75,15 +152,14 @@ Der fertige Inhalt liegt in `dist/`.
 
 ## Speicherung und spätere Synchronisierung
 
-In Version 0.7 werden Standorte, Filter, ausgewählte Ausrüstung und Anzeigezustände noch in `localStorage` des jeweiligen Browsers gespeichert. Diese Speicherung ist nur eine Zwischenlösung.
+Version 0.8 speichert Standorte, Horizontprofile, Ausrüstung, Grenzwerte, Gewichtungen und Anzeigeeinstellungen weiterhin im `localStorage` des jeweiligen Browsers. Das ist eine Übergangslösung.
 
-Geplant ist später:
+Für eine spätere Ausbaustufe vorgesehen:
 
 - Login pro Nutzer
 - zentrale, geräteübergreifende Speicherung
-- persönliche Teleskope, Kameras und Standorte
-- Synchronisierung zwischen Smartphone, Tablet und PC
-- optional ein individuell gespeicherter nächtlicher Zeitrahmen
+- Synchronisierung von Teleskopen, Kameras, Standorten und Einstellungen
+- optionaler individueller nächtlicher Zeitrahmen
 
 ## Datenquellen
 
@@ -100,6 +176,7 @@ Ausführliche Herkunfts- und Lizenzangaben stehen in `CATALOG_SOURCES.md`.
 ## Fachliche Grenzen
 
 - Seeing und Transparenz sind Tendenzwerte von 0 bis 100, keine gemessenen Bogensekundenwerte.
-- Fehlende Magnituden und Objektgrößen werden nicht geschätzt.
-- Der rechteckige Sensorrahmen ist eine Bildschirmdarstellung in der lokalen Tangentialebene. Bei sehr großen Bildfeldern ist die gekrümmte Himmelsprojektion davon zu unterscheiden.
+- Der Jetstream ist ein wichtiger Seeing-Indikator, aber keine vollständige Seeing-Prognose.
+- Windfarben sind keine Sicherheitsfreigabe.
+- Der Sensorrahmen ist ein geometrisch rechteckiges Bildschirm-Overlay; großflächige Himmelsprojektionen können davon abweichen.
 - Benutzerkonten und zentrale Synchronisierung sind noch nicht enthalten.

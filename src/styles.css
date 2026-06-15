@@ -519,3 +519,119 @@ main { display: grid; gap: 18px; }
   .compact-heading { display: grid; }
   .altitude-section > :not(.detail-section-toggle) { margin-left: 8px; margin-right: 8px; }
 }
+
+/* Version 0.8: zentrale Einstellungen, Pagination, konfigurierbare Objektliste und persönlicher Horizont */
+.bottom-nav { grid-template-columns: repeat(2, 1fr); width: min(390px, calc(100% - 24px)); }
+.settings-page { display: grid; gap: 16px; }
+.settings-tabs { position: sticky; z-index: 25; top: 0; display: flex; gap: 7px; overflow-x: auto; padding: 8px; border: 1px solid var(--line); border-radius: 17px; background: rgba(5,14,25,.94); backdrop-filter: blur(18px); box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+.settings-tabs button { flex: 0 0 auto; min-height: 42px; color: var(--muted); background: rgba(255,255,255,.04); border: 1px solid var(--line); white-space: nowrap; }
+.settings-tabs button.active { color: #03101b; background: linear-gradient(135deg, var(--cyan), #a4dcff); border-color: transparent; }
+.settings-stack { display: grid; gap: 18px; }
+.settings-card h3 { margin: 22px 0 10px; }
+.preset-row, .settings-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.custom-badge { padding: 7px 10px; color: var(--medium); border: 1px solid rgba(240,191,100,.3); border-radius: 999px; font-size: .75rem; }
+.threshold-grid, .weight-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+.weight-grid label strong { color: var(--text); }
+.weight-grid input[type="range"] { padding: 0; min-height: 28px; border: 0; box-shadow: none; }
+.weight-sum { display: grid; justify-items: end; }
+.weight-sum span { color: var(--muted); font-size: .7rem; }
+.column-config-list { display: grid; gap: 6px; margin-top: 16px; }
+.column-config-row { min-height: 48px; display: grid; grid-template-columns: 28px 1fr auto; gap: 9px; align-items: center; padding: 7px 9px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,.025); }
+.column-config-row.dragging { opacity: .5; border-color: var(--cyan); }
+.column-config-row label { display: flex; align-items: center; gap: 8px; color: var(--text); }
+.column-config-row input[type="checkbox"] { width: 20px; min-height: 20px; }
+.drag-handle { color: var(--muted); cursor: grab; text-align: center; }
+.order-buttons { display: flex; gap: 5px; }
+.order-buttons button { min-width: 38px; padding-inline: 8px; }
+
+.horizon-profile-chart-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: #050d17; }
+.horizon-profile-chart { display: block; width: 100%; min-width: 700px; height: auto; }
+.horizon-profile-chart text { fill: var(--muted); font-size: 10px; }
+.horizon-profile-grid { stroke: rgba(190,210,230,.12); stroke-width: 1; }
+.horizon-profile-grid.vertical { stroke: rgba(190,210,230,.07); }
+.horizon-profile-line { fill: none; stroke: #55c7ff; stroke-width: 2.5; stroke-linejoin: round; }
+.horizon-obstacle { fill: rgba(239,124,142,.28); stroke: rgba(239,124,142,.55); stroke-width: 1; }
+.horizon-point-list { display: grid; gap: 7px; }
+.horizon-point-row { display: grid; grid-template-columns: 1fr 1fr 44px; gap: 8px; align-items: end; }
+.inline-add-row { margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr auto; gap: 9px; align-items: end; }
+.obstacle-form { display: grid; grid-template-columns: minmax(180px,1.4fr) repeat(4,minmax(100px,.7fr)) auto; gap: 9px; align-items: end; margin-top: 12px; }
+.personal-horizon-line { fill: none; stroke: rgba(109,239,183,.9); stroke-width: 2; }
+
+.quality-good { color: #bff5df !important; background: rgba(85,214,160,.12) !important; box-shadow: inset 3px 0 0 var(--good); }
+.quality-medium { color: #ffe1a4 !important; background: rgba(240,191,100,.13) !important; box-shadow: inset 3px 0 0 var(--medium); }
+.quality-bad { color: #ffc2cc !important; background: rgba(239,124,142,.13) !important; box-shadow: inset 3px 0 0 var(--bad); }
+
+.object-toolbar { grid-template-columns: minmax(220px, 1fr) auto; }
+.page-size-inline { margin: 10px 2px 4px; color: var(--muted); font-size: .7rem; }
+.pagination { display: grid; grid-template-columns: auto 1fr auto auto; gap: 8px; align-items: center; margin: 12px 0; }
+.pagination > strong { color: var(--muted); font-size: .75rem; white-space: nowrap; }
+.pagination-pages { display: flex; justify-content: center; gap: 5px; min-width: 0; }
+.pagination-item-wrap { display: inline-flex; align-items: center; gap: 5px; }
+.pagination-item-wrap i { color: var(--muted); font-style: normal; }
+.pagination button { min-width: 42px; padding-inline: 11px; }
+.pagination button.active { color: #03101b; background: var(--cyan); }
+.object-table-scroll { overflow-x: auto; overscroll-behavior-inline: contain; border-radius: 15px; }
+.object-list-header, .object-card-main { display: grid; grid-template-columns: var(--object-list-columns); gap: 10px; align-items: center; min-width: max-content; width: 100%; }
+.object-list-header { padding: 8px 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 13px; background: rgba(255,255,255,.025); font-size: .65rem; text-align: center; }
+.object-list-header span:nth-child(2) { text-align: left; }
+.object-list { width: max-content; min-width: 100%; }
+.object-card { min-width: 100%; }
+.object-card-main { padding: 10px 12px; min-height: 84px; }
+.object-list-cell { min-width: 0; display: grid; align-items: center; justify-items: center; }
+.column-object { justify-items: stretch; }
+.list-metric { width: 100%; display: grid; gap: 3px; text-align: center; color: var(--text); }
+.list-metric small { color: var(--muted); font-size: .62rem; }
+.list-metric strong { font-size: .84rem; overflow-wrap: anywhere; }
+.mini-altitude { width: 196px; height: 66px; display: block; border-radius: 8px; background: rgba(0,0,0,.2); }
+.mini-altitude-grid { stroke: rgba(190,210,230,.10); stroke-width: 1; }
+.mini-altitude-area { fill: rgba(85,199,255,.10); }
+.mini-altitude-line { fill: none; stroke: #55c7ff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.mini-altitude-threshold { stroke: rgba(255,157,91,.72); stroke-width: 1; stroke-dasharray: 4 3; }
+.mini-altitude-edge { fill: #dcecff; stroke: #07111e; stroke-width: 1; }
+.mini-altitude-maximum { fill: #ffd55a; stroke: #07111e; stroke-width: 1.4; }
+
+.aladin-info-stack { position: absolute; z-index: 9; right: 12px; top: 50%; transform: translateY(-50%); display: grid; gap: 8px; justify-items: end; pointer-events: none; }
+.aladin-info-stack .aladin-time-overlay, .aladin-info-stack .aladin-frame-label { position: static; inset: auto; transform: none; max-width: 170px; }
+.aladin-time-overlay { min-width: 100px; padding: 7px 10px; }
+.aladin-frame-label { padding: 6px 8px; font-size: .66rem; }
+.object-rotation-control { flex-basis: 100% !important; }
+
+@media (max-width: 1100px) {
+  .threshold-grid, .weight-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .obstacle-form { grid-template-columns: repeat(3, minmax(0,1fr)); }
+  .obstacle-form .wide { grid-column: span 2; }
+}
+
+@media (max-width: 720px) {
+  .settings-tabs { margin-inline: -4px; border-radius: 14px; }
+  .threshold-grid, .weight-grid { grid-template-columns: 1fr; }
+  .horizon-point-row { grid-template-columns: 1fr 1fr 42px; }
+  .inline-add-row, .obstacle-form { grid-template-columns: 1fr 1fr; }
+  .obstacle-form .wide { grid-column: 1 / -1; }
+  .pagination { grid-template-columns: 1fr auto 1fr; }
+  .pagination-pages { display: none; }
+  .pagination > strong { grid-column: 2; grid-row: 1; text-align: center; }
+  .pagination > button:first-child { grid-column: 1; grid-row: 1; }
+  .pagination > button:last-child { grid-column: 3; grid-row: 1; }
+  .pagination button span { display: none; }
+  .object-list-header { display: none; }
+  .object-table-scroll { overflow: visible; }
+  .object-list { width: 100%; min-width: 0; }
+  .object-card-main { min-width: 0; display: flex; flex-wrap: wrap; gap: 9px 12px; align-items: center; }
+  .object-list-cell { flex: 1 1 92px; justify-items: stretch; }
+  .object-list-cell.column-score { flex: 0 0 52px; }
+  .object-list-cell.column-object { flex: 1 1 calc(100% - 96px); }
+  .object-list-cell.column-miniAltitude { flex: 1 1 100%; }
+  .object-list-cell.column-miniAltitude .mini-altitude { width: 100%; height: 72px; }
+  .object-card-main .chevron { flex: 0 0 22px; }
+  .list-metric { text-align: left; }
+  .aladin-info-stack { right: 8px; top: 52%; }
+}
+
+@media (max-width: 460px) {
+  .inline-add-row, .obstacle-form { grid-template-columns: 1fr; }
+  .obstacle-form .wide { grid-column: auto; }
+  .column-config-row { grid-template-columns: 22px 1fr; }
+  .order-buttons { grid-column: 2; }
+  .pagination > strong { font-size: .68rem; }
+}

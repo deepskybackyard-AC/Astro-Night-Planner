@@ -4,15 +4,15 @@ type CuratedObject = Omit<DeepSkyObject, 'catalogs'>;
 
 // Fachlich nachbearbeitete Werte und gebräuchliche deutsche Namen überschreiben Katalog-Rohdaten.
 export const CURATED_OBJECTS: CuratedObject[] = [
-  { id:'M31', name:'Andromedagalaxie', aliases:['M31','NGC 224'], type:'Galaxie', raHours:0.712, decDeg:41.269, magnitude:3.4, majorArcMin:190, minorArcMin:60, constellation:'Andromeda', recommendedFilters:['L','RGB'] },
-  { id:'M33', name:'Dreiecksnebel', aliases:['M33','NGC 598'], type:'Galaxie', raHours:1.564, decDeg:30.660, magnitude:5.7, majorArcMin:73, minorArcMin:45, constellation:'Dreieck', recommendedFilters:['L','RGB','Hα'] },
-  { id:'M51', name:'Whirlpool-Galaxie', aliases:['M51','NGC 5194'], type:'Galaxie', raHours:13.498, decDeg:47.195, magnitude:8.4, majorArcMin:11.2, minorArcMin:6.9, constellation:'Jagdhunde', recommendedFilters:['L','RGB','Hα'] },
-  { id:'M63', name:'Sonnenblumen-Galaxie', aliases:['M63','NGC 5055'], type:'Galaxie', raHours:13.264, decDeg:42.030, magnitude:8.6, majorArcMin:12.6, minorArcMin:7.2, constellation:'Jagdhunde', recommendedFilters:['L','RGB'] },
-  { id:'M64', name:'Black-Eye-Galaxie', aliases:['M64','NGC 4826'], type:'Galaxie', raHours:12.945, decDeg:21.683, magnitude:8.5, majorArcMin:10.7, minorArcMin:5.1, constellation:'Haar der Berenike', recommendedFilters:['L','RGB'] },
-  { id:'M81', name:'Bodes Galaxie', aliases:['M81','NGC 3031'], type:'Galaxie', raHours:9.926, decDeg:69.065, magnitude:6.9, majorArcMin:26.9, minorArcMin:14.1, constellation:'Großer Bär', recommendedFilters:['L','RGB','Hα'] },
-  { id:'M82', name:'Zigarrengalaxie', aliases:['M82','NGC 3034'], type:'Galaxie', raHours:9.931, decDeg:69.679, magnitude:8.4, majorArcMin:11.2, minorArcMin:4.3, constellation:'Großer Bär', recommendedFilters:['L','RGB','Hα'] },
+  { id:'M31', name:'Andromedagalaxie', aliases:['M31','NGC 224'], type:'Galaxie', raHours:0.712, decDeg:41.269, magnitude:3.4, majorArcMin:190, minorArcMin:60, positionAngleDeg:35, constellation:'Andromeda', recommendedFilters:['L','RGB'] },
+  { id:'M33', name:'Dreiecksnebel', aliases:['M33','NGC 598'], type:'Galaxie', raHours:1.564, decDeg:30.660, magnitude:5.7, majorArcMin:73, minorArcMin:45, positionAngleDeg:23, constellation:'Dreieck', recommendedFilters:['L','RGB','Hα'] },
+  { id:'M51', name:'Whirlpool-Galaxie', aliases:['M51','NGC 5194'], type:'Galaxie', raHours:13.498, decDeg:47.195, magnitude:8.4, majorArcMin:11.2, minorArcMin:6.9, positionAngleDeg:163, constellation:'Jagdhunde', recommendedFilters:['L','RGB','Hα'] },
+  { id:'M63', name:'Sonnenblumen-Galaxie', aliases:['M63','NGC 5055'], type:'Galaxie', raHours:13.264, decDeg:42.030, magnitude:8.6, majorArcMin:12.6, minorArcMin:7.2, positionAngleDeg:102, constellation:'Jagdhunde', recommendedFilters:['L','RGB'] },
+  { id:'M64', name:'Black-Eye-Galaxie', aliases:['M64','NGC 4826'], type:'Galaxie', raHours:12.945, decDeg:21.683, magnitude:8.5, majorArcMin:10.7, minorArcMin:5.1, positionAngleDeg:115, constellation:'Haar der Berenike', recommendedFilters:['L','RGB'] },
+  { id:'M81', name:'Bodes Galaxie', aliases:['M81','NGC 3031'], type:'Galaxie', raHours:9.926, decDeg:69.065, magnitude:6.9, majorArcMin:26.9, minorArcMin:14.1, positionAngleDeg:157, constellation:'Großer Bär', recommendedFilters:['L','RGB','Hα'] },
+  { id:'M82', name:'Zigarrengalaxie', aliases:['M82','NGC 3034'], type:'Galaxie', raHours:9.931, decDeg:69.679, magnitude:8.4, majorArcMin:11.2, minorArcMin:4.3, positionAngleDeg:65, constellation:'Großer Bär', recommendedFilters:['L','RGB','Hα'] },
   { id:'M101', name:'Feuerradgalaxie', aliases:['M101','NGC 5457'], type:'Galaxie', raHours:14.054, decDeg:54.349, magnitude:7.9, majorArcMin:28.8, minorArcMin:26.9, constellation:'Großer Bär', recommendedFilters:['L','RGB','Hα'] },
-  { id:'M104', name:'Sombrerogalaxie', aliases:['M104','NGC 4594'], type:'Galaxie', raHours:12.667, decDeg:-11.623, magnitude:8.0, majorArcMin:8.7, minorArcMin:3.5, constellation:'Jungfrau', recommendedFilters:['L','RGB'] },
+  { id:'M104', name:'Sombrerogalaxie', aliases:['M104','NGC 4594'], type:'Galaxie', raHours:12.667, decDeg:-11.623, magnitude:8.0, majorArcMin:8.7, minorArcMin:3.5, positionAngleDeg:90, constellation:'Jungfrau', recommendedFilters:['L','RGB'] },
   { id:'M106', name:'Maser-Galaxie', aliases:['M106','NGC 4258'], type:'Galaxie', raHours:12.316, decDeg:47.304, magnitude:8.4, majorArcMin:18.6, minorArcMin:7.2, constellation:'Jagdhunde', recommendedFilters:['L','RGB','Hα'] },
 
   { id:'M1', name:'Krebsnebel', aliases:['M1','NGC 1952'], type:'Supernovaüberrest', raHours:5.575, decDeg:22.015, magnitude:8.4, majorArcMin:7, minorArcMin:5, constellation:'Stier', recommendedFilters:['RGB','Hα','OIII'] },

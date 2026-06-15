@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import type { LocationProfile, NightWindow, WeatherModelResult, WeatherNightSummary } from '../types';
+import type { CentralSettings, LocationProfile, NightWindow, WeatherModelResult, WeatherNightSummary } from '../types';
 import type { PlanningWindow } from '../lib/astro';
 import MeteobluePanel from './MeteobluePanel';
 import { formatTime } from '../lib/time';
@@ -14,6 +14,7 @@ type Props = {
   error?: string;
   location: LocationProfile;
   evaluationWindow: PlanningWindow;
+  settings: CentralSettings;
 };
 
 function scoreLabel(score: number) {
@@ -30,8 +31,8 @@ function scoreClass(score: number) {
   return 'bad';
 }
 
-function value(value: number | null, digits = 0) {
-  return value == null ? '–' : value.toFixed(digits).replace('.', ',');
+function value(valueToShow: number | null, digits = 0) {
+  return valueToShow == null ? '–' : valueToShow.toFixed(digits).replace('.', ',');
 }
 
 function percentCell(valueToShow: number | null): CSSProperties {
@@ -39,7 +40,27 @@ function percentCell(valueToShow: number | null): CSSProperties {
   return { '--weather-level': `${level}%` } as CSSProperties;
 }
 
-export default function WeatherPanel({ summary, night, evaluationWindow, timezone, models, errors, loading, error, location }: Props) {
+function thresholdClass(valueToShow: number | null, greenMax: number, yellowMax: number) {
+  if (valueToShow == null) return '';
+  if (valueToShow < greenMax) return 'quality-good';
+  if (valueToShow <= yellowMax) return 'quality-medium';
+  return 'quality-bad';
+}
+
+function dewClass(gap: number | null, greenMin: number, yellowMin: number) {
+  if (gap == null) return '';
+  if (gap > greenMin) return 'quality-good';
+  if (gap >= yellowMin) return 'quality-medium';
+  return 'quality-bad';
+}
+
+function displayWind(valueMs: number | null, settings: CentralSettings, digits = 0) {
+  if (valueMs == null) return '–';
+  const converted = settings.windUnit === 'kmh' ? valueMs * 3.6 : valueMs;
+  return `${value(converted, digits)} ${settings.windUnit === 'kmh' ? 'km/h' : 'm/s'}`;
+}
+
+export default function WeatherPanel({ summary, night, evaluationWindow, timezone, models, errors, loading, error, location, settings }: Props) {
   const sunset = night.sunset ?? night.darknessStart;
   const sunrise = night.sunrise ?? night.darknessEnd;
 
@@ -56,22 +77,19 @@ export default function WeatherPanel({ summary, night, evaluationWindow, timezon
           <div><span>Bestes Fenster im Planungszeitraum</span><strong>{formatTime(summary.bestStart, timezone)}–{formatTime(summary.bestEnd, timezone)}</strong></div>
           <div><span>Bewölkung</span><strong>{Math.round(summary.meanCloud)} %</strong></div>
           <div><span>Hohe Wolken</span><strong>{Math.round(summary.meanHighCloud)} %</strong></div>
-          <div><span>Wind</span><strong>{summary.meanWind.toFixed(0)} km/h</strong></div>
-          <div><span>Jetstream</span><strong>{summary.meanJetstream ? `${summary.meanJetstream.toFixed(0)} km/h` : '–'}</strong></div>
+          <div><span>Wind</span><strong>{displayWind(summary.meanWind, settings)}</strong></div>
+          <div><span>Jetstream</span><strong>{summary.meanJetstream ? displayWind(summary.meanJetstream, settings) : '–'}</strong></div>
           <div><span>Taupunktabstand</span><strong>{summary.minDewGap.toFixed(1).replace('.', ',')} °C</strong></div>
           <div><span>Max. Feuchte</span><strong>{Math.round(summary.maxHumidity)} %</strong></div>
           <div><span>Modellkonsens</span><strong>{Math.round(summary.modelAgreement)} %</strong></div>
         </div>
         <div className="model-strip">
-          <span>Verwendet:</span>{models.map(model => <span key={model.id} className="model-chip">{model.label}</span>)}
+          <span>Verwendet:</span>{models.map((model) => <span key={model.id} className="model-chip">{model.label}</span>)}
         </div>
-        {errors.length > 0 && <details className="model-errors"><summary>Nicht verfügbare Modelle ({errors.length})</summary>{errors.map(item => <div key={item}>{item}</div>)}</details>}
+        {errors.length > 0 && <details className="model-errors"><summary>Nicht verfügbare Modelle ({errors.length})</summary>{errors.map((item) => <div key={item}>{item}</div>)}</details>}
 
         <div className="weather-table-heading">
-          <div>
-            <span className="eyebrow">Stündlicher Konsens</span>
-            <h3>Sonnenuntergang bis Sonnenaufgang</h3>
-          </div>
+          <div><span className="eyebrow">Stündlicher Konsens</span><h3>Sonnenuntergang bis Sonnenaufgang</h3></div>
           <strong>{formatTime(sunset, timezone)}–{formatTime(sunrise, timezone)}</strong>
         </div>
 
@@ -89,28 +107,21 @@ export default function WeatherPanel({ summary, night, evaluationWindow, timezon
                 <th rowSpan={2}>Seeing*</th>
                 <th rowSpan={2}>Transparenz*</th>
               </tr>
-              <tr>
-                <th>tief</th>
-                <th>mittel</th>
-                <th>hoch</th>
-              </tr>
+              <tr><th>tief</th><th>mittel</th><th>hoch</th></tr>
             </thead>
             <tbody>
-              {summary.hours.map(hour => {
+              {summary.hours.map((hour) => {
                 const dewGap = hour.temperature != null && hour.dewPoint != null ? hour.temperature - hour.dewPoint : null;
                 return <tr className={scoreClass(hour.astroScore)} key={hour.time.toISOString()}>
-                  <th scope="row" className="sticky-time-column">
-                    <strong>{formatTime(hour.time, timezone)}</strong>
-                    <span className={`hour-table-score ${scoreClass(hour.astroScore)}`}>{Math.round(hour.astroScore)}</span>
-                  </th>
+                  <th scope="row" className="sticky-time-column"><strong>{formatTime(hour.time, timezone)}</strong><span className={`hour-table-score ${scoreClass(hour.astroScore)}`}>{Math.round(hour.astroScore)}</span></th>
                   <td className="weather-percent-cell" style={percentCell(hour.cloudLow)}>{value(hour.cloudLow)} %</td>
                   <td className="weather-percent-cell" style={percentCell(hour.cloudMid)}>{value(hour.cloudMid)} %</td>
                   <td className="weather-percent-cell" style={percentCell(hour.cloudHigh)}>{value(hour.cloudHigh)} %</td>
                   <td>{value(hour.temperature, 1)} °C</td>
-                  <td>{dewGap == null ? '–' : `${value(dewGap, 1)} °C`}</td>
-                  <td>{value(hour.windSpeed)} km/h</td>
-                  <td>{value(hour.windGust)} km/h</td>
-                  <td>{value(hour.jetstreamSpeed)} km/h</td>
+                  <td className={dewClass(dewGap, settings.dewThresholds.greenMin, settings.dewThresholds.yellowMin)}>{dewGap == null ? '–' : `${value(dewGap, 1)} °C`}</td>
+                  <td className={thresholdClass(hour.windSpeed, settings.windThresholds.windGreenMax, settings.windThresholds.windYellowMax)}>{displayWind(hour.windSpeed, settings, 1)}</td>
+                  <td className={thresholdClass(hour.windGust, settings.windThresholds.gustGreenMax, settings.windThresholds.gustYellowMax)}>{displayWind(hour.windGust, settings, 1)}</td>
+                  <td className={thresholdClass(hour.jetstreamSpeed, settings.jetThresholds.greenMax, settings.jetThresholds.yellowMax)}>{displayWind(hour.jetstreamSpeed, settings, 0)}</td>
                   <td><span className={`weather-index ${scoreClass(hour.seeingScore)}`}>{Math.round(hour.seeingScore)}</span></td>
                   <td><span className={`weather-index ${scoreClass(hour.transparencyScore)}`}>{Math.round(hour.transparencyScore)}</span></td>
                 </tr>;

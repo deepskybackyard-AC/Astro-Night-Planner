@@ -10,14 +10,23 @@ import {
   SearchHourAngle,
   SearchRiseSet,
 } from 'astronomy-engine';
-import type { Camera, DeepSkyObject, LocationProfile, NightWindow, ObjectNightData, PlanningWindowMode, Telescope, WeatherNightSummary } from '../types';
-import { clamp } from './time';
-import { zonedLocalToUtc } from './time';
+import type {
+  Camera,
+  CentralSettings,
+  DeepSkyObject,
+  EvaluationWeights,
+  LocationProfile,
+  NightWindow,
+  ObjectNightData,
+  PlanningWindowMode,
+  Telescope,
+  WeatherNightSummary,
+} from '../types';
+import { clamp, zonedLocalToUtc } from './time';
 
 function toDate(value: { date: Date } | null | undefined): Date | undefined {
   return value?.date ? new Date(value.date) : undefined;
 }
-
 
 export type PlanningWindow = {
   start: Date;
@@ -122,6 +131,47 @@ export function calculateFov(telescope?: Telescope, camera?: Camera) {
   return { widthDeg, heightDeg, pixelScale, focalLength };
 }
 
+function normalizeAzimuth(value: number) {
+  return ((value % 360) + 360) % 360;
+}
+
+function azimuthInRange(azimuth: number, start: number, end: number) {
+  const az = normalizeAzimuth(azimuth);
+  const a = normalizeAzimuth(start);
+  const b = normalizeAzimuth(end);
+  return a <= b ? az >= a && az <= b : az >= a || az <= b;
+}
+
+export function horizonAltitudeAtAzimuth(location: LocationProfile, azimuth: number): number {
+  const points = (location.horizonProfile ?? [])
+    .filter((point) => Number.isFinite(point.azimuth) && Number.isFinite(point.altitude))
+    .map((point) => ({ azimuth: normalizeAzimuth(point.azimuth), altitude: clamp(point.altitude, 0, 90) }))
+    .sort((a, b) => a.azimuth - b.azimuth);
+  let profileAltitude = 0;
+  if (points.length === 1) profileAltitude = points[0].altitude;
+  else if (points.length > 1) {
+    const az = normalizeAzimuth(azimuth);
+    const extended = [...points, { ...points[0], azimuth: points[0].azimuth + 360 }];
+    const adjustedAz = az < points[0].azimuth ? az + 360 : az;
+    for (let index = 0; index < extended.length - 1; index += 1) {
+      const left = extended[index];
+      const right = extended[index + 1];
+      if (adjustedAz >= left.azimuth && adjustedAz <= right.azimuth) {
+        const ratio = right.azimuth === left.azimuth ? 0 : (adjustedAz - left.azimuth) / (right.azimuth - left.azimuth);
+        profileAltitude = left.altitude + (right.altitude - left.altitude) * ratio;
+        break;
+      }
+    }
+  }
+  const obstacleAltitude = Math.max(
+    0,
+    ...(location.obstacles ?? [])
+      .filter((obstacle) => azimuthInRange(azimuth, obstacle.azimuthStart, obstacle.azimuthEnd))
+      .map((obstacle) => clamp(obstacle.altitude, 0, 90)),
+  );
+  return Math.max(profileAltitude, obstacleAltitude);
+}
+
 function angularSeparation(ra1Hours: number, dec1Deg: number, ra2Hours: number, dec2Deg: number): number {
   const ra1 = ra1Hours * 15 * Math.PI / 180;
   const ra2 = ra2Hours * 15 * Math.PI / 180;
@@ -138,6 +188,12 @@ function airmass(altitude: number): number | null {
   return 1 / (cosZ + 0.50572 * Math.pow(96.07995 - z, -1.6364));
 }
 
+function weightedAverage(values: Record<keyof EvaluationWeights, number>, weights: EvaluationWeights): number {
+  const entries = Object.keys(weights) as Array<keyof EvaluationWeights>;
+  const total = entries.reduce((sum, key) => sum + Math.max(0, weights[key]), 0) || 1;
+  return clamp(entries.reduce((sum, key) => sum + values[key] * Math.max(0, weights[key]), 0) / total, 0, 100);
+}
+
 export function calculateObjectNightData(
   object: DeepSkyObject,
   night: NightWindow,
@@ -147,6 +203,7 @@ export function calculateObjectNightData(
   telescope?: Telescope,
   camera?: Camera,
   weather?: WeatherNightSummary,
+  settings?: CentralSettings,
 ): ObjectNightData {
   const observer = makeObserver(location);
   const planningWindow = planningWindowForNight(night, planningWindowMode);
@@ -159,12 +216,13 @@ export function calculateObjectNightData(
 
   for (let t = start.getTime(); t <= end.getTime(); t += stepMs) {
     const time = new Date(t);
-    const altitude = horizontalForObject(object, time, observer).altitude;
-    if (altitude > maxAltitude) {
-      maxAltitude = altitude;
+    const horizontal = horizontalForObject(object, time, observer);
+    if (horizontal.altitude > maxAltitude) {
+      maxAltitude = horizontal.altitude;
       bestTime = time;
     }
-    if (altitude >= minAltitude) visibleMs += stepMs;
+    const localMinimum = Math.max(minAltitude, horizonAltitudeAtAzimuth(location, horizontal.azimuth));
+    if (horizontal.altitude >= localMinimum) visibleMs += stepMs;
   }
 
   DefineStar(Body.Star1, object.raHours, object.decDeg, 1000);
@@ -191,38 +249,49 @@ export function calculateObjectNightData(
 
   const visibleHours = visibleMs / 3600_000;
   const reasons: string[] = [];
-  let score = 0;
-
   const altitudeScore = clamp((maxAltitude - minAltitude) / Math.max(1, 75 - minAltitude) * 100, 0, 100);
-  score += altitudeScore * 0.34;
-  if (maxAltitude >= 60) reasons.push(`sehr gute Maximalhöhe ${Math.round(maxAltitude)}°`);
-  else if (maxAltitude >= minAltitude) reasons.push(`Maximalhöhe ${Math.round(maxAltitude)}°`);
-  else reasons.push('bleibt unter der Mindesthöhe');
-
   const durationScore = clamp(visibleHours / 6 * 100, 0, 100);
-  score += durationScore * 0.24;
-  reasons.push(`${visibleHours.toFixed(1).replace('.', ',')} h über ${minAltitude}°`);
-
   const moonPenalty = moonHor.altitude > 0
     ? clamp((60 - moonSeparationDeg) / 60, 0, 1) * (night.moonIllumination / 100) * 100
     : 0;
   const moonScore = 100 - moonPenalty;
-  score += moonScore * 0.18;
+
+  if (maxAltitude >= 60) reasons.push(`sehr gute Maximalhöhe ${Math.round(maxAltitude)}°`);
+  else if (maxAltitude >= minAltitude) reasons.push(`Maximalhöhe ${Math.round(maxAltitude)}°`);
+  else reasons.push('bleibt unter der Mindesthöhe');
+  reasons.push(`${visibleHours.toFixed(1).replace('.', ',')} h über Mindesthöhe und persönlichem Horizont`);
   if (moonHor.altitude <= 0) reasons.push('Mond unter dem Horizont zur besten Zeit');
   else if (moonSeparationDeg >= 70) reasons.push(`großer Mondabstand ${Math.round(moonSeparationDeg)}°`);
   else reasons.push(`Mondabstand ${Math.round(moonSeparationDeg)}°`);
-
-  const fitScore = fovFit === 'gut' ? 100 : fovFit === 'knapp' ? 70 : fovFit === 'mosaik' ? 35 : 55;
-  score += fitScore * 0.09;
   if (fov && fovFit !== 'unbekannt') reasons.push(fovFit === 'mosaik' ? 'größer als das gewählte Bildfeld' : `nutzt etwa ${Math.round(fovUsagePercent)} % des Bildfelds`);
   else if (fov) reasons.push('keine verlässliche Kataloggröße für das Framing');
-
-  const weatherScore = weather?.score ?? 55;
-  score += weatherScore * 0.15;
   if (weather) reasons.push(`Wetternacht ${Math.round(weather.score)} / 100`);
 
-  if (object.magnitude != null && object.magnitude > 10) score -= 4;
-  score = clamp(score, 0, 100);
+  const components = {
+    clouds: weather?.cloudScore ?? 55,
+    transparency: weather?.transparencyScore ?? 55,
+    seeing: weather?.seeingScore ?? 55,
+    wind: weather?.windScore ?? 55,
+    dew: weather?.dewScore ?? 55,
+    moon: moonScore,
+    altitude: altitudeScore,
+    duration: durationScore,
+  };
+  const weights = settings?.evaluationWeights ?? {
+    clouds: 30,
+    transparency: 15,
+    seeing: 10,
+    wind: 10,
+    dew: 10,
+    moon: 10,
+    altitude: 10,
+    duration: 5,
+  };
+  const score = weightedAverage(components, weights);
+  const weatherWeightTotal = weights.clouds + weights.transparency + weights.seeing + weights.wind + weights.dew;
+  const weatherScore = weatherWeightTotal > 0
+    ? (components.clouds * weights.clouds + components.transparency * weights.transparency + components.seeing * weights.seeing + components.wind * weights.wind + components.dew * weights.dew) / weatherWeightTotal
+    : weather?.score ?? 55;
 
   return {
     object,
@@ -237,6 +306,8 @@ export function calculateObjectNightData(
     airmassAtBest: airmass(maxAltitude),
     fovFit,
     fovUsagePercent,
+    weatherScore,
+    components,
     score,
     reasons,
   };

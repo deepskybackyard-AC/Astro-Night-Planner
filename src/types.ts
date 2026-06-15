@@ -1,3 +1,17 @@
+export type HorizonPoint = {
+  azimuth: number;
+  altitude: number;
+};
+
+export type HorizonObstacle = {
+  id: string;
+  name: string;
+  type: 'Baum' | 'Gebäude' | 'Berg' | 'Sonstiges';
+  azimuthStart: number;
+  azimuthEnd: number;
+  altitude: number;
+};
+
 export type LocationProfile = {
   id: string;
   name: string;
@@ -8,6 +22,8 @@ export type LocationProfile = {
   country?: string;
   geonameId?: number;
   meteobluePath?: string;
+  horizonProfile?: HorizonPoint[];
+  obstacles?: HorizonObstacle[];
 };
 
 export type Telescope = {
@@ -36,6 +52,64 @@ export type EquipmentState = {
 };
 
 export type PlanningWindowMode = 'sunset' | 'nautical' | 'astronomicalTwilight' | 'astronomicalNight';
+export type WindUnit = 'kmh' | 'ms';
+export type WindPreset = 'travel' | 'normal' | 'robust' | 'custom';
+export type GpsBehavior = 'ask' | 'last' | 'off';
+
+export type WindThresholds = {
+  windGreenMax: number;
+  windYellowMax: number;
+  gustGreenMax: number;
+  gustYellowMax: number;
+};
+
+export type EvaluationWeights = {
+  clouds: number;
+  transparency: number;
+  seeing: number;
+  wind: number;
+  dew: number;
+  moon: number;
+  altitude: number;
+  duration: number;
+};
+
+export type ListColumnKey =
+  | 'score'
+  | 'object'
+  | 'maxAltitude'
+  | 'visibleHours'
+  | 'transit'
+  | 'framing'
+  | 'miniAltitude'
+  | 'bestTime'
+  | 'altStartEnd'
+  | 'moonDistance'
+  | 'moonAltitude'
+  | 'weatherScore'
+  | 'size'
+  | 'magnitude'
+  | 'filters'
+  | 'fovUsage';
+
+export type ListDisplaySettings = {
+  pageSize: 10 | 20 | 50 | 100;
+  preset: 'compact' | 'standard' | 'detailed' | 'custom';
+  columns: Array<{ key: ListColumnKey; visible: boolean }>;
+};
+
+export type CentralSettings = {
+  windUnit: WindUnit;
+  windPreset: WindPreset;
+  windThresholds: WindThresholds;
+  dewThresholds: { greenMin: number; yellowMin: number };
+  jetThresholds: { greenMax: number; yellowMax: number };
+  evaluationWeights: EvaluationWeights;
+  defaultPlanningWindow: PlanningWindowMode;
+  listDisplay: ListDisplaySettings;
+  defaultLocationId: string;
+  gpsBehavior: GpsBehavior;
+};
 
 export type CatalogName = 'Messier' | 'NGC' | 'IC' | 'Sh2' | 'Abell' | 'Zusatzkatalog';
 
@@ -70,6 +144,7 @@ export type DeepSkyObject = {
   surfaceBrightness?: number;
   majorArcMin: number;
   minorArcMin: number;
+  positionAngleDeg?: number;
   constellation: string;
   recommendedFilters: string[];
 };
@@ -94,6 +169,17 @@ export type NightWindow = {
   moonPhaseAngle: number;
 };
 
+export type ScoreComponents = {
+  clouds: number;
+  transparency: number;
+  seeing: number;
+  wind: number;
+  dew: number;
+  moon: number;
+  altitude: number;
+  duration: number;
+};
+
 export type ObjectNightData = {
   object: DeepSkyObject;
   altitudeAtStart: number;
@@ -107,6 +193,8 @@ export type ObjectNightData = {
   airmassAtBest: number | null;
   fovFit: 'gut' | 'knapp' | 'mosaik' | 'unbekannt';
   fovUsagePercent: number;
+  weatherScore: number;
+  components: ScoreComponents;
   score: number;
   reasons: string[];
 };
@@ -137,8 +225,10 @@ export type WeatherModelResult = {
 export type WeatherConsensusHour = WeatherHour & {
   cloudSpread: number;
   modelCount: number;
+  cloudScore: number;
   transparencyScore: number;
   seeingScore: number;
+  windScore: number;
   dewRiskScore: number;
   astroScore: number;
 };
@@ -156,6 +246,11 @@ export type WeatherNightSummary = {
   maxHumidity: number;
   minDewGap: number;
   modelAgreement: number;
+  cloudScore: number;
+  transparencyScore: number;
+  seeingScore: number;
+  windScore: number;
+  dewScore: number;
 };
 
 export type ObjectFilters = {

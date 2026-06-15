@@ -1,10 +1,24 @@
-import type { EquipmentState, LocationProfile } from '../types';
+import type {
+  CentralSettings,
+  EquipmentState,
+  ListColumnKey,
+  ListDisplaySettings,
+  LocationProfile,
+  WindPreset,
+  WindThresholds,
+} from '../types';
 
 export const STORAGE_KEYS = {
   locations: 'astroPlanner.locations.v1',
   equipment: 'astroPlanner.equipment.v1',
   filters: 'astroPlanner.filters.v1',
   detailSections: 'astroPlanner.detailSections.v1',
+  centralSettings: 'astroPlanner.centralSettings.v1',
+  selectedLocation: 'astroPlanner.selectedLocation.v1',
+  objectPage: 'astroPlanner.objectPage.v1',
+  objectSizeVisible: 'astroPlanner.objectSizeVisible.v1',
+  objectRotations: 'astroPlanner.objectRotations.v1',
+  settingsTab: 'astroPlanner.settingsTab.v1',
 };
 
 export function loadJson<T>(key: string, fallback: T): T {
@@ -30,6 +44,14 @@ export const defaultLocation: LocationProfile = {
   country: 'Deutschland',
   geonameId: 2820860,
   meteobluePath: 'tübingen_deutschland_2820860',
+  horizonProfile: [
+    { azimuth: 0, altitude: 0 },
+    { azimuth: 90, altitude: 0 },
+    { azimuth: 180, altitude: 0 },
+    { azimuth: 270, altitude: 0 },
+    { azimuth: 360, altitude: 0 },
+  ],
+  obstacles: [],
 };
 
 export const defaultEquipment: EquipmentState = {
@@ -56,3 +78,145 @@ export const defaultEquipment: EquipmentState = {
   selectedTelescopeId: 'askar-200',
   selectedCameraId: 'qhy268m',
 };
+
+export const WIND_PRESETS: Record<Exclude<WindPreset, 'custom'>, WindThresholds> = {
+  travel: {
+    windGreenMax: 2,
+    windYellowMax: 4,
+    gustGreenMax: 4,
+    gustYellowMax: 6,
+  },
+  normal: {
+    windGreenMax: 3,
+    windYellowMax: 6,
+    gustGreenMax: 5,
+    gustYellowMax: 9,
+  },
+  robust: {
+    windGreenMax: 4,
+    windYellowMax: 8,
+    gustGreenMax: 7,
+    gustYellowMax: 12,
+  },
+};
+
+export const LIST_COLUMN_LABELS: Record<ListColumnKey, string> = {
+  score: 'Bewertung',
+  object: 'Objekt / Typ / Katalog',
+  maxAltitude: 'Maximalhöhe',
+  visibleHours: 'Sichtbarkeitsdauer',
+  transit: 'Meridian',
+  framing: 'Framing',
+  miniAltitude: 'Mini-Höhenprofil',
+  bestTime: 'Beste Zeit',
+  altStartEnd: 'Höhe Start / Ende',
+  moonDistance: 'Mondabstand',
+  moonAltitude: 'Mondhöhe',
+  weatherScore: 'Wetterwert',
+  size: 'Objektgröße',
+  magnitude: 'Magnitude / Flächenhelligkeit',
+  filters: 'Filterempfehlung',
+  fovUsage: 'Bildfeldnutzung',
+};
+
+const ALL_COLUMNS: ListColumnKey[] = [
+  'score',
+  'object',
+  'maxAltitude',
+  'visibleHours',
+  'transit',
+  'framing',
+  'miniAltitude',
+  'bestTime',
+  'altStartEnd',
+  'moonDistance',
+  'moonAltitude',
+  'weatherScore',
+  'size',
+  'magnitude',
+  'filters',
+  'fovUsage',
+];
+
+function columnsWithVisible(visible: ListColumnKey[]): ListDisplaySettings['columns'] {
+  return ALL_COLUMNS.map((key) => ({ key, visible: visible.includes(key) }));
+}
+
+export const LIST_PRESETS: Record<'compact' | 'standard' | 'detailed', ListDisplaySettings['columns']> = {
+  compact: columnsWithVisible(['score', 'object', 'maxAltitude', 'visibleHours', 'miniAltitude']),
+  standard: columnsWithVisible(['score', 'object', 'maxAltitude', 'visibleHours', 'transit', 'framing', 'miniAltitude']),
+  detailed: columnsWithVisible([
+    'score',
+    'object',
+    'maxAltitude',
+    'visibleHours',
+    'transit',
+    'framing',
+    'miniAltitude',
+    'bestTime',
+    'altStartEnd',
+    'moonDistance',
+    'weatherScore',
+    'fovUsage',
+  ]),
+};
+
+export const defaultCentralSettings: CentralSettings = {
+  windUnit: 'kmh',
+  windPreset: 'normal',
+  windThresholds: { ...WIND_PRESETS.normal },
+  dewThresholds: { greenMin: 5, yellowMin: 2 },
+  jetThresholds: { greenMax: 10, yellowMax: 20 },
+  evaluationWeights: {
+    clouds: 30,
+    transparency: 15,
+    seeing: 10,
+    wind: 10,
+    dew: 10,
+    moon: 10,
+    altitude: 10,
+    duration: 5,
+  },
+  defaultPlanningWindow: 'nautical',
+  listDisplay: {
+    pageSize: 20,
+    preset: 'standard',
+    columns: LIST_PRESETS.standard.map((item) => ({ ...item })),
+  },
+  defaultLocationId: defaultLocation.id,
+  gpsBehavior: 'ask',
+};
+
+export function normalizeCentralSettings(saved: Partial<CentralSettings>): CentralSettings {
+  const listDisplay = saved.listDisplay ?? defaultCentralSettings.listDisplay;
+  const savedColumns = Array.isArray(listDisplay.columns) ? listDisplay.columns : [];
+  const normalizedColumns = ALL_COLUMNS.map((key) => {
+    const match = savedColumns.find((item) => item.key === key);
+    const standard = LIST_PRESETS.standard.find((item) => item.key === key);
+    return { key, visible: match?.visible ?? standard?.visible ?? false };
+  });
+  const order = savedColumns
+    .map((item) => item.key)
+    .filter((key): key is ListColumnKey => ALL_COLUMNS.includes(key as ListColumnKey));
+  const orderedColumns = [
+    ...order.map((key) => normalizedColumns.find((item) => item.key === key)!),
+    ...normalizedColumns.filter((item) => !order.includes(item.key)),
+  ];
+  const pageSize = [10, 20, 50, 100].includes(Number(listDisplay.pageSize))
+    ? (Number(listDisplay.pageSize) as 10 | 20 | 50 | 100)
+    : 20;
+  const weights = { ...defaultCentralSettings.evaluationWeights, ...(saved.evaluationWeights ?? {}) };
+  return {
+    ...defaultCentralSettings,
+    ...saved,
+    windThresholds: { ...defaultCentralSettings.windThresholds, ...(saved.windThresholds ?? {}) },
+    dewThresholds: { ...defaultCentralSettings.dewThresholds, ...(saved.dewThresholds ?? {}) },
+    jetThresholds: { ...defaultCentralSettings.jetThresholds, ...(saved.jetThresholds ?? {}) },
+    evaluationWeights: weights,
+    listDisplay: {
+      pageSize,
+      preset: listDisplay.preset ?? 'standard',
+      columns: orderedColumns,
+    },
+  };
+}

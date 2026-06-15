@@ -73,6 +73,7 @@ function fromRow(row: CatalogRow): DeepSkyObject {
     surfaceBrightness: row[7] ?? undefined,
     majorArcMin: row[8],
     minorArcMin: row[9],
+    positionAngleDeg: undefined,
     constellation: row[10],
     recommendedFilters: row[11],
     catalogs: row[12],
@@ -93,6 +94,7 @@ function mergeObjects(primary: DeepSkyObject, addition: DeepSkyObject, preferAdd
     surfaceBrightness: pick(primary.surfaceBrightness, addition.surfaceBrightness),
     majorArcMin: preferAddition && addition.majorArcMin > 0 ? addition.majorArcMin : (primary.majorArcMin || addition.majorArcMin),
     minorArcMin: preferAddition && addition.minorArcMin > 0 ? addition.minorArcMin : (primary.minorArcMin || addition.minorArcMin),
+    positionAngleDeg: pick(primary.positionAngleDeg, addition.positionAngleDeg),
     constellation: preferAddition && addition.constellation !== '–' ? addition.constellation : (primary.constellation !== '–' ? primary.constellation : addition.constellation),
     recommendedFilters: [...new Set(preferAddition ? addition.recommendedFilters : [...primary.recommendedFilters, ...addition.recommendedFilters])],
   };

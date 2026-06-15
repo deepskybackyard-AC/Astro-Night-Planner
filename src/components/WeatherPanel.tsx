@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import type { LocationProfile, NightWindow, WeatherModelResult, WeatherNightSummary } from '../types';
+import type { PlanningWindow } from '../lib/astro';
 import MeteobluePanel from './MeteobluePanel';
 import { formatTime } from '../lib/time';
 
@@ -12,6 +13,7 @@ type Props = {
   loading: boolean;
   error?: string;
   location: LocationProfile;
+  evaluationWindow: PlanningWindow;
 };
 
 function scoreLabel(score: number) {
@@ -37,7 +39,7 @@ function percentCell(valueToShow: number | null): CSSProperties {
   return { '--weather-level': `${level}%` } as CSSProperties;
 }
 
-export default function WeatherPanel({ summary, night, timezone, models, errors, loading, error, location }: Props) {
+export default function WeatherPanel({ summary, night, evaluationWindow, timezone, models, errors, loading, error, location }: Props) {
   const sunset = night.sunset ?? night.darknessStart;
   const sunrise = night.sunrise ?? night.darknessEnd;
 
@@ -51,7 +53,7 @@ export default function WeatherPanel({ summary, night, timezone, models, errors,
       {error && <div className="notice warning">{error}</div>}
       {summary && <>
         <div className="weather-summary-grid">
-          <div><span>Bestes dunkles Fenster</span><strong>{formatTime(summary.bestStart, timezone)}–{formatTime(summary.bestEnd, timezone)}</strong></div>
+          <div><span>Bestes Fenster im Planungszeitraum</span><strong>{formatTime(summary.bestStart, timezone)}–{formatTime(summary.bestEnd, timezone)}</strong></div>
           <div><span>Bewölkung</span><strong>{Math.round(summary.meanCloud)} %</strong></div>
           <div><span>Hohe Wolken</span><strong>{Math.round(summary.meanHighCloud)} %</strong></div>
           <div><span>Wind</span><strong>{summary.meanWind.toFixed(0)} km/h</strong></div>
@@ -116,7 +118,7 @@ export default function WeatherPanel({ summary, night, timezone, models, errors,
             </tbody>
           </table>
         </div>
-        <p className="footnote">Die Tabelle zeigt die vollen Prognosestunden zwischen Sonnenuntergang und Sonnenaufgang. Die automatische Nachtbewertung und das beste Fenster beziehen sich weiterhin auf die astronomische Dunkelheit von {formatTime(night.darknessStart, timezone)} bis {formatTime(night.darknessEnd, timezone)}. * Seeing und Transparenz sind abgeleitete Tendenzen, keine gemessenen Bogensekundenwerte.</p>
+        <p className="footnote">Die Tabelle zeigt die vollen Prognosestunden zwischen Sonnenuntergang und Sonnenaufgang. Die automatische Nachtbewertung und das beste Fenster beziehen sich auf den gewählten Planungszeitraum {formatTime(evaluationWindow.start, timezone)} bis {formatTime(evaluationWindow.end, timezone)} ({evaluationWindow.label}). * Seeing und Transparenz sind abgeleitete Tendenzen, keine gemessenen Bogensekundenwerte.</p>
       </>}
       <MeteobluePanel location={location} />
     </section>

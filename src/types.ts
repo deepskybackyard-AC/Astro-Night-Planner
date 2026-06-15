@@ -35,6 +35,8 @@ export type EquipmentState = {
   selectedCameraId: string;
 };
 
+export type PlanningWindowMode = 'sunset' | 'nautical' | 'astronomicalTwilight' | 'astronomicalNight';
+
 export type CatalogName = 'Messier' | 'NGC' | 'IC' | 'Sh2' | 'Abell' | 'Zusatzkatalog';
 
 export type ObjectType =
@@ -157,6 +159,7 @@ export type WeatherNightSummary = {
 };
 
 export type ObjectFilters = {
+  planningWindow: PlanningWindowMode;
   catalogs: CatalogName[];
   types: ObjectType[];
   maxMagnitude: number;

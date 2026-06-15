@@ -10,12 +10,54 @@ import {
   SearchHourAngle,
   SearchRiseSet,
 } from 'astronomy-engine';
-import type { Camera, DeepSkyObject, LocationProfile, NightWindow, ObjectNightData, Telescope, WeatherNightSummary } from '../types';
+import type { Camera, DeepSkyObject, LocationProfile, NightWindow, ObjectNightData, PlanningWindowMode, Telescope, WeatherNightSummary } from '../types';
 import { clamp } from './time';
 import { zonedLocalToUtc } from './time';
 
 function toDate(value: { date: Date } | null | undefined): Date | undefined {
   return value?.date ? new Date(value.date) : undefined;
+}
+
+
+export type PlanningWindow = {
+  start: Date;
+  end: Date;
+  label: string;
+  shortLabel: string;
+  sunLimit: string;
+};
+
+export function planningWindowForNight(night: NightWindow, mode: PlanningWindowMode): PlanningWindow {
+  const sunset = night.sunset ?? night.civilDusk ?? night.darknessStart;
+  const sunrise = night.sunrise ?? night.civilDawn ?? night.darknessEnd;
+  if (mode === 'sunset') {
+    return { start: sunset, end: sunrise, label: 'Sonnenuntergang bis Sonnenaufgang', shortLabel: 'Sonnenuntergang', sunLimit: 'Horizont' };
+  }
+  if (mode === 'astronomicalTwilight') {
+    return {
+      start: night.nauticalDusk ?? night.darknessStart,
+      end: night.nauticalDawn ?? night.darknessEnd,
+      label: 'Astronomischer Planungszeitraum (Sonne unter −12°)',
+      shortLabel: '−12° bis −12°',
+      sunLimit: '−12°',
+    };
+  }
+  if (mode === 'astronomicalNight') {
+    return {
+      start: night.astronomicalDusk ?? night.darknessStart,
+      end: night.astronomicalDawn ?? night.darknessEnd,
+      label: 'Astronomische Nacht (Sonne unter −18°)',
+      shortLabel: '−18° bis −18°',
+      sunLimit: '−18°',
+    };
+  }
+  return {
+    start: night.civilDusk ?? night.nauticalDusk ?? night.darknessStart,
+    end: night.civilDawn ?? night.nauticalDawn ?? night.darknessEnd,
+    label: 'Nautischer Planungszeitraum (Sonne unter −6°)',
+    shortLabel: '−6° bis −6°',
+    sunLimit: '−6°',
+  };
 }
 
 export function makeObserver(location: LocationProfile): Observer {
@@ -101,13 +143,15 @@ export function calculateObjectNightData(
   night: NightWindow,
   location: LocationProfile,
   minAltitude: number,
+  planningWindowMode: PlanningWindowMode,
   telescope?: Telescope,
   camera?: Camera,
   weather?: WeatherNightSummary,
 ): ObjectNightData {
   const observer = makeObserver(location);
-  const start = night.darknessStart;
-  const end = night.darknessEnd;
+  const planningWindow = planningWindowForNight(night, planningWindowMode);
+  const start = planningWindow.start;
+  const end = planningWindow.end;
   const stepMs = 15 * 60_000;
   let maxAltitude = -90;
   let bestTime = start;

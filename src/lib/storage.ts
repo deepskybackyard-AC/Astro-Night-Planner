@@ -4,6 +4,7 @@ export const STORAGE_KEYS = {
   locations: 'astroPlanner.locations.v1',
   equipment: 'astroPlanner.equipment.v1',
   filters: 'astroPlanner.filters.v1',
+  detailSections: 'astroPlanner.detailSections.v1',
 };
 
 export function loadJson<T>(key: string, fallback: T): T {

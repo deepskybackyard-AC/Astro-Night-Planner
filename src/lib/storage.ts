@@ -1,10 +1,13 @@
 import type {
   CentralSettings,
   EquipmentState,
+  EvaluationWeights,
+  DisplayProfileKey,
   ListColumnKey,
+  ListDisplayProfile,
   ListDisplaySettings,
   LocationProfile,
-  WindPreset,
+  WindProfileKey,
   WindThresholds,
 } from '../types';
 
@@ -79,7 +82,7 @@ export const defaultEquipment: EquipmentState = {
   selectedCameraId: 'qhy268m',
 };
 
-export const WIND_PRESETS: Record<Exclude<WindPreset, 'custom'>, WindThresholds> = {
+export const WIND_PRESETS: Record<Exclude<WindProfileKey, 'custom'>, WindThresholds> = {
   travel: {
     windGreenMax: 2,
     windYellowMax: 4,
@@ -98,6 +101,20 @@ export const WIND_PRESETS: Record<Exclude<WindPreset, 'custom'>, WindThresholds>
     gustGreenMax: 7,
     gustYellowMax: 12,
   },
+};
+
+export const WIND_PROFILE_LABELS: Record<WindProfileKey, string> = {
+  travel: 'Leichtes Reisesetup',
+  normal: 'Normales Setup',
+  robust: 'Robuste Säule / Montierung',
+  custom: 'Benutzerdefiniert',
+};
+
+export const DISPLAY_PROFILE_LABELS: Record<DisplayProfileKey, string> = {
+  compact: 'Kompakt',
+  standard: 'Standard',
+  detailed: 'Detailliert',
+  custom: 'Benutzerdefiniert',
 };
 
 export const LIST_COLUMN_LABELS: Record<ListColumnKey, string> = {
@@ -161,8 +178,32 @@ export const LIST_PRESETS: Record<'compact' | 'standard' | 'detailed', ListDispl
   ]),
 };
 
+function cloneColumns(columns: ListDisplaySettings['columns']) {
+  return columns.map((item) => ({ ...item }));
+}
+
+function defaultDisplayProfiles(): Record<DisplayProfileKey, ListDisplayProfile> {
+  return {
+    compact: { pageSize: 20, columns: cloneColumns(LIST_PRESETS.compact) },
+    standard: { pageSize: 20, columns: cloneColumns(LIST_PRESETS.standard) },
+    detailed: { pageSize: 20, columns: cloneColumns(LIST_PRESETS.detailed) },
+    custom: { pageSize: 20, columns: cloneColumns(LIST_PRESETS.standard) },
+  };
+}
+
+function defaultWindProfiles(): Record<WindProfileKey, WindThresholds> {
+  return {
+    travel: { ...WIND_PRESETS.travel },
+    normal: { ...WIND_PRESETS.normal },
+    robust: { ...WIND_PRESETS.robust },
+    custom: { ...WIND_PRESETS.normal },
+  };
+}
+
 export const defaultCentralSettings: CentralSettings = {
   windUnit: 'kmh',
+  activeWindProfile: 'normal',
+  windProfiles: defaultWindProfiles(),
   windPreset: 'normal',
   windThresholds: { ...WIND_PRESETS.normal },
   dewThresholds: { greenMin: 5, yellowMin: 2 },
@@ -179,44 +220,110 @@ export const defaultCentralSettings: CentralSettings = {
   },
   defaultPlanningWindow: 'nautical',
   listDisplay: {
+    activeProfile: 'standard',
+    profiles: defaultDisplayProfiles(),
     pageSize: 20,
     preset: 'standard',
-    columns: LIST_PRESETS.standard.map((item) => ({ ...item })),
+    columns: cloneColumns(LIST_PRESETS.standard),
   },
   defaultLocationId: defaultLocation.id,
   gpsBehavior: 'ask',
 };
 
-export function normalizeCentralSettings(saved: Partial<CentralSettings>): CentralSettings {
-  const listDisplay = saved.listDisplay ?? defaultCentralSettings.listDisplay;
-  const savedColumns = Array.isArray(listDisplay.columns) ? listDisplay.columns : [];
-  const normalizedColumns = ALL_COLUMNS.map((key) => {
-    const match = savedColumns.find((item) => item.key === key);
-    const standard = LIST_PRESETS.standard.find((item) => item.key === key);
-    return { key, visible: match?.visible ?? standard?.visible ?? false };
+function normalizeColumns(savedColumns: unknown, fallback: ListDisplaySettings['columns']): ListDisplaySettings['columns'] {
+  const source = Array.isArray(savedColumns) ? savedColumns as Array<{ key?: unknown; visible?: unknown }> : [];
+  const normalized = ALL_COLUMNS.map((key) => {
+    const match = source.find((item) => item.key === key);
+    const standard = fallback.find((item) => item.key === key);
+    return { key, visible: typeof match?.visible === 'boolean' ? match.visible : standard?.visible ?? false };
   });
-  const order = savedColumns
+  const order = source
     .map((item) => item.key)
-    .filter((key): key is ListColumnKey => ALL_COLUMNS.includes(key as ListColumnKey));
-  const orderedColumns = [
-    ...order.map((key) => normalizedColumns.find((item) => item.key === key)!),
-    ...normalizedColumns.filter((item) => !order.includes(item.key)),
+    .filter((key): key is ListColumnKey => typeof key === 'string' && ALL_COLUMNS.includes(key as ListColumnKey));
+  return [
+    ...order.map((key) => normalized.find((item) => item.key === key)!),
+    ...normalized.filter((item) => !order.includes(item.key)),
   ];
-  const pageSize = [10, 20, 50, 100].includes(Number(listDisplay.pageSize))
-    ? (Number(listDisplay.pageSize) as 10 | 20 | 50 | 100)
-    : 20;
+}
+
+function normalizePageSize(value: unknown): 10 | 20 | 50 | 100 {
+  return [10, 20, 50, 100].includes(Number(value)) ? Number(value) as 10 | 20 | 50 | 100 : 20;
+}
+
+function normalizeDisplayProfile(saved: Partial<ListDisplayProfile> | undefined, fallback: ListDisplayProfile): ListDisplayProfile {
+  return {
+    pageSize: normalizePageSize(saved?.pageSize ?? fallback.pageSize),
+    columns: normalizeColumns(saved?.columns, fallback.columns),
+  };
+}
+
+export function normalizeCentralSettings(saved: Partial<CentralSettings>): CentralSettings {
+  const defaultWind = defaultWindProfiles();
+  const savedWindProfiles = saved.windProfiles as Partial<Record<WindProfileKey, Partial<WindThresholds>>> | undefined;
+  const legacyWindProfile = (saved.activeWindProfile ?? saved.windPreset ?? 'normal') as WindProfileKey;
+  const activeWindProfile: WindProfileKey = ['travel', 'normal', 'robust', 'custom'].includes(legacyWindProfile) ? legacyWindProfile : 'normal';
+  const windProfiles: Record<WindProfileKey, WindThresholds> = {
+    travel: { ...defaultWind.travel, ...(savedWindProfiles?.travel ?? {}) },
+    normal: { ...defaultWind.normal, ...(savedWindProfiles?.normal ?? {}) },
+    robust: { ...defaultWind.robust, ...(savedWindProfiles?.robust ?? {}) },
+    custom: { ...defaultWind.custom, ...(savedWindProfiles?.custom ?? saved.windThresholds ?? {}) },
+  };
+  if (!saved.windProfiles && saved.windThresholds) windProfiles[activeWindProfile] = { ...windProfiles[activeWindProfile], ...saved.windThresholds };
+
+  const defaultProfiles = defaultDisplayProfiles();
+  const savedList = saved.listDisplay as Partial<ListDisplaySettings> | undefined;
+  const legacyDisplayProfile = (savedList?.activeProfile ?? savedList?.preset ?? 'standard') as DisplayProfileKey;
+  const activeProfile: DisplayProfileKey = ['compact', 'standard', 'detailed', 'custom'].includes(legacyDisplayProfile) ? legacyDisplayProfile : 'standard';
+  const savedProfiles = savedList?.profiles as Partial<Record<DisplayProfileKey, Partial<ListDisplayProfile>>> | undefined;
+  const profiles: Record<DisplayProfileKey, ListDisplayProfile> = {
+    compact: normalizeDisplayProfile(savedProfiles?.compact, defaultProfiles.compact),
+    standard: normalizeDisplayProfile(savedProfiles?.standard, defaultProfiles.standard),
+    detailed: normalizeDisplayProfile(savedProfiles?.detailed, defaultProfiles.detailed),
+    custom: normalizeDisplayProfile(savedProfiles?.custom ?? (savedList ? { pageSize: savedList.pageSize, columns: savedList.columns } : undefined), defaultProfiles.custom),
+  };
+  if (!savedProfiles && savedList?.columns) profiles[activeProfile] = normalizeDisplayProfile({ pageSize: savedList.pageSize, columns: savedList.columns }, defaultProfiles[activeProfile]);
+  const activeDisplay = profiles[activeProfile];
+
   const weights = { ...defaultCentralSettings.evaluationWeights, ...(saved.evaluationWeights ?? {}) };
+  const integerWeights = Object.fromEntries(Object.entries(weights).map(([key, value]) => [key, Math.max(0, Math.min(100, Math.round(Number(value) || 0))) ])) as EvaluationWeights;
+
   return {
     ...defaultCentralSettings,
     ...saved,
-    windThresholds: { ...defaultCentralSettings.windThresholds, ...(saved.windThresholds ?? {}) },
+    activeWindProfile,
+    windProfiles,
+    windPreset: activeWindProfile,
+    windThresholds: { ...windProfiles[activeWindProfile] },
     dewThresholds: { ...defaultCentralSettings.dewThresholds, ...(saved.dewThresholds ?? {}) },
     jetThresholds: { ...defaultCentralSettings.jetThresholds, ...(saved.jetThresholds ?? {}) },
-    evaluationWeights: weights,
+    evaluationWeights: integerWeights,
     listDisplay: {
-      pageSize,
-      preset: listDisplay.preset ?? 'standard',
-      columns: orderedColumns,
+      activeProfile,
+      profiles,
+      pageSize: activeDisplay.pageSize,
+      preset: activeProfile,
+      columns: cloneColumns(activeDisplay.columns),
+    },
+  };
+}
+
+export function withEffectiveProfiles(
+  settings: CentralSettings,
+  windProfile: WindProfileKey = settings.activeWindProfile,
+  displayProfile: DisplayProfileKey = settings.listDisplay.activeProfile,
+): CentralSettings {
+  const thresholds = settings.windProfiles[windProfile] ?? settings.windThresholds;
+  const display = settings.listDisplay.profiles[displayProfile] ?? settings.listDisplay;
+  return {
+    ...settings,
+    windPreset: windProfile,
+    windThresholds: { ...thresholds },
+    listDisplay: {
+      ...settings.listDisplay,
+      activeProfile: displayProfile,
+      preset: displayProfile,
+      pageSize: display.pageSize,
+      columns: cloneColumns(display.columns),
     },
   };
 }

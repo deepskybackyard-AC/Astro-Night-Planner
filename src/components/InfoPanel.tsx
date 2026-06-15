@@ -1,7 +1,7 @@
 export default function InfoPanel() {
   return (
     <section className="panel about-panel">
-      <span className="eyebrow">Version 0.8</span>
+      <span className="eyebrow">Version 0.9</span>
       <h2>Astro Night Planner</h2>
       <p>Der Astro Night Planner kombiniert astronomische Sichtbarkeit, mehrere Wettermodelle, Mondbedingungen, persönliche Ausrüstung und ein eigenes Horizontprofil. Ziel ist eine nachvollziehbare Empfehlung für geeignete Aufnahmeobjekte am gewählten Standort.</p>
 
@@ -10,7 +10,7 @@ export default function InfoPanel() {
       <p>Sonnen-, Mond-, Dämmerungs- und Objektpositionen werden lokal mit Astronomy Engine berechnet. Die interaktive Himmelsansicht wird mit Aladin Lite dargestellt.</p>
 
       <h3>Gesamtbewertung</h3>
-      <p>Das Standardprofil „Deep-Sky“ gewichtet Wolken mit 30 %, Transparenz mit 15 %, Seeing mit 10 %, Wind und Böen mit 10 %, Tauabstand mit 10 %, Mond mit 10 %, Objekthöhe mit 10 % und Sichtbarkeitsdauer mit 5 %. Die Gewichte können in den zentralen Einstellungen verändert werden. Die Punktzahl ist eine Planungshilfe und keine Garantie für verwertbare Aufnahmen.</p>
+      <p>Das Standardprofil „Deep-Sky“ gewichtet Wolken mit 30 %, Transparenz mit 15 %, Seeing mit 10 %, Wind und Böen mit 10 %, Tauabstand mit 10 %, Mond mit 10 %, Objekthöhe mit 10 % und Sichtbarkeitsdauer mit 5 %. Die Gewichte werden als ganze Prozentwerte eingegeben, auf 100 % normiert und erst nach ausdrücklichem Speichern übernommen. Die Punktzahl ist eine Planungshilfe und keine Garantie für verwertbare Aufnahmen.</p>
 
       <h3>Seeing, Jetstream und Tauabstand</h3>
       <p><strong>Seeing</strong> beschreibt die durch atmosphärische Turbulenz verursachte Unruhe und Unschärfe. Die App zeigt derzeit eine Tendenz aus Jetstream und bodennahem Wind, keine exakte Messung in Bogensekunden.</p>
@@ -18,14 +18,14 @@ export default function InfoPanel() {
       <p><strong>Tauabstand</strong> ist die Differenz zwischen Lufttemperatur und Taupunkt. Über 5 °C wird grün, 2–5 °C gelb und unter 2 °C rot bewertet. Optiken können bereits vor Erreichen des Taupunkts beschlagen.</p>
 
       <h3>Windbewertung</h3>
-      <p>Wind und Böen werden anhand des gewählten Presets oder eigener Grenzwerte bewertet. Die Farben beschreiben ausschließlich die erwartete Aufnahmequalität. Sie sind keine Sicherheitsfreigabe für Montierung, Stativ, Säule, Teleskop oder Dach.</p>
+      <p>Wind und Böen werden anhand des aktiven Aufnahmequalitätsprofils oder einer temporären Auswahl für die aktuelle Planung bewertet. Die Farben beschreiben ausschließlich die erwartete Aufnahmequalität. Sie sind keine Sicherheitsfreigabe für Montierung, Stativ, Säule, Teleskop oder Dach.</p>
 
       <h3>Objektkataloge und Lizenzen</h3>
       <p>Enthalten sind der Messier-Katalog, NGC und IC aus OpenNGC, der Sharpless-2-Katalog, der Abell-Katalog planetarischer Nebel sowie fachlich ergänzte Objekte. Katalogdaten können unvollständig sein; insbesondere Größen, Magnituden und Positionswinkel sind nicht für jedes Objekt verfügbar.</p>
       <p>OpenNGC wird unter CC BY-SA 4.0 genutzt. Weitere Quellen und Hinweise stehen in der Datei <code>CATALOG_SOURCES.md</code> des Projekts.</p>
 
       <h3>Datenschutz und Speicherung</h3>
-      <p>In dieser Entwicklungsfassung werden Standorte, Ausrüstung und Einstellungen lokal im Browser gespeichert. Eine spätere Version soll Login, zentrale Datenhaltung und geräteübergreifende Synchronisierung ergänzen. Meteoblue wird als externe Webseite eingebettet; beim Öffnen gelten deren Datenschutzbestimmungen.</p>
+      <p>In dieser Entwicklungsfassung werden Standorte, Ausrüstung und bestätigte Einstellungen lokal im Browser gespeichert. Änderungen an zentralen Einstellungen und Horizontprofilen werden erst über die jeweiligen Speichern-Schaltflächen übernommen. Eine spätere Version soll Login, zentrale Datenhaltung und geräteübergreifende Synchronisierung ergänzen. Meteoblue wird als externe Webseite eingebettet; beim Öffnen gelten deren Datenschutzbestimmungen.</p>
 
       <h3>Projekt und Fehler melden</h3>
       <p><a className="button-link compact" href="https://github.com/deepskybackyard-AC/Astro-Night-Planner" target="_blank" rel="noreferrer">GitHub-Projekt öffnen</a></p>

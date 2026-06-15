@@ -635,3 +635,63 @@ main { display: grid; gap: 18px; }
   .order-buttons { grid-column: 2; }
   .pagination > strong { font-size: .68rem; }
 }
+
+/* Version 0.9: bestätigte Einstellungen, aktive/temporäre Profile und präzisere Höhenprofile */
+.altitude-direction-label { fill: rgba(85,199,255,.82); font-size: 10px; font-weight: 800; letter-spacing: .04em; }
+
+.object-rotation-control { flex: 0 1 340px !important; max-width: 360px; min-width: 230px; }
+.object-rotation-control input[type="range"] { width: min(220px, 48vw); flex: 0 1 220px; }
+
+.planning-profile-controls { margin: 0 0 12px; display: grid; grid-template-columns: repeat(2, minmax(260px, 1fr)); gap: 10px; }
+.planning-profile-controls > div { min-width: 0; padding: 11px 12px; display: grid; grid-template-columns: minmax(180px,1fr) auto; gap: 5px 10px; align-items: end; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.025); }
+.planning-profile-controls label { min-width: 0; display: grid; gap: 5px; color: var(--muted); font-size: .72rem; }
+.planning-profile-controls select { min-width: 0; }
+.planning-profile-controls small { color: var(--muted); align-self: center; }
+.planning-profile-controls button { grid-row: 1 / span 2; grid-column: 2; align-self: center; white-space: nowrap; }
+
+.mini-altitude { width: 224px; height: 78px; }
+.mini-twilight-band.civil { fill: rgba(220,225,232,.20); }
+.mini-twilight-band.nautical { fill: rgba(176,184,194,.14); }
+.mini-twilight-band.astronomical { fill: rgba(120,130,145,.10); }
+.mini-twilight-band.dark { fill: rgba(10,14,20,.34); }
+.mini-twilight-boundary { stroke: rgba(220,230,240,.35); stroke-width: .8; }
+.mini-planning-window { fill: none; stroke: rgba(85,199,255,.58); stroke-width: 1; stroke-dasharray: 3 2; }
+.object-card-main { min-height: 98px; }
+
+.settings-card.has-unsaved { border-color: rgba(240,191,100,.42); box-shadow: inset 0 0 0 1px rgba(240,191,100,.08); }
+.unsaved-badge, .unsaved-inline { display: inline-flex; align-items: center; width: fit-content; padding: 5px 9px; border: 1px solid rgba(240,191,100,.35); border-radius: 999px; color: #ffe1a4; background: rgba(240,191,100,.11); font-size: .7rem; }
+.settings-save-toast { position: sticky; z-index: 30; top: 64px; justify-self: center; width: fit-content; padding: 9px 14px; border: 1px solid rgba(85,214,160,.4); border-radius: 999px; color: #c8f6e2; background: rgba(7,31,28,.96); box-shadow: 0 12px 32px rgba(0,0,0,.35); }
+.section-save-actions { margin-top: 16px; padding-top: 12px; display: flex; justify-content: space-between; align-items: center; gap: 12px; border-top: 1px solid var(--line); }
+.section-save-actions > span { color: var(--muted); font-size: .72rem; }
+.section-save-actions > div { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.profile-management-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; margin-bottom: 12px; }
+.profile-management-grid label { display: grid; gap: 5px; color: var(--muted); font-size: .74rem; }
+.profile-management-grid label > strong { color: var(--cyan); }
+.profile-management-grid small { color: var(--muted); line-height: 1.35; }
+.editing-profile-heading { margin-top: 14px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; }
+.integer-weights label { display: grid; gap: 7px; }
+.integer-weight-input { display: grid; grid-template-columns: 1fr 34px; align-items: center; }
+.integer-weight-input input { border-radius: 10px 0 0 10px; }
+.integer-weight-input span { min-height: 44px; display: grid; place-items: center; border: 1px solid var(--line); border-left: 0; border-radius: 0 10px 10px 0; color: var(--muted); background: rgba(255,255,255,.035); }
+.compact-notice { margin-top: 12px; padding: 9px 11px; }
+.profile-preset-buttons { display: grid; gap: 6px; color: var(--muted); font-size: .74rem; }
+.profile-preset-buttons > div { display: flex; flex-wrap: wrap; gap: 6px; }
+.compass-help { margin: 9px 2px 4px; color: var(--muted); font-size: .72rem; }
+.horizon-profile-chart .azimuth-degree-label { fill: rgba(160,178,198,.62); font-size: 8px; }
+.horizon-point-row label small, .inline-add-row label small, .obstacle-form label small { color: var(--cyan); font-weight: 800; }
+
+@media (max-width: 860px) {
+  .planning-profile-controls, .profile-management-grid { grid-template-columns: 1fr; }
+  .planning-profile-controls > div { grid-template-columns: minmax(0,1fr) auto; }
+}
+
+@media (max-width: 620px) {
+  .object-rotation-control { flex-basis: 100% !important; max-width: 100%; min-width: 0; }
+  .object-rotation-control input[type="range"] { width: min(190px, 58vw); }
+  .planning-profile-controls > div { grid-template-columns: 1fr; }
+  .planning-profile-controls button { grid-row: auto; grid-column: auto; justify-self: start; }
+  .section-save-actions { align-items: stretch; display: grid; }
+  .section-save-actions > div { justify-content: stretch; display: grid; grid-template-columns: 1fr 1fr; }
+  .section-save-actions button { width: 100%; }
+  .object-list-cell.column-miniAltitude .mini-altitude { height: 82px; }
+}

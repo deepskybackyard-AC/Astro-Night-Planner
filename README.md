@@ -1,102 +1,35 @@
-# Astro Night Planner 0.8
+# Astro Night Planner 0.9
 
 Eine installierbare, für Smartphones optimierte Web-App zur Planung von Deep-Sky-Aufnahmen. Sie verbindet Wettermodelle, Sonne/Mond, Dämmerungszeiten, vollständige Objektkataloge, persönliche Standorte und Horizontprofile sowie das Bildfeld eigener Kamera-/Teleskop-Kombinationen. Für diese Version sind weder ein kostenpflichtiger Dienst noch ein persönlicher API-Schlüssel erforderlich.
 
-## Neu in Version 0.8
+## Neu in Version 0.9
 
-### Einstellungen statt separater Ausrüstungsseite
+### Bestätigte Einstellungen statt Sofortübernahme
 
-Der bisherige Hauptbereich **Ausrüstung** heißt jetzt **Einstellungen**. Darin stehen vier erweiterbare Tabs zur Verfügung:
+Die Rubriken **Allgemein**, **Aufnahmequalität**, **Gewichtung**, **Objektliste**, **Standortverhalten** und **Persönlicher Horizont** besitzen eigene Speichern- und Verwerfen-Schaltflächen. Ungespeicherte Änderungen werden sichtbar markiert und erst nach Bestätigung dauerhaft übernommen.
 
-- **Ausrüstung**
-- **Zentrale Einstellungen**
-- **Standorte & Horizont**
-- **Info**
+### Aktive und temporäre Profile
 
-Der zuletzt verwendete Einstellungstab wird lokal gespeichert.
+- eigenes Feld **Aktiv** für Aufnahmequalitäts- und Darstellungsprofil
+- das Bearbeiten eines Profils aktiviert es nicht automatisch
+- temporäre Profilwahl direkt in der Planungsansicht
+- optionales **Als Standard übernehmen**
+- klare Trennung zwischen Aufnahme-Setup, Aufnahmequalitätsprofil, Bewertungsprofil und Darstellungsprofil
 
-### Zentrale Einheiten und Grenzwerte
+### Präzisere Höhenanzeigen
 
-- gemeinsame Einheit für Wind, Böen und Jetstream
-- Standard: **km/h**
-- alternativ m/s
-- intern werden die Werte weiterhin in m/s gespeichert
-- Presets für Wind und Böen:
-  - leichtes Reisesetup
-  - normales Setup
-  - robuste Säule / Montierung
-- anschließend freie Anpassung aller Grenzen
-- farbliche Bewertung der Wettertabelle:
-  - Tauabstand: grün über 5 °C, gelb 2–5 °C, rot unter 2 °C
-  - Jetstream: grün unter 10 m/s, gelb 10–20 m/s, rot über 20 m/s
-  - Wind und Böen gemäß ausgewähltem Preset oder eigenen Grenzen
+- die große Höhenkurve zeigt zu jeder Stundenmarke zusätzlich N, NO, O, SO, S, SW, W oder NW
+- das Mini-Höhenprofil zeigt den gesamten Zeitraum von Sonnenuntergang bis Sonnenaufgang
+- Dämmerungsphasen erscheinen in Grauabstufungen; je dunkler der Zeitraum, desto dunkler die Fläche
+- vertikale Dämmerungsgrenzen und der gewählte Planungszeitraum sind sichtbar
+- Start, Ende, Höchstpunkt und Mindesthöhe bleiben erhalten
 
-Die Farben bewerten die erwartete Aufnahmequalität und stellen keine Sicherheitsfreigabe für die Ausrüstung dar.
+### Horizont und Bedienung
 
-### Einstellbare Gesamtbewertung
-
-Das Standardprofil **Deep-Sky** verwendet:
-
-- Wolken 30 %
-- Transparenz 15 %
-- Seeing 10 %
-- Wind und Böen 10 %
-- Tauabstand 10 %
-- Mond 10 %
-- Objekthöhe 10 %
-- Sichtbarkeitsdauer 5 %
-
-Alle Gewichte können verändert und automatisch auf 100 % normiert werden. Die Objekt- und Wetterbewertung verwendet unmittelbar die gespeicherten Werte.
-
-### Standorte und persönlicher Horizont
-
-Für jeden gespeicherten Standort können verwaltet werden:
-
-- Standardstandort
-- Verhalten der Standortauswahl beim Start
-- Horizontpunkte aus Azimut und Höhe
-- Hindernisse wie Bäume, Gebäude oder Berge
-- grafische Vorschau des Horizontprofils
-
-Das persönliche Horizontprofil wird bei Sichtbarkeitsdauer, Objektfilterung und Horizontansicht berücksichtigt.
-
-### Paginierte und konfigurierbare Objektliste
-
-- der zusätzliche Button „Objektliste öffnen“ wurde entfernt
-- die zentrale Ergebnisliste wird seitenweise dargestellt
-- wählbar sind 10, 20, 50 oder 100 Objekte pro Seite
-- Standard: 20
-- Seitennavigation oberhalb und unterhalb der Liste
-- vereinfachte große Navigation auf Smartphones
-- Filteränderungen setzen die Liste auf Seite 1 zurück
-- aktuelle Seite wird gespeichert
-- Darstellungsprofile: Kompakt, Standard und Detailliert
-- sichtbare Spalten können einzeln gewählt werden
-- Reihenfolge per Drag-and-drop oder Pfeiltasten
-- Standardansicht wiederherstellbar
-
-Das neue Mini-Höhenprofil besitzt eine echte 0–90°-Proportion, Mindesthöhenlinie, Start-/Endpunkte und einen markierten Höchstpunkt. Es verwendet den aktuell gewählten Planungszeitraum.
-
-### Überarbeitete Rahmung
-
-- eigene Informationsfelder liegen am rechten mittleren Rand und verdecken die Aladin-Bedienelemente nicht mehr
-- Objektgröße kann unabhängig vom Setup-Rahmen ein- und ausgeblendet werden
-- Objektgröße ist standardmäßig deaktiviert
-- bekannte Positionswinkel werden automatisch verwendet
-- eigener Rotationsregler für die Objektgröße als Korrektur oder Fallback
-- Objektrotation und Kamerarahmenrotation sind voneinander unabhängig
-
-### Info-Bereich
-
-Der Info-Tab erläutert:
-
-- Datenquellen und Wettermodelle
-- Gesamtbewertung
-- Seeing, Jetstream und Tauabstand
-- Windbewertung und Sicherheitshinweis
-- Objektkataloge und Lizenzen
-- Datenschutz und lokale Speicherung
-- Projekt- und Fehlerlink
+- Horizontachsen und Eingabefelder zeigen zusätzlich Himmelsrichtungen
+- 0° = N, 45° = NO, 90° = O, 135° = SO, 180° = S, 225° = SW, 270° = W, 315° = NW
+- der Rotationsregler der Objektellipse ist kompakter und verbreitert die Rahmungsansicht nicht mehr
+- Gewichtungen werden nur noch als ganze Prozentwerte eingegeben
 
 ## Bereits enthaltene Kernfunktionen
 
@@ -152,7 +85,7 @@ Der fertige Inhalt liegt in `dist/`.
 
 ## Speicherung und spätere Synchronisierung
 
-Version 0.8 speichert Standorte, Horizontprofile, Ausrüstung, Grenzwerte, Gewichtungen und Anzeigeeinstellungen weiterhin im `localStorage` des jeweiligen Browsers. Das ist eine Übergangslösung.
+Version 0.9 speichert Standorte, Horizontprofile, Ausrüstung, Grenzwerte, Gewichtungen und Anzeigeeinstellungen weiterhin im `localStorage` des jeweiligen Browsers. Das ist eine Übergangslösung.
 
 Für eine spätere Ausbaustufe vorgesehen:
 

@@ -30,8 +30,8 @@ type TwilightBand = {
 };
 
 const WIDTH = 920;
-const HEIGHT = 350;
-const MARGIN = { top: 28, right: 20, bottom: 58, left: 52 };
+const HEIGHT = 368;
+const MARGIN = { top: 28, right: 20, bottom: 76, left: 52 };
 const PLOT_WIDTH = WIDTH - MARGIN.left - MARGIN.right;
 const PLOT_HEIGHT = HEIGHT - MARGIN.top - MARGIN.bottom;
 
@@ -186,7 +186,8 @@ export default function AltitudeChart({ object, night, planningWindow, location,
 
             {data.hourPoints.map(point => <g key={point.time.toISOString()}>
               <line className="hour-grid-line" x1={xForTime(point.time)} x2={xForTime(point.time)} y1={MARGIN.top} y2={MARGIN.top + PLOT_HEIGHT} />
-              <text className="altitude-x-label" x={xForTime(point.time)} y={HEIGHT - 30} textAnchor="middle">{formatTime(point.time, timezone)}</text>
+              <text className="altitude-x-label" x={xForTime(point.time)} y={HEIGHT - 42} textAnchor="middle">{formatTime(point.time, timezone)}</text>
+              <text className="altitude-direction-label" x={xForTime(point.time)} y={HEIGHT - 25} textAnchor="middle">{direction(point.azimuth)}</text>
             </g>)}
 
             <path d={areaPath} fill={`url(#altitude-fill-${object.id.replace(/[^a-z0-9]/gi, '')})`} />

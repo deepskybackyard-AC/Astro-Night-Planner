@@ -3,6 +3,7 @@ import type {
   CatalogName,
   CentralSettings,
   DeepSkyObject,
+  DisplayProfileKey,
   EquipmentState,
   ListColumnKey,
   LocationProfile,
@@ -11,12 +12,13 @@ import type {
   ObjectNightData,
   ObjectResultStats,
   ObjectType,
+  WindProfileKey,
 } from '../types';
 import type { PlanningWindow } from '../lib/astro';
 import { horizontalForObject, makeObserver } from '../lib/astro';
 import { CATALOGS, CATALOG_COUNTS, CATALOG_LABELS, OBJECT_TYPES } from '../data/objects';
 import { formatTime } from '../lib/time';
-import { LIST_COLUMN_LABELS, loadJson, saveJson, STORAGE_KEYS } from '../lib/storage';
+import { DISPLAY_PROFILE_LABELS, LIST_COLUMN_LABELS, loadJson, saveJson, STORAGE_KEYS, WIND_PROFILE_LABELS } from '../lib/storage';
 import SkyViewer from './SkyViewer';
 import AltitudeChart from './AltitudeChart';
 
@@ -34,6 +36,16 @@ type Props = {
   location: LocationProfile;
   planningWindow: PlanningWindow;
   settings: CentralSettings;
+  defaultWindProfile: WindProfileKey;
+  selectedWindProfile: WindProfileKey;
+  windProfileIsTemporary: boolean;
+  onWindProfileChange: (profile: WindProfileKey) => void;
+  onMakeWindProfileDefault: () => void;
+  defaultDisplayProfile: DisplayProfileKey;
+  selectedDisplayProfile: DisplayProfileKey;
+  displayProfileIsTemporary: boolean;
+  onDisplayProfileChange: (profile: DisplayProfileKey) => void;
+  onMakeDisplayProfileDefault: () => void;
 };
 
 type DetailSections = { altitude: boolean; horizon: boolean; framing: boolean };
@@ -60,7 +72,7 @@ function columnWidth(key: ListColumnKey) {
     visibleHours: '104px',
     transit: '94px',
     framing: '88px',
-    miniAltitude: '210px',
+    miniAltitude: '238px',
     bestTime: '92px',
     altStartEnd: '120px',
     moonDistance: '98px',
@@ -74,44 +86,83 @@ function columnWidth(key: ListColumnKey) {
   return widths[key];
 }
 
-function MiniAltitudeProfile({ object, location, planningWindow, minAltitude }: { object: DeepSkyObject; location: LocationProfile; planningWindow: PlanningWindow; minAltitude: number }) {
+function MiniAltitudeProfile({ object, location, night, planningWindow, minAltitude }: { object: DeepSkyObject; location: LocationProfile; night: NightWindow; planningWindow: PlanningWindow; minAltitude: number }) {
   const geometry = useMemo(() => {
     const observer = makeObserver(location);
-    const width = 196;
-    const height = 66;
-    const left = 5;
-    const right = 191;
-    const top = 5;
-    const bottom = 61;
-    const count = 40;
-    const duration = Math.max(1, planningWindow.end.getTime() - planningWindow.start.getTime());
+    const width = 224;
+    const height = 78;
+    const left = 6;
+    const right = 218;
+    const top = 6;
+    const bottom = 72;
+    const start = night.sunset ?? new Date(night.darknessStart.getTime() - 2 * 3600_000);
+    const end = night.sunrise ?? new Date(night.darknessEnd.getTime() + 2 * 3600_000);
+    const duration = Math.max(1, end.getTime() - start.getTime());
+    const xForTime = (time: Date) => left + (time.getTime() - start.getTime()) / duration * (right - left);
+    const yForAltitude = (altitude: number) => top + ((90 - Math.max(0, Math.min(90, altitude))) / 90) * (bottom - top);
+    const count = 72;
     const samples = Array.from({ length: count }, (_, index) => {
       const ratio = index / (count - 1);
-      const time = new Date(planningWindow.start.getTime() + duration * ratio);
+      const time = new Date(start.getTime() + duration * ratio);
       const altitude = horizontalForObject(object, time, observer).altitude;
-      const x = left + ratio * (right - left);
-      const y = top + ((90 - Math.max(0, Math.min(90, altitude))) / 90) * (bottom - top);
-      return { x, y, altitude };
+      return { time, x: left + ratio * (right - left), y: yForAltitude(altitude), altitude };
     });
-    const maximum = samples.reduce((best, sample) => sample.altitude > best.altitude ? sample : best, samples[0]);
+    const inPlanning = samples.filter((sample) => sample.time >= planningWindow.start && sample.time <= planningWindow.end);
+    const maximumPool = inPlanning.length ? inPlanning : samples;
+    const maximum = maximumPool.reduce((best, sample) => sample.altitude > best.altitude ? sample : best, maximumPool[0]);
+    const pointAt = (time: Date) => {
+      const horizontal = horizontalForObject(object, time, observer);
+      return { time, x: xForTime(time), y: yForAltitude(horizontal.altitude), altitude: horizontal.altitude };
+    };
+    const rawBands: Array<[Date | undefined, Date | undefined, string]> = [
+      [start, night.civilDusk, 'civil'],
+      [night.civilDusk, night.nauticalDusk, 'nautical'],
+      [night.nauticalDusk, night.astronomicalDusk, 'astronomical'],
+      [night.astronomicalDusk, night.astronomicalDawn, 'dark'],
+      [night.astronomicalDawn, night.nauticalDawn, 'astronomical'],
+      [night.nauticalDawn, night.civilDawn, 'nautical'],
+      [night.civilDawn, end, 'civil'],
+    ];
+    const bands = rawBands
+      .filter((band): band is [Date, Date, string] => Boolean(band[0] && band[1] && band[1]!.getTime() > band[0]!.getTime()))
+      .map(([bandStart, bandEnd, kind]) => ({
+        kind,
+        x: xForTime(new Date(Math.max(start.getTime(), bandStart.getTime()))),
+        width: Math.max(0, xForTime(new Date(Math.min(end.getTime(), bandEnd.getTime()))) - xForTime(new Date(Math.max(start.getTime(), bandStart.getTime())))),
+      }))
+      .filter((band) => band.width > 0);
+    const boundaries = [night.civilDusk, night.nauticalDusk, night.astronomicalDusk, night.astronomicalDawn, night.nauticalDawn, night.civilDawn]
+      .filter((time): time is Date => Boolean(time && time >= start && time <= end))
+      .map(xForTime);
     return {
       path: samples.map((sample, index) => `${index ? 'L' : 'M'} ${sample.x.toFixed(1)} ${sample.y.toFixed(1)}`).join(' '),
-      thresholdY: top + ((90 - minAltitude) / 90) * (bottom - top),
+      thresholdY: yForAltitude(minAltitude),
       maximum,
-      start: samples[0],
-      end: samples.at(-1)!,
+      planningStart: pointAt(planningWindow.start),
+      planningEnd: pointAt(planningWindow.end),
+      bands,
+      boundaries,
+      planningX: xForTime(planningWindow.start),
+      planningWidth: Math.max(0, xForTime(planningWindow.end) - xForTime(planningWindow.start)),
+      left,
+      right,
+      top,
+      bottom,
     };
-  }, [object, location, planningWindow, minAltitude]);
+  }, [object, location, night, planningWindow, minAltitude]);
 
-  return <svg className="mini-altitude" viewBox="0 0 196 66" aria-label="Mini-Höhenprofil von 0 bis 90 Grad">
-    <line className="mini-altitude-grid" x1="5" x2="191" y1="5" y2="5" />
-    <line className="mini-altitude-grid" x1="5" x2="191" y1="33" y2="33" />
-    <line className="mini-altitude-grid" x1="5" x2="191" y1="61" y2="61" />
-    <line className="mini-altitude-threshold" x1="5" x2="191" y1={geometry.thresholdY} y2={geometry.thresholdY} />
-    <path className="mini-altitude-area" d={`${geometry.path} L 191 61 L 5 61 Z`} />
+  return <svg className="mini-altitude" viewBox="0 0 224 78" aria-label="Mini-Höhenprofil mit Dämmerungsgrenzen von 0 bis 90 Grad">
+    {geometry.bands.map((band, index) => <rect key={`${band.kind}-${index}`} className={`mini-twilight-band ${band.kind}`} x={band.x} y={geometry.top} width={band.width} height={geometry.bottom - geometry.top} />)}
+    {geometry.boundaries.map((x, index) => <line key={index} className="mini-twilight-boundary" x1={x} x2={x} y1={geometry.top} y2={geometry.bottom} />)}
+    <rect className="mini-planning-window" x={geometry.planningX} y={geometry.top} width={geometry.planningWidth} height={geometry.bottom - geometry.top} />
+    <line className="mini-altitude-grid" x1={geometry.left} x2={geometry.right} y1={geometry.top} y2={geometry.top} />
+    <line className="mini-altitude-grid" x1={geometry.left} x2={geometry.right} y1={(geometry.top + geometry.bottom) / 2} y2={(geometry.top + geometry.bottom) / 2} />
+    <line className="mini-altitude-grid" x1={geometry.left} x2={geometry.right} y1={geometry.bottom} y2={geometry.bottom} />
+    <line className="mini-altitude-threshold" x1={geometry.left} x2={geometry.right} y1={geometry.thresholdY} y2={geometry.thresholdY} />
+    <path className="mini-altitude-area" d={`${geometry.path} L ${geometry.right} ${geometry.bottom} L ${geometry.left} ${geometry.bottom} Z`} />
     <path className="mini-altitude-line" d={geometry.path} />
-    <circle className="mini-altitude-edge" cx={geometry.start.x} cy={geometry.start.y} r="2.2" />
-    <circle className="mini-altitude-edge" cx={geometry.end.x} cy={geometry.end.y} r="2.2" />
+    <circle className="mini-altitude-edge" cx={geometry.planningStart.x} cy={geometry.planningStart.y} r="2.2" />
+    <circle className="mini-altitude-edge" cx={geometry.planningEnd.x} cy={geometry.planningEnd.y} r="2.2" />
     <circle className="mini-altitude-maximum" cx={geometry.maximum.x} cy={geometry.maximum.y} r="3.4" />
   </svg>;
 }
@@ -132,7 +183,7 @@ function Pagination({ current, total, onChange }: { current: number; total: numb
   </nav>;
 }
 
-export default function ObjectList({ objects, stats, filters, onFiltersChange, timezone, equipment, onEquipmentChange, search, onSearchChange, night, location, planningWindow, settings }: Props) {
+export default function ObjectList({ objects, stats, filters, onFiltersChange, timezone, equipment, onEquipmentChange, search, onSearchChange, night, location, planningWindow, settings, defaultWindProfile, selectedWindProfile, windProfileIsTemporary, onWindProfileChange, onMakeWindProfileDefault, defaultDisplayProfile, selectedDisplayProfile, displayProfileIsTemporary, onDisplayProfileChange, onMakeDisplayProfileDefault }: Props) {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [selectedTimes, setSelectedTimes] = useState<Record<string, number>>({});
@@ -190,7 +241,7 @@ export default function ObjectList({ objects, stats, filters, onFiltersChange, t
       case 'visibleHours': return <span className="list-metric"><small>sichtbar</small><strong>{item.visibleHours.toFixed(1).replace('.', ',')} h</strong></span>;
       case 'transit': return <span className="list-metric"><small>Meridian</small><strong>{formatTime(item.transitTime, timezone)}</strong></span>;
       case 'framing': return <span className="list-metric"><small>Framing</small><strong>{item.fovFit}</strong></span>;
-      case 'miniAltitude': return <MiniAltitudeProfile object={item.object} location={location} planningWindow={planningWindow} minAltitude={filters.minAltitude} />;
+      case 'miniAltitude': return <MiniAltitudeProfile object={item.object} location={location} night={night} planningWindow={planningWindow} minAltitude={filters.minAltitude} />;
       case 'bestTime': return <span className="list-metric"><small>beste Zeit</small><strong>{formatTime(item.bestTime, timezone)}</strong></span>;
       case 'altStartEnd': return <span className="list-metric"><small>Start / Ende</small><strong>{Math.round(item.altitudeAtStart)}° / {Math.round(item.altitudeAtEnd)}°</strong></span>;
       case 'moonDistance': return <span className="list-metric"><small>Mondabstand</small><strong>{Math.round(item.moonSeparationDeg)}°</strong></span>;
@@ -219,6 +270,27 @@ export default function ObjectList({ objects, stats, filters, onFiltersChange, t
         </select>
       </label>
       <div><strong>{formatTime(planningWindow.start, timezone)}–{formatTime(planningWindow.end, timezone)}</strong><span>{planningWindow.label}</span></div>
+    </div>
+
+    <div className="planning-profile-controls">
+      <div>
+        <label>Aufnahmequalitätsprofil
+          <select value={selectedWindProfile} onChange={(event) => onWindProfileChange(event.target.value as WindProfileKey)}>
+            {(Object.keys(WIND_PROFILE_LABELS) as WindProfileKey[]).map((key) => <option key={key} value={key}>{WIND_PROFILE_LABELS[key]}</option>)}
+          </select>
+        </label>
+        <small>{windProfileIsTemporary ? `Temporär – Standard ist ${WIND_PROFILE_LABELS[defaultWindProfile]}` : 'Gespeicherter Standard'}</small>
+        {windProfileIsTemporary && <button type="button" className="secondary compact" onClick={onMakeWindProfileDefault}>Als Standard übernehmen</button>}
+      </div>
+      <div>
+        <label>Darstellungsprofil
+          <select value={selectedDisplayProfile} onChange={(event) => onDisplayProfileChange(event.target.value as DisplayProfileKey)}>
+            {(Object.keys(DISPLAY_PROFILE_LABELS) as DisplayProfileKey[]).map((key) => <option key={key} value={key}>{DISPLAY_PROFILE_LABELS[key]}</option>)}
+          </select>
+        </label>
+        <small>{displayProfileIsTemporary ? `Temporär – Standard ist ${DISPLAY_PROFILE_LABELS[defaultDisplayProfile]}` : 'Gespeicherter Standard'}</small>
+        {displayProfileIsTemporary && <button type="button" className="secondary compact" onClick={onMakeDisplayProfileDefault}>Als Standard übernehmen</button>}
+      </div>
     </div>
 
     <div className="object-toolbar">

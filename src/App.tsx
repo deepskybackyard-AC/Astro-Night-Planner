@@ -9,12 +9,14 @@ import {
 import type {
   CatalogName,
   CentralSettings,
+  DisplayProfileKey,
   EquipmentState,
   LocationProfile,
   ObjectFilters,
   ObjectResultStats,
   ObjectType,
   WeatherModelResult,
+  WindProfileKey,
 } from './types';
 import { CATALOGS, DEFAULT_OBJECT_TYPES, OBJECTS, OBJECT_TYPES } from './data/objects';
 import { calculateFov, calculateNightWindow, calculateObjectNightData, planningWindowForNight } from './lib/astro';
@@ -27,6 +29,7 @@ import {
   normalizeCentralSettings,
   saveJson,
   STORAGE_KEYS,
+  withEffectiveProfiles,
 } from './lib/storage';
 import { buildConsensus, fetchWeatherModels, summarizeNight } from './services/weather';
 import LocationPicker from './components/LocationPicker';
@@ -116,6 +119,15 @@ export default function App() {
   const scrollAnchors = useRef<Record<MainTab, { key: string; offset: number } | null>>({ plan: null, settings: null });
   const [search, setSearch] = useState('');
   const deferredSearch = useDeferredValue(search);
+  const [planningWindProfileOverride, setPlanningWindProfileOverride] = useState<WindProfileKey | null>(null);
+  const [planningDisplayProfileOverride, setPlanningDisplayProfileOverride] = useState<DisplayProfileKey | null>(null);
+
+  const effectiveWindProfile = planningWindProfileOverride ?? centralSettings.activeWindProfile;
+  const effectiveDisplayProfile = planningDisplayProfileOverride ?? centralSettings.listDisplay.activeProfile;
+  const effectiveSettings = useMemo(
+    () => withEffectiveProfiles(centralSettings, effectiveWindProfile, effectiveDisplayProfile),
+    [centralSettings, effectiveWindProfile, effectiveDisplayProfile],
+  );
 
   const location = locations.find((item) => item.id === selectedLocationId) ?? locations[0] ?? defaultLocation;
   const todayKey = dateKeyInZone(new Date(), location.timezone);
@@ -161,7 +173,7 @@ export default function App() {
     return () => { cancelled = true; };
   }, [location.id, location.latitude, location.longitude, location.elevation]);
 
-  const consensus = useMemo(() => buildConsensus(models, centralSettings), [models, centralSettings]);
+  const consensus = useMemo(() => buildConsensus(models, effectiveSettings), [models, effectiveSettings]);
   const weatherSummary = useMemo(
     () => consensus.length ? summarizeNight(consensus, night, planningWindow.start, planningWindow.end) : undefined,
     [consensus, night, planningWindow],
@@ -192,7 +204,7 @@ export default function App() {
     }).sort((a, b) => b.quickScore - a.quickScore).slice(0, candidateLimit).map((item) => item.object);
 
     const accepted = candidates
-      .map((object) => calculateObjectNightData(object, night, location, filters.minAltitude, filters.planningWindow, selectedTelescope, selectedCamera, weatherSummary, centralSettings))
+      .map((object) => calculateObjectNightData(object, night, location, filters.minAltitude, filters.planningWindow, selectedTelescope, selectedCamera, weatherSummary, effectiveSettings))
       .filter((item) => item.maxAltitude >= filters.minAltitude)
       .filter((item) => item.visibleHours >= filters.minVisibleHours)
       .filter((item) => item.moonSeparationDeg >= filters.minMoonDistance || item.moonAltitudeAtBest <= 0)
@@ -207,7 +219,7 @@ export default function App() {
       limited: catalogMatches.length > candidateLimit,
     };
     return { items: accepted, stats };
-  }, [filters, deferredSearch, night, location, selectedTelescope, selectedCamera, weatherSummary, centralSettings, fov]);
+  }, [filters, deferredSearch, night, location, selectedTelescope, selectedCamera, weatherSummary, effectiveSettings, fov]);
 
   useLayoutEffect(() => {
     const target = scrollPositions.current[tab] ?? 0;
@@ -295,7 +307,7 @@ export default function App() {
             </div>
           </section>
 
-          <WeatherPanel summary={weatherSummary} night={night} evaluationWindow={planningWindow} timezone={location.timezone} models={models} errors={weatherErrors} loading={weatherLoading} error={weatherError} location={location} settings={centralSettings} />
+          <WeatherPanel summary={weatherSummary} night={night} evaluationWindow={planningWindow} timezone={location.timezone} models={models} errors={weatherErrors} loading={weatherLoading} error={weatherError} location={location} settings={effectiveSettings} />
 
           <ObjectList
             objects={objectResult.items}
@@ -310,7 +322,30 @@ export default function App() {
             night={night}
             location={location}
             planningWindow={planningWindow}
-            settings={centralSettings}
+            settings={effectiveSettings}
+            defaultWindProfile={centralSettings.activeWindProfile}
+            selectedWindProfile={effectiveWindProfile}
+            windProfileIsTemporary={planningWindProfileOverride !== null}
+            onWindProfileChange={(profile) => setPlanningWindProfileOverride(profile === centralSettings.activeWindProfile ? null : profile)}
+            onMakeWindProfileDefault={() => {
+              const profile = effectiveWindProfile;
+              const thresholds = centralSettings.windProfiles[profile];
+              setCentralSettings({ ...centralSettings, activeWindProfile: profile, windPreset: profile, windThresholds: { ...thresholds } });
+              setPlanningWindProfileOverride(null);
+            }}
+            defaultDisplayProfile={centralSettings.listDisplay.activeProfile}
+            selectedDisplayProfile={effectiveDisplayProfile}
+            displayProfileIsTemporary={planningDisplayProfileOverride !== null}
+            onDisplayProfileChange={(profile) => setPlanningDisplayProfileOverride(profile === centralSettings.listDisplay.activeProfile ? null : profile)}
+            onMakeDisplayProfileDefault={() => {
+              const profile = effectiveDisplayProfile;
+              const display = centralSettings.listDisplay.profiles[profile];
+              setCentralSettings({
+                ...centralSettings,
+                listDisplay: { ...centralSettings.listDisplay, activeProfile: profile, preset: profile, pageSize: display.pageSize, columns: display.columns.map((column) => ({ ...column })) },
+              });
+              setPlanningDisplayProfileOverride(null);
+            }}
           />
         </div>
 

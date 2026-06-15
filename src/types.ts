@@ -53,7 +53,9 @@ export type EquipmentState = {
 
 export type PlanningWindowMode = 'sunset' | 'nautical' | 'astronomicalTwilight' | 'astronomicalNight';
 export type WindUnit = 'kmh' | 'ms';
-export type WindPreset = 'travel' | 'normal' | 'robust' | 'custom';
+export type WindProfileKey = 'travel' | 'normal' | 'robust' | 'custom';
+export type WindPreset = WindProfileKey;
+export type DisplayProfileKey = 'compact' | 'standard' | 'detailed' | 'custom';
 export type GpsBehavior = 'ask' | 'last' | 'off';
 
 export type WindThresholds = {
@@ -92,14 +94,23 @@ export type ListColumnKey =
   | 'filters'
   | 'fovUsage';
 
-export type ListDisplaySettings = {
+export type ListDisplayProfile = {
   pageSize: 10 | 20 | 50 | 100;
-  preset: 'compact' | 'standard' | 'detailed' | 'custom';
   columns: Array<{ key: ListColumnKey; visible: boolean }>;
+};
+
+export type ListDisplaySettings = ListDisplayProfile & {
+  activeProfile: DisplayProfileKey;
+  profiles: Record<DisplayProfileKey, ListDisplayProfile>;
+  /** Kompatibilitätsfeld: entspricht dem aktuell wirksamen Profil. */
+  preset: DisplayProfileKey;
 };
 
 export type CentralSettings = {
   windUnit: WindUnit;
+  activeWindProfile: WindProfileKey;
+  windProfiles: Record<WindProfileKey, WindThresholds>;
+  /** Kompatibilitätsfelder: entsprechen dem aktuell wirksamen Profil. */
   windPreset: WindPreset;
   windThresholds: WindThresholds;
   dewThresholds: { greenMin: number; yellowMin: number };

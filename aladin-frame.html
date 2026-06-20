@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+  <title>Aladin Lite – Objektrahmung</title>
+  <link rel="stylesheet" href="https://aladin.cds.unistra.fr/AladinLite/api/v3/latest/aladin.min.css">
+  <style>
+    html,body,#aladin-lite-div{width:100%;height:100%;margin:0;overflow:hidden;background:#02060b}
+    #loading{position:absolute;z-index:20;left:50%;top:50%;transform:translate(-50%,-50%);padding:10px 14px;border-radius:9px;background:rgba(4,12,22,.9);color:#dcecff;font:14px system-ui,sans-serif;border:1px solid #29415f}
+    #error{display:none;position:absolute;z-index:30;inset:12px auto auto 12px;max-width:calc(100% - 24px);padding:10px 12px;border-radius:9px;background:#301315;color:#ffdce1;font:14px system-ui,sans-serif;border:1px solid #9d4343}
+    #externalToolbar{display:none;position:absolute;z-index:25;left:12px;right:12px;bottom:12px;gap:8px;align-items:center;flex-wrap:wrap;padding:10px;border-radius:12px;background:rgba(5,14,25,.86);border:1px solid #29415f;color:#dcecff;font:14px system-ui,sans-serif}
+    #externalToolbar button{border:1px solid #385a7e;background:#142940;color:#e8f5ff;border-radius:9px;padding:8px 12px;font-weight:700}
+    #measureReadout{color:#ffd66b;font-weight:700}
+  </style>
+</head>
+<body>
+  <div id="aladin-lite-div"></div><div id="loading">Himmelsbild wird auf das Objekt zentriert …</div><div id="error"></div><div id="externalToolbar"><button id="measureToggle" type="button">Abstand messen</button><button id="measureReset" type="button">Messung zurücksetzen</button><span id="measureReadout">Zwei Punkte in der Karte anklicken.</span></div>
+  <script src="https://aladin.cds.unistra.fr/AladinLite/api/v3/latest/aladin.js" charset="utf-8"></script>
+  <script>
+  (()=>{
+    const params=new URLSearchParams(location.search),ra=Number(params.get('ra')),dec=Number(params.get('dec')),initialFov=Math.max(.02,Number(params.get('fov'))||2),survey=params.get('survey')||'P/DSS2/color',catalogRot=Number(params.get('catalogRot')),external=params.get('external')==='1';
+    const loading=document.getElementById('loading'),error=document.getElementById('error');
+    let viewer=null,frameOverlay=null,comparisonOverlay=null,objectOverlay=null,moonOverlay=null,labelCatalog=null,catalogRows=[],labelTimer=null,lastViewKey='',frameCenter={ra,dec};
+    let overlayState={frameW:Number(params.get('frameW'))||0,frameH:Number(params.get('frameH'))||0,frameRot:Number(params.get('frameRot'))||0,showFrame:params.get('showFrame')==='true',objectW:Number(params.get('objectW'))||0,objectH:Number(params.get('objectH'))||0,objectRot:Number(params.get('objectRot'))||0,showObject:params.get('showObject')==='true',showLabels:params.get('showLabels')!=='false',labelDetail:params.get('labelDetail')||'auto',targetId:params.get('targetId')||'',targetName:params.get('targetName')||'',showMoon:params.get('showMoon')==='true',moonRa:Number(params.get('moonRa')),moonDec:Number(params.get('moonDec')),moonLabel:params.get('moonLabel')||'Mond',outlinePolygons:null,outlineSource:params.get('outlineSource')||'',comparisonFrames:[]};
+    try{overlayState.outlinePolygons=JSON.parse(params.get('outlinePolygons')||'null')}catch{}
+    try{overlayState.comparisonFrames=JSON.parse(params.get('comparisonFrames')||'[]')}catch{}
+    const fail=message=>{loading.style.display='none';error.textContent=`Aladin Lite konnte nicht geladen werden: ${message}`;error.style.display='block'};
+    const skyPoint=(centerRa,centerDec,east,north)=>{const d2r=Math.PI/180,r2d=180/Math.PI,ra0=centerRa*d2r,dec0=centerDec*d2r,e=east*d2r,n=north*d2r,rho=Math.hypot(e,n);if(rho<1e-12)return[centerRa,centerDec];const bearing=Math.atan2(e,n),sinDec=Math.sin(dec0)*Math.cos(rho)+Math.cos(dec0)*Math.sin(rho)*Math.cos(bearing),outDec=Math.asin(Math.max(-1,Math.min(1,sinDec))),outRa=ra0+Math.atan2(Math.sin(bearing)*Math.sin(rho)*Math.cos(dec0),Math.cos(rho)-Math.sin(dec0)*Math.sin(outDec));return[((outRa*r2d)%360+360)%360,outDec*r2d]};
+    const axes=angle=>{const rad=angle*Math.PI/180;return{ux:Math.sin(rad),uy:Math.cos(rad),vx:Math.cos(rad),vy:-Math.sin(rad)}};
+    const rectangle=(centerRa,centerDec,width,height,rotation)=>{const {ux,uy,vx,vy}=axes(rotation),hw=width/2,hh=height/2;return [[-1,-1],[1,-1],[1,1],[-1,1]].map(([su,sv])=>skyPoint(centerRa,centerDec,su*hw*ux+sv*hh*vx,su*hw*uy+sv*hh*vy))};
+    const ellipsePolygon=(centerRa,centerDec,width,height,rotation,steps=120)=>{const {ux,uy,vx,vy}=axes(rotation),a=width/2,b=height/2,points=[];for(let index=0;index<steps;index++){const angle=2*Math.PI*index/steps,u=a*Math.cos(angle),v=b*Math.sin(angle);points.push(skyPoint(centerRa,centerDec,u*ux+v*vx,u*uy+v*vy))}return points};
+    const clearOverlay=overlay=>{try{overlay?.removeAll?.()}catch{}};
+    const redraw=()=>{if(!viewer||!window.A)return;try{
+      if(!frameOverlay){frameOverlay=A.graphicOverlay({name:'Kamerarahmen',color:'#67cbff',lineWidth:2});viewer.addOverlay(frameOverlay)}
+      if(!comparisonOverlay){comparisonOverlay=A.graphicOverlay({name:'Vergleichsrahmen',color:'#ffcf5a',lineWidth:2});viewer.addOverlay(comparisonOverlay)}
+      if(!objectOverlay){objectOverlay=A.graphicOverlay({name:'Objektgröße',color:'#f0c75e',lineWidth:2});viewer.addOverlay(objectOverlay)}
+      if(!moonOverlay){moonOverlay=A.graphicOverlay({name:'Mond',color:'#ffd66b',lineWidth:2});viewer.addOverlay(moonOverlay)}
+      clearOverlay(frameOverlay);clearOverlay(comparisonOverlay);clearOverlay(objectOverlay);clearOverlay(moonOverlay);
+      if(overlayState.showFrame&&overlayState.frameW>0&&overlayState.frameH>0)frameOverlay.add(A.polygon(rectangle(frameCenter.ra,frameCenter.dec,overlayState.frameW,overlayState.frameH,overlayState.frameRot),{color:'#67cbff',lineWidth:2,fillColor:'rgba(40,183,215,.08)'}));
+      if(Array.isArray(overlayState.comparisonFrames))overlayState.comparisonFrames.slice(0,3).forEach(item=>{if(Number(item.width)>0&&Number(item.height)>0)comparisonOverlay.add(A.polygon(rectangle(frameCenter.ra,frameCenter.dec,Number(item.width),Number(item.height),Number(item.rotation)||0),{color:item.color||'#ffcf5a',lineWidth:2,fillColor:'rgba(255,207,90,.035)'}))});
+      if(overlayState.showObject){
+        if(Array.isArray(overlayState.outlinePolygons)&&overlayState.outlinePolygons.length){
+          overlayState.outlinePolygons.forEach(poly=>{if(Array.isArray(poly)&&poly.length>2)objectOverlay.add(A.polygon(poly,{color:'#ff6a55',lineWidth:2.2,fillColor:'rgba(255,106,85,.035)'}))});
+        }else if(overlayState.objectW>0&&overlayState.objectH>0){
+          // Fallback: technische Ellipse aus vollständigen Katalogachsen und Positionswinkel Nord über Ost.
+          objectOverlay.add(A.polygon(ellipsePolygon(ra,dec,overlayState.objectW,overlayState.objectH,overlayState.objectRot),{color:'#f0c75e',lineWidth:2,fillColor:'rgba(240,199,94,.035)'}));
+        }
+      }
+      if(overlayState.showMoon&&Number.isFinite(overlayState.moonRa)&&Number.isFinite(overlayState.moonDec)){
+        const radius=Math.max(0.08,Math.min(1.2,initialFov*0.035));
+        moonOverlay.add(A.polygon(ellipsePolygon(overlayState.moonRa,overlayState.moonDec,radius,radius,0,48),{color:'#ffd66b',lineWidth:3,fillColor:'rgba(255,214,107,.18)'}));
+        moonOverlay.add(A.polyline([skyPoint(overlayState.moonRa,overlayState.moonDec,-radius*1.7,0),skyPoint(overlayState.moonRa,overlayState.moonDec,radius*1.7,0)],{color:'#ffd66b',lineWidth:2}));
+        moonOverlay.add(A.polyline([skyPoint(overlayState.moonRa,overlayState.moonDec,0,-radius*1.7),skyPoint(overlayState.moonRa,overlayState.moonDec,0,radius*1.7)],{color:'#ffd66b',lineWidth:2}));
+      }
+    }catch(e){console.warn('Overlay konnte nicht gezeichnet werden',e)}};
+    const angleDistance=(ra1,dec1,ra2,dec2)=>{const r=Math.PI/180,d1=dec1*r,d2=dec2*r,dr=(ra1-ra2)*r;return Math.acos(Math.max(-1,Math.min(1,Math.sin(d1)*Math.sin(d2)+Math.cos(d1)*Math.cos(d2)*Math.cos(dr))))/r};
+    const parseCatalog=rows=>(Array.isArray(rows)?rows:[]).map(r=>({id:r[0],name:r[1],type:r[3],ra:Number(r[4])*15,dec:Number(r[5]),mag:r[6]==null?null:Number(r[6]),major:Number(r[8])||0,catalogs:r[12]||[]})).filter(r=>r.id&&Number.isFinite(r.ra)&&Number.isFinite(r.dec));
+    const labelPriority=row=>{let value=0;if(row.id===overlayState.targetId)value+=10000;if((row.catalogs||[]).includes('Messier')||/^M\d+/i.test(row.id))value+=500;if(row.major>=30)value+=Math.min(300,row.major*2);if(Number.isFinite(row.mag))value+=Math.max(0,180-row.mag*12);if(/NGC|IC/i.test(row.id))value+=80;return value};
+    const desiredLabels=()=>{
+      if(!overlayState.showLabels||!viewer)return[];
+      const fov=viewer.getFov?.()||[initialFov,initialFov],width=Array.isArray(fov)?Number(fov[0]):Number(fov),center=viewer.getRaDec?.()||[ra,dec],radius=Math.max(.05,width*.78);
+      let max=20,minimum=0;
+      if(overlayState.labelDetail==='main'){max=18;minimum=130}
+      else if(overlayState.labelDetail==='extended'){max=90;minimum=-Infinity}
+      else if(width>15){max=12;minimum=280}else if(width>5){max=24;minimum=150}else if(width>1){max=45;minimum=50}else{max=75;minimum=-Infinity}
+      const rows=catalogRows.filter(row=>angleDistance(row.ra,row.dec,Number(center[0]),Number(center[1]))<=radius).map(row=>({...row,priority:labelPriority(row)})).filter(row=>row.priority>=minimum||row.id===overlayState.targetId).sort((a,b)=>b.priority-a.priority).slice(0,max);
+      if(!rows.some(row=>row.id===overlayState.targetId)&&overlayState.targetId)rows.unshift({id:overlayState.targetId,name:overlayState.targetName,ra,dec,priority:99999});
+      return rows;
+    };
+    const updateLabels=()=>{if(!viewer||!window.A)return;const fov=viewer.getFov?.()||[initialFov],center=viewer.getRaDec?.()||[ra,dec],key=`${overlayState.showLabels}|${overlayState.labelDetail}|${Number(fov[0]||fov).toFixed(3)}|${Number(center[0]).toFixed(3)}|${Number(center[1]).toFixed(3)}`;if(key===lastViewKey)return;lastViewKey=key;
+      try{if(!labelCatalog){labelCatalog=A.catalog({name:'Objektnamen',sourceSize:7,color:'#ffe08a',displayLabel:true,labelColumn:'label',labelColor:'#fff2bd',labelFont:'12px sans-serif'});viewer.addCatalog(labelCatalog)}labelCatalog.removeAll?.();if(!overlayState.showLabels)return;const sources=desiredLabels().map(row=>A.source(row.ra,row.dec,{label:`${row.id}${row.name&&row.name!==row.id?` · ${row.name}`:''}`}));labelCatalog.addSources?.(sources)}catch(e){console.warn('Objektbeschriftungen konnten nicht aktualisiert werden',e)}};
+    const scheduleLabels=()=>{clearTimeout(labelTimer);labelTimer=setTimeout(updateLabels,280)};
+    const viewCenter=()=>{const center=viewer?.getRaDec?.();const centerRa=Number(center?.[0]??center?.ra??center?.lon),centerDec=Number(center?.[1]??center?.dec??center?.lat);return Number.isFinite(centerRa)&&Number.isFinite(centerDec)?{ra:centerRa,dec:centerDec}:null};
+
+    let measureMode=false,measurePoints=[];
+    const measureToolbar=document.getElementById('externalToolbar'),measureToggle=document.getElementById('measureToggle'),measureReset=document.getElementById('measureReset'),measureReadout=document.getElementById('measureReadout');
+    if(external&&measureToolbar)measureToolbar.style.display='flex';
+    const angularDistanceDeg=(a,b)=>{const r=Math.PI/180,d1=a.dec*r,d2=b.dec*r,dr=(a.ra-b.ra)*r;return Math.acos(Math.max(-1,Math.min(1,Math.sin(d1)*Math.sin(d2)+Math.cos(d1)*Math.cos(d2)*Math.cos(dr))))/r};
+    const screenToWorld=(clientX,clientY)=>{const box=document.getElementById('aladin-lite-div').getBoundingClientRect(),x=clientX-box.left,y=clientY-box.top;try{const out=viewer?.pix2world?.(x,y)||viewer?.view?.pix2world?.(x,y);if(Array.isArray(out))return{ra:Number(out[0]),dec:Number(out[1])};if(out&&Number.isFinite(Number(out.ra)))return{ra:Number(out.ra),dec:Number(out.dec)}}catch{}return null};
+    const resetMeasure=()=>{measurePoints=[];if(measureReadout)measureReadout.textContent='Zwei Punkte in der Karte anklicken.'};
+    measureToggle?.addEventListener('click',()=>{measureMode=!measureMode;measureToggle.classList.toggle('active',measureMode);measureToggle.textContent=measureMode?'Messung aktiv':'Abstand messen';resetMeasure()});
+    measureReset?.addEventListener('click',resetMeasure);
+    document.getElementById('aladin-lite-div').addEventListener('click',event=>{if(!measureMode||!external)return;const point=screenToWorld(event.clientX,event.clientY);if(!point){if(measureReadout)measureReadout.textContent='Koordinate konnte nicht bestimmt werden.';return}measurePoints.push(point);if(measurePoints.length>2)measurePoints=[point];if(measurePoints.length===1&&measureReadout)measureReadout.textContent=`Punkt 1: RA ${point.ra.toFixed(3)}°, Dec ${point.dec.toFixed(3)}°`;if(measurePoints.length===2){const distance=angularDistanceDeg(measurePoints[0],measurePoints[1]);const arcmin=distance*60;if(measureReadout)measureReadout.textContent=`Abstand: ${distance.toFixed(3)}° (${arcmin.toFixed(1)}′)`}},true);
+
+    window.addEventListener('message',event=>{if(event.origin!==location.origin)return;const type=event.data?.type;if(type==='anp-overlay'){overlayState={...overlayState,...event.data};if(typeof overlayState.outlinePolygons==='string'){try{overlayState.outlinePolygons=JSON.parse(overlayState.outlinePolygons||'null')}catch{overlayState.outlinePolygons=null}}if(typeof overlayState.comparisonFrames==='string'){try{overlayState.comparisonFrames=JSON.parse(overlayState.comparisonFrames||'[]')}catch{overlayState.comparisonFrames=[]}}redraw();lastViewKey='';scheduleLabels();return}if(type==='anp-center-frame'&&viewer){const center=viewCenter();if(center){frameCenter=center;redraw();window.setTimeout(redraw,80);parent.postMessage({type:'anp-frame-centered',ra:frameCenter.ra,dec:frameCenter.dec},location.origin)}else parent.postMessage({type:'anp-frame-center-error'},location.origin)}});
+    if(!Number.isFinite(ra)||!Number.isFinite(dec)){fail('Ungültige Objektkoordinaten.');return}
+    const loadCatalog=async()=>{try{const response=await fetch('assets/catalog.generated.json',{cache:'force-cache'});if(response.ok)catalogRows=parseCatalog(await response.json())}catch{}finally{scheduleLabels()}};
+    const start=()=>{try{viewer=A.aladin('#aladin-lite-div',{survey,target:`${ra} ${dec}`,fov:initialFov,projection:'TAN',cooFrame:'ICRS',showReticle:true,showZoomControl:true,showFullscreenControl:true,showLayersControl:true,showSimbadPointerControl:true,showCooGridControl:true,showShareControl:true,showGotoControl:true});if(Number.isFinite(catalogRot))overlayState.objectRot=catalogRot;const recenter=()=>{try{viewer.gotoRaDec(ra,dec);viewer.setFoV(initialFov);frameCenter={ra,dec};redraw();scheduleLabels();loading.style.display='none';parent.postMessage({type:'anp-aladin-ready'},location.origin)}catch(e){fail(e.message||String(e))}};setTimeout(recenter,180);setTimeout(()=>{redraw();scheduleLabels()},420);setTimeout(recenter,700);setTimeout(()=>{redraw();scheduleLabels()},1250);setInterval(scheduleLabels,500);loadCatalog()}catch(e){fail(e.message||String(e))}};
+    if(window.A&&A.init&&typeof A.init.then==='function')A.init.then(start).catch(e=>fail(e.message||String(e)));else if(window.A)start();else fail('Bibliothek nicht verfügbar.');
+  })();
+  </script>
+</body>
+</html>

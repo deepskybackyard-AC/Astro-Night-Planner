@@ -695,3 +695,54 @@ main { display: grid; gap: 18px; }
   .section-save-actions button { width: 100%; }
   .object-list-cell.column-miniAltitude .mini-altitude { height: 82px; }
 }
+
+/* Test 14: Filterfelder konsequent ausrichten, Helligkeitsfilter zusammenführen */
+.filter-main-grid{
+  display:grid;
+  grid-template-columns:minmax(360px,2.2fr) max-content max-content max-content max-content;
+  grid-template-areas:
+    "search score mag surface altitude"
+    "visible basis basis basis moon";
+  gap:18px 24px;
+  align-items:start;
+}
+.filter-main-grid label,.size-filter-row label{align-self:start}
+.filter-area-search{grid-area:search;min-width:min(100%,520px)}
+.filter-area-score{grid-area:score}
+.filter-area-mag{grid-area:mag}
+.filter-area-surface{grid-area:surface}
+.filter-area-alt{grid-area:altitude}
+.filter-area-visible{grid-area:visible}
+.filter-area-basis{grid-area:basis;min-width:min(100%,420px)}
+.filter-area-moon{grid-area:moon}
+.filter-main-grid label>input,.filter-main-grid label>select,.size-filter-row label>input,.size-filter-row label>select{margin-top:7px}
+.numeric-compact input[type=number],.filters label.numeric-compact input[type=number],.settings-row input[type=number]{width:auto;min-width:7ch;max-width:12ch}
+.filter-area-surface .small{max-width:190px}
+.size-filter-row{align-items:start;margin-top:18px}
+@media(max-width:1280px){
+  .filter-main-grid{
+    grid-template-columns:minmax(300px,1.6fr) repeat(3,max-content);
+    grid-template-areas:
+      "search score mag altitude"
+      "visible basis surface moon";
+  }
+  .filter-area-basis{min-width:min(100%,360px)}
+}
+@media(max-width:920px){
+  .filter-main-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    grid-template-areas:
+      "search search"
+      "score mag"
+      "surface altitude"
+      "visible moon"
+      "basis basis";
+  }
+  .filter-area-search,.filter-area-basis{min-width:0}
+}
+@media(max-width:720px){
+  .filter-main-grid{
+    grid-template-columns:1fr;
+    grid-template-areas:"search" "score" "mag" "surface" "altitude" "visible" "basis" "moon";
+  }
+}

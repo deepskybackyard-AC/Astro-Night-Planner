@@ -1,0 +1,4 @@
+ASTRO NIGHT PLANNER 1.0.0-test.9
+
+Dieses kumulative Update ist ausschließlich für das separate Test-Repository bestimmt.
+Nicht in das Produktiv-Repository kopieren.

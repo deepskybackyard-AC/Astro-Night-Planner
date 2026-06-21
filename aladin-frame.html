@@ -30,7 +30,7 @@
   <script src="https://aladin.cds.unistra.fr/AladinLite/api/v3/latest/aladin.js" charset="utf-8"></script>
   <script>
   (()=>{
-    const params=new URLSearchParams(location.search),ra=Number(params.get('ra')),dec=Number(params.get('dec')),initialFov=Math.max(.02,Number(params.get('fov'))||2),survey=params.get('survey')||'P/DSS2/color',catalogRot=Number(params.get('catalogRot')),external=params.get('external')==='1',lang=params.get('lang')==='en'?'en':'de',dbName=params.get('dbName')||'astro-night-planner-prod-v1';document.documentElement.lang=lang;
+    const params=new URLSearchParams(location.search),ra=Number(params.get('ra')),dec=Number(params.get('dec')),initialFov=Math.max(.02,Number(params.get('fov'))||2),survey=params.get('survey')||'P/DSS2/color',catalogRot=Number(params.get('catalogRot')),external=params.get('external')==='1',lang=params.get('lang')==='en'?'en':'de',dbName=params.get('dbName')||'astro-night-planner-test-v1';document.documentElement.lang=lang;
     const loading=document.getElementById('loading'),error=document.getElementById('error');
     let viewer=null,frameOverlay=null,comparisonOverlay=null,objectOverlay=null,moonOverlay=null,measureOverlay=null,outlineDrawingOverlay=null,labelCatalog=null,catalogRows=[],labelTimer=null,lastViewKey='',frameCenter={ra,dec};
     let userOutlinePolygons=null,selectedCatalogObject=null;

@@ -1,37 +1,41 @@
 # Katalogquellen
 
-Der Astro Night Planner nutzt den bereits im Projekt vorhandenen generierten Objektkatalog. Er enthält insbesondere:
+Der Astro Night Planner nutzt einen mitgelieferten, lokal geladenen Objektkatalog. Die vollständige Datei wird in der Produktivversion unter `assets/catalog.generated.json` ausgeliefert. Zusätzlich liegt dieselbe Datei unter `src/data/catalog.generated.json`, damit der öffentliche Rohdatenpfad des Repositorys erhalten bleibt.
+
+Der Katalog enthält insbesondere:
 
 - Messier-Daten
 - NGC- und IC-Grunddaten aus OpenNGC
-- Sharpless-2-Einträge aus den im bisherigen Projekt dokumentierten VizieR-/Sharpless-Quellen
+- Sharpless-2-Einträge aus den im Projekt dokumentierten VizieR-/Sharpless-Quellen
 - Abell-Katalog planetarischer Nebel
 - ergänzte gebräuchliche Deep-Sky-Ziele
+- LDN-Dunkelnebel aus Lynds' Catalogue of Dark Nebulae
 
-Fehlende Werte werden in der App nicht künstlich ergänzt. Die Datei `src/data/catalog.generated.json` des bisherigen Repositorys soll beim Update erhalten bleiben. Der GitHub-Pages-Workflow kopiert sie beim Deployment automatisch nach `assets/catalog.generated.json`, damit der vollständige Katalog lokal von der PWA geladen werden kann.
+Fehlende Werte werden in der App nicht künstlich ergänzt. Wenn einzelne Kataloge unterschiedliche Objektgrenzen, Größen oder Bezeichnungen verwenden, nutzt die App die gespeicherten Werte als praktische Planungs- und Filterhilfe, nicht als wissenschaftliche Grenzdefinition.
 
-Falls diese Quelldatei nicht vorhanden ist, versucht Version 1.0 den Katalog aus dem öffentlichen Haupt-Repository zu laden und verwendet bei Nichterreichbarkeit einen kleinen integrierten Basiskatalog.
+## LDN - Lynds' Catalogue of Dark Nebulae
 
-## Kuratierte Objektumrisse
+Mit Produktivversion 1.0.1 wurden 1787 benannte LDN-Einträge importiert. Die Filteroption `LDN/LBN` wählt in dieser Version die LDN-Einträge aus. LBN ist weiterhin noch nicht als eigener Katalog importiert.
 
-Ab Version 1.0 kann die Aladin-Ansicht kuratierte Objektumrisse aus lokalen Koordinatenpolygondaten verwenden. Diese Umrisse sind Planungs- und Orientierungshilfen und keine wissenschaftlichen Grenzdefinitionen. Sie werden manuell aus öffentlich sichtbaren Himmelsbilddarstellungen in der App/Aladin-Ansicht kuratiert; eine ungeprüfte Übernahme fremder Stellarium-/Katalogdaten erfolgt nicht.
+Die LDN-Daten enthalten unter anderem Positionen und Flächenangaben. Für die App werden Größenwerte der LDN-Objekte aus der katalogisierten Fläche als äquivalenter Kreis-Durchmesser berechnet. Diese Werte sind eine praktische Hilfe für Größenfilter, Rahmung und Suche, aber keine exakten sichtbaren Objektumrisse.
 
-Aktuell enthaltene Startobjekte:
+Beispiel: `LDN 1093` ist als eigener Dunkelnebel-Eintrag vorhanden und kann über `LDN 1093` oder `LDN1093` gefunden werden.
 
-- NGC 7000 - Nordamerikanebel, ungefährer Planungsumriss
-- M42 - Orionnebel, ungefährer Planungsumriss
+## Kuratierte und nutzergezeichnete Objektumrisse
 
-Weitere Umrisse werden nur ergänzt, wenn Herkunft, fachliche Plausibilität und Nutzungs-/Lizenzhinweise eindeutig dokumentiert werden können.
+Die Aladin-Ansicht kann gespeicherte Objektumrisse aus lokalen Koordinatenpolygondaten verwenden. Diese Umrisse sind Planungs- und Orientierungshilfen und keine wissenschaftlichen Grenzdefinitionen.
+
+Mitgelieferte Beispielumrisse für NGC 7000 wurden entfernt. Objektumrisse entstehen künftig durch nutzerseitige Zeichnung im externen Aladin-Tab und werden lokal in IndexedDB gespeichert. Bei vorhandenen Einträgen werden sie automatisch angezeigt; sonst wird die Katalogellipse als Fallback genutzt.
 
 ## Aladin-Surveys
 
 Aladin-Lite-Surveys werden als externe HiPS-Datensätze über die jeweilige HiPS-ID genutzt. Die Survey-Auswahl der App kann in den Einstellungen konfiguriert und um eigene HiPS-IDs ergänzt werden. Für die rechtliche Bewertung gelten die Nutzungs- und Lizenzbedingungen der jeweiligen Survey-Anbieter sowie die Hinweise von CDS/Aladin Lite.
 
-Ab Version 1.0 erzwingt die App keine künstliche Farbskala für Aladin-Surveys. Monochrome Surveys wie DSS2 red oder DSS2 blue werden in der nativen Aladin-Darstellung geladen; farbige Surveys erscheinen nur dann farbig, wenn der Anbieter selbst einen Farbsurvey oder eine Farbkombination bereitstellt. Bei eigenen HiPS-IDs ist der Anwender dafür verantwortlich, die jeweilige Datenquelle und deren Nutzungshinweise zu prüfen.
+Die App erzwingt keine künstliche Farbskala für Aladin-Surveys. Monochrome Surveys wie DSS2 red oder DSS2 blue werden in der nativen Aladin-Darstellung geladen; farbige Surveys erscheinen nur dann farbig, wenn der Anbieter selbst einen Farbsurvey oder eine Farbkombination bereitstellt. Bei eigenen HiPS-IDs ist der Anwender dafür verantwortlich, die jeweilige Datenquelle und deren Nutzungshinweise zu prüfen.
 
-## Test 18 Ergänzung: Northern Sky Narrowband Survey (NSNS)
+## Northern Sky Narrowband Survey (NSNS)
 
-Für die Aladin-Survey-Auswahl werden zusätzlich HiPS-Einträge der Northern Sky Narrowband Survey (NSNS DR0.2) vorbereitet. Die ersten vier Einträge sind in der Standardauswahl aktiv:
+Für die Aladin-Survey-Auswahl sind zusätzlich HiPS-Einträge der Northern Sky Narrowband Survey (NSNS DR0.2) vorbereitet. Die ersten vier Einträge sind in der Standardauswahl aktiv:
 
 - NSNS DR0.2 · H-alpha — `simg.de/P/NSNS/DR0_2/halpha8`
 - NSNS DR0.2 · OIII — `simg.de/P/NSNS/DR0_2/oiii8`
@@ -40,8 +44,4 @@ Für die Aladin-Survey-Auswahl werden zusätzlich HiPS-Einträge der Northern Sk
 - NSNS DR0.2 · H-alpha + Kontinuum — `simg.de/P/NSNS/DR0_2/hbr8`
 - NSNS DR0.2 · RGB-Kontinuum — `simg.de/P/NSNS/DR0_2/rgb8`
 
-Lizenz- und Quellenhinweise sind in der Hilfe und im Handbuch zu dokumentieren. Benutzerdefinierte HiPS-Surveys werden vom Nutzer selbst eingetragen; für deren Nutzbarkeit und Lizenzlage ist die jeweilige Quelle maßgeblich.
-
-## Test 18 Ergänzung: Nutzergezeichnete Objektumrisse
-
-Mitgelieferte Beispielumrisse für NGC 7000 wurden entfernt. Objektumrisse entstehen künftig durch nutzerseitige Zeichnung im externen Aladin-Tab und werden lokal in IndexedDB gespeichert. Bei vorhandenen Einträgen werden sie automatisch angezeigt; sonst wird die Katalogellipse als Fallback genutzt.
+Benutzerdefinierte HiPS-Surveys werden vom Nutzer selbst eingetragen; für deren Nutzbarkeit und Lizenzlage ist die jeweilige Quelle maßgeblich.

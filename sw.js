@@ -1,18 +1,18 @@
-/* Astro Night Planner 1.0 – produktiver Cache */
+/* Astro Night Planner 1.0.1 – expliziter Produktiv-Cache */
 'use strict';
 const ENV = 'prod';
-const VERSION = '1.0.0';
+const VERSION = '1.0.1';
 const CACHE_NAME = `astro-night-planner-${ENV}-${VERSION}`;
 const CORE = [
   './', './index.html', './manifest.webmanifest', './VERSION.json', './icon.svg', './icon-192.png', './icon-512.png',
-  './assets/build-config.js', './assets/styles.css', './assets/app.js', './assets/andreas-cordt-logo.png', './aladin-frame.html', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH.html', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH.pdf', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH_DE.html', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH_DE.pdf', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH_EN.html', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH_EN.pdf'
+  './assets/build-config.js', './assets/styles.css', './assets/app.js', './assets/catalog.generated.json', './assets/andreas-cordt-logo.png', './aladin-frame.html', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH.html', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH.pdf', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH_DE.html', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH_DE.pdf', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH_EN.html', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH_EN.pdf'
 ];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(CORE)).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', event => {
   event.waitUntil(caches.keys().then(keys => Promise.all(
-    keys.filter(key => (key.startsWith('astro-night-planner-prod-') || key.startsWith('astro-night-planner-test-')) && key !== CACHE_NAME).map(key => caches.delete(key))
+    keys.filter(key => key.startsWith(`astro-night-planner-${ENV}-`) && key !== CACHE_NAME).map(key => caches.delete(key))
   )).then(() => self.clients.claim()));
 });
 self.addEventListener('fetch', event => {

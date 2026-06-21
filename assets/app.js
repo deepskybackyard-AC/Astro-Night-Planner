@@ -1,7 +1,7 @@
-/* Astro Night Planner 1.0.1 – Produktivversion mit Header-Navigation und LDN-Katalog */
+/* Astro Night Planner 1.0.2 – Produktivversion mit korrigierter Header-Navigation und LDN-Katalog */
 'use strict';
 
-const BUILD = Object.freeze(window.ANP_BUILD || {environment:'prod', appVersion:'1.0.1', release:'1.0.1', databaseName:'astro-night-planner-prod-v1', documentTitle:'Astro Night Planner 1.0.1'});
+const BUILD = Object.freeze(window.ANP_BUILD || {environment:'prod', appVersion:'1.0.2', release:'1.0.2', databaseName:'astro-night-planner-prod-v1', documentTitle:'Astro Night Planner 1.0.2'});
 const ENV = BUILD.environment === 'test' ? 'test' : 'prod';
 const APP_VERSION = BUILD.appVersion || '1.0.0';
 const RELEASE = BUILD.release || '1.0';

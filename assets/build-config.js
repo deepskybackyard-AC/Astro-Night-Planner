@@ -3,23 +3,23 @@
 window.ANP_BUILD = Object.freeze({
   environment: 'prod',
   repositoryRole: 'production',
-  appVersion: '1.0.1',
-  release: '1.0.1',
+  appVersion: '1.0.2',
+  release: '1.0.2',
   databaseName: 'astro-night-planner-prod-v1',
   badgeText: '',
-  documentTitle: 'Astro Night Planner 1.0.1',
+  documentTitle: 'Astro Night Planner 1.0.2',
   releaseNotes: {
     de: [
-      'Hauptnavigation Planung/Einstellungen in die feste Titelzeile oben rechts verschoben; die bisherige untere Navigation wurde entfernt.',
-      'LDN-Katalog mit 1787 benannten Lynds-Dunkelnebeln ergänzt; LDN 1093 und Schreibweisen wie LDN1093 sind suchbar.',
-      'Der Katalogfilter LDN/LBN nutzt jetzt die importierten LDN-Daten; LBN ist weiterhin noch kein eigener importierter Katalog.',
-      'Hilfe, Handbuch, Katalogquellen und Versionshinweise aktualisiert.'
+      'Produktivpaket korrigiert: Die Schaltflächen Planung und Einstellungen sind jetzt tatsächlich oben rechts in der festen Titelzeile enthalten.',
+      'Die versehentlich im Produktivpaket verbliebene untere/floating Navigation wurde entfernt.',
+      'Der LDN-Katalog aus 1.0.1 bleibt enthalten: 1787 benannte Lynds-Dunkelnebel inklusive Suche nach LDN 1093/LDN1093.',
+      'Der Katalogfilter LDN/LBN nutzt weiterhin die importierten LDN-Daten; LBN ist weiterhin noch kein eigener importierter Katalog.'
     ],
     en: [
-      'Moved the main Planning/Settings navigation into the fixed top-right header; the former bottom navigation has been removed.',
-      'Added an LDN catalog with 1,787 named Lynds dark nebulae; LDN 1093 and compact spellings such as LDN1093 are searchable.',
-      'The LDN/LBN catalog filter now uses the imported LDN data; LBN is still not imported as a separate catalog.',
-      'Updated help, manual, catalog sources and version notes.'
+      'Production package corrected: the Planning and Settings buttons are now actually included in the fixed top-right header.',
+      'The bottom/floating navigation that accidentally remained in the production package has been removed.',
+      'The LDN catalog from 1.0.1 remains included: 1,787 named Lynds dark nebulae including search for LDN 1093/LDN1093.',
+      'The LDN/LBN catalog filter still uses the imported LDN data; LBN is still not imported as a separate catalog.'
     ]
   }
 });

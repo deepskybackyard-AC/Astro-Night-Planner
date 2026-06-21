@@ -15,7 +15,7 @@ Fehlende Werte werden in der App nicht künstlich ergänzt. Wenn einzelne Katalo
 
 ## LDN - Lynds' Catalogue of Dark Nebulae
 
-Mit Produktivversion 1.0.1 wurden 1787 benannte LDN-Einträge importiert. Die Filteroption `LDN/LBN` wählt in dieser Version die LDN-Einträge aus. LBN ist weiterhin noch nicht als eigener Katalog importiert.
+Mit Produktivversion 1.0.1 wurden 1787 benannte LDN-Einträge importiert. Produktivversion 1.0.2 korrigiert zusätzlich die Kopfzeilen-Navigation des Produktivpakets. Die Filteroption `LDN/LBN` wählt in dieser Version die LDN-Einträge aus. LBN ist weiterhin noch nicht als eigener Katalog importiert.
 
 Die LDN-Daten enthalten unter anderem Positionen und Flächenangaben. Für die App werden Größenwerte der LDN-Objekte aus der katalogisierten Fläche als äquivalenter Kreis-Durchmesser berechnet. Diese Werte sind eine praktische Hilfe für Größenfilter, Rahmung und Suche, aber keine exakten sichtbaren Objektumrisse.
 

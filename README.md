@@ -1,4 +1,4 @@
-# Astro Night Planner 1.0.1
+# Astro Night Planner 1.0.2
 
 Produktivversion des Astro Night Planners für GitHub Pages.
 
@@ -6,14 +6,12 @@ Produktivversion des Astro Night Planners für GitHub Pages.
 
 https://planner.deepskyastrophoto.de
 
-## Inhalt der Version 1.0.1
+## Inhalt der Version 1.0.2
 
-- Navigation „Planung“ und „Einstellungen“ in die feste Kopfzeile oben rechts verschoben.
-- Bisherige untere/floating Navigation entfernt.
-- LDN-Katalog mit 1787 benannten Lynds-Dunkelnebeln ergänzt.
-- Suche nach Schreibweisen wie `LDN 1093` und `LDN1093` unterstützt.
-- Katalogfilter „LDN/LBN“ nutzt jetzt die importierten LDN-Daten. LBN ist weiterhin noch kein eigener importierter Katalog.
-- Hilfe, PDF-Handbuch, Katalogquellen und Versionshinweise aktualisiert.
+- Korrektur des Produktivpakets 1.0.1: Die Navigation „Planung“ und „Einstellungen“ ist nun auch in der Produktivversion oben rechts in der festen Kopfzeile enthalten.
+- Die versehentlich verbliebene untere/floating Navigation wurde entfernt.
+- LDN-Katalog aus Version 1.0.1 bleibt enthalten: 1787 benannte Lynds-Dunkelnebel, inklusive Suche nach `LDN 1093` und `LDN1093`.
+- Katalogfilter „LDN/LBN“ nutzt weiterhin die importierten LDN-Daten. LBN ist weiterhin noch kein eigener importierter Katalog.
 
 ## Deployment
 
@@ -36,8 +34,8 @@ Persönliche Einstellungen, Profile, Standorte und Ausrüstung werden lokal im B
 
 ## Dokumente
 
-- `INSTALLATION_ASTRO_NIGHT_PLANNER_1.0.1_PRODUKTIV.md`
-- `KORREKTUREN_PRODUKTVERSION_1.0.1.md`
-- `PRUEFPROTOKOLL_PRODUKTVERSION_1.0.1.md`
+- `INSTALLATION_ASTRO_NIGHT_PLANNER_1.0.2_PRODUKTIV.md`
+- `KORREKTUREN_PRODUKTVERSION_1.0.2.md`
+- `PRUEFPROTOKOLL_PRODUKTVERSION_1.0.2.md`
 - `docs/ASTRO_NIGHT_PLANNER_HANDBUCH.html`
 - `docs/ASTRO_NIGHT_PLANNER_HANDBUCH.pdf`

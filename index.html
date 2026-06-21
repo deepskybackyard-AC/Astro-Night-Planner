@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="assets/styles.css" />
   <script src="assets/build-config.js"></script>
   <script>document.documentElement.dataset.environment=(window.ANP_BUILD&&window.ANP_BUILD.environment)||'prod';</script>
-  <title>Astro Night Planner 1.0.1</title>
+  <title>Astro Night Planner 1.0.2</title>
 </head>
 <body>
   <div id="environmentBadge" class="environment-badge" hidden></div>
@@ -32,6 +32,10 @@
     </a>
     <div class="header-actions">
       <div class="language-switch" aria-label="Sprache / Language"><span aria-hidden="true">🌐</span><button type="button" data-language="de" class="active">DE</button><span>|</span><button type="button" data-language="en">EN</button></div>
+      <nav class="header-main-nav" aria-label="Hauptnavigation">
+        <button type="button" data-main-tab="plan" class="active">☾<span id="bottomPlanLabel">Planung</span></button>
+        <button type="button" data-main-tab="settings">⚙<span id="bottomSettingsLabel">Einstellungen</span></button>
+      </nav>
       <select id="headerProfileSelect" aria-label="Aktives Benutzerprofil"></select>
       <button id="installButton" type="button" hidden>App installieren</button>
     </div>
@@ -64,10 +68,6 @@
     </form>
   </dialog>
 
-  <nav class="bottom-nav" aria-label="Hauptnavigation">
-    <button type="button" data-main-tab="plan" class="active">☾<span id="bottomPlanLabel">Planung</span></button>
-    <button type="button" data-main-tab="settings">⚙<span id="bottomSettingsLabel">Einstellungen</span></button>
-  </nav>
 
   <input id="fileImport" type="file" accept="application/json,.json" hidden />
   <script src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>

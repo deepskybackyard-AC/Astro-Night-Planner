@@ -1,8 +1,9 @@
-name: Deploy Astro Night Planner to GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -12,7 +13,7 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -28,18 +29,11 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
-      - name: Prepare local object catalog
-        shell: bash
-        run: |
-          if [ -f src/data/catalog.generated.json ]; then
-            cp src/data/catalog.generated.json assets/catalog.generated.json
-          fi
-
       - name: Upload static site
         uses: actions/upload-pages-artifact@v3
         with:
           path: .
 
-      - name: Deploy
+      - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

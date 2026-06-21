@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="de" data-language="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#081321" />
+  <meta name="description" content="Astro Night Planner – mobile Planung für Astrofotografie, Wetter, Dämmerung, Mond, Objektwahl und Framing." />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css" />
+  <link rel="stylesheet" href="assets/styles.css" />
+  <script src="assets/build-config.js"></script>
+  <script>document.documentElement.dataset.environment=(window.ANP_BUILD&&window.ANP_BUILD.environment)||'prod';</script>
+  <title>Astro Night Planner 1.0</title>
+</head>
+<body>
+  <div id="environmentBadge" class="environment-badge" hidden></div>
+  <div id="updateBanner" class="update-banner" hidden>
+    <span id="updateBannerText">Eine neue App-Version ist verfügbar.</span>
+    <button id="reloadForUpdate" type="button">Jetzt aktualisieren</button>
+  </div>
+  <header class="app-header">
+    <div class="header-title-block">
+      <div class="eyebrow" id="headerEyebrow">✦ Astrofotografie-Planung</div>
+      <h1>Astro Night Planner</h1>
+      <div class="version-line"><span id="versionLabel">Version</span> <span id="headerVersion">1.0</span><span id="headerEnvironmentText" hidden></span> · <span id="profileLabel">lokales Profil</span>: <strong id="headerProfileName">Standard</strong></div>
+    </div>
+    <a class="header-brand" href="https://www.deepskyastrophoto.de" target="_blank" rel="noopener noreferrer" aria-label="Homepage Deep Sky Astrofotografie öffnen">
+      <img src="assets/andreas-cordt-logo.png" alt="Logo Deep Sky Astrofotografie" />
+      <span class="header-brand-site">www.deepskyastrophoto.de</span>
+      <span class="header-brand-copyright">© Andreas Cordt</span>
+    </a>
+    <div class="header-actions">
+      <div class="language-switch" aria-label="Sprache / Language"><span aria-hidden="true">🌐</span><button type="button" data-language="de" class="active">DE</button><span>|</span><button type="button" data-language="en">EN</button></div>
+      <select id="headerProfileSelect" aria-label="Aktives Benutzerprofil"></select>
+      <button id="installButton" type="button" hidden>App installieren</button>
+    </div>
+  </header>
+
+  <main id="app" class="app-shell" aria-live="polite">
+    <section id="loadingScreen" class="card loading-card">
+      <div class="spinner"></div>
+      <p id="loadingText">Planner wird vorbereitet …</p>
+    </section>
+  </main>
+
+  <footer class="app-footer" aria-label="Rechtliche und informative Links">
+    <button type="button" data-legal-page="impressum">Impressum</button><span>·</span>
+    <button type="button" data-legal-page="datenschutz">Datenschutz</button><span>·</span>
+    <button type="button" data-legal-page="nutzung">Nutzungshinweise</button><span>·</span>
+    <button type="button" data-legal-page="quellen">Datenquellen &amp; Lizenzen</button><span>·</span>
+    <a id="footerHelpLink" href="./docs/ASTRO_NIGHT_PLANNER_HANDBUCH_DE.html" target="_blank" rel="noopener">Hilfe</a><span>·</span>
+    <button type="button" data-legal-page="version">Version</button>
+  </footer>
+
+  <dialog id="legalDialog" class="legal-dialog" aria-labelledby="legalDialogTitle">
+    <form method="dialog" class="legal-dialog-shell">
+      <div class="legal-dialog-header">
+        <h2 id="legalDialogTitle">Information</h2>
+        <button type="submit" class="legal-dialog-close" aria-label="Fenster schließen">✕</button>
+      </div>
+      <div id="legalDialogContent" class="legal-dialog-content"></div>
+      <div class="legal-dialog-actions"><button id="legalCloseButton" type="submit" class="primary">Schließen</button></div>
+    </form>
+  </dialog>
+
+  <nav class="bottom-nav" aria-label="Hauptnavigation">
+    <button type="button" data-main-tab="plan" class="active">☾<span id="bottomPlanLabel">Planung</span></button>
+    <button type="button" data-main-tab="settings">⚙<span id="bottomSettingsLabel">Einstellungen</span></button>
+  </nav>
+
+  <input id="fileImport" type="file" accept="application/json,.json" hidden />
+  <script src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
+  <script src="assets/app.js" defer></script>
+</body>
+</html>

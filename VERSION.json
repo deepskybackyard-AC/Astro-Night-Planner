@@ -1,0 +1,10 @@
+{
+  "name": "Astro Night Planner",
+  "version": "1.0.0",
+  "release": "1.0",
+  "environment": "prod",
+  "repositoryRole": "prod",
+  "schemaVersion": 7,
+  "releasedAt": "2026-06-21",
+  "notes": "Produktivversion 1.0: kumulativer Stand aus Testversion 23 mit leerem Erststartprofil ohne vorgegebene Orte, Teleskope und Kameras. Produktive IndexedDB und produktiver PWA-Cache sind von Testversionen getrennt."
+}

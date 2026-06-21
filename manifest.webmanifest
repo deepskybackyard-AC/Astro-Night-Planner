@@ -1,0 +1,32 @@
+{
+  "name": "Astro Night Planner",
+  "short_name": "Astro Planner",
+  "description": "Installierbare Produktivfassung des Astro Night Planners für Astrofotografieplanung, Wetter, Dämmerung, Mond, Objektwahl und Framing.",
+  "id": "./?anp-environment=prod",
+  "start_url": "./?anp-environment=prod",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#081321",
+  "theme_color": "#081321",
+  "lang": "de-DE",
+  "categories": [
+    "utilities",
+    "weather",
+    "education"
+  ],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

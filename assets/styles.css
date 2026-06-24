@@ -587,3 +587,35 @@ body{padding-bottom:0}
 .bottom-nav{display:none!important}.app-footer{margin-bottom:0}
 @media(max-width:980px){.header-main-nav{order:3;width:100%;max-width:360px}.header-actions{align-items:center}.header-actions select{flex:1;min-width:140px}}
 @media(max-width:620px){.header-actions{gap:8px}.header-main-nav{width:100%;max-width:none;grid-column:1/-1}.header-main-nav button{min-height:42px;padding:9px 10px}.language-switch{order:1}.header-main-nav{order:2}.header-actions select{order:3}.header-actions #installButton{order:4;width:100%}}
+
+/* Test A: calendar date, horizon tooltip and weather-unavailable note */
+.calendar-date-field{display:flex;flex-direction:column;gap:6px;min-width:170px}
+.calendar-date-field input{min-width:155px}
+.weather-unavailable-notice{border-color:rgba(255,190,90,.35);background:rgba(255,190,90,.08)}
+.horizon-editor-wrap{position:relative}
+.horizon-editor-tooltip{position:absolute;z-index:20;display:none;pointer-events:none;padding:5px 8px;border-radius:8px;background:rgba(4,10,18,.92);border:1px solid rgba(255,255,255,.22);color:#f6f4e8;font-size:12px;white-space:nowrap;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+@media (max-width:700px){.calendar-date-field{min-width:100%}.horizon-editor-tooltip{font-size:13px}}
+.inline-help-link{display:inline;border:0;background:transparent;color:#9dccff;text-decoration:underline;font-weight:800;padding:0;cursor:pointer;box-shadow:none}.inline-help-link:hover{color:#fff}
+
+.horizon-input-layer{position:absolute;z-index:15;background:transparent;outline:0;touch-action:none;cursor:crosshair}
+.horizon-input-layer:focus{box-shadow:inset 0 0 0 2px rgba(121,184,255,.35);border-radius:12px}
+
+/* Test 7: Tablet layout, extended equipment and Aladin controls */
+.save-bar-top{position:sticky;top:calc(72px + env(safe-area-inset-top));z-index:12;margin:-4px 0 16px;background:rgba(7,17,31,.95);border:1px solid rgba(121,184,255,.28);box-shadow:0 10px 24px rgba(0,0,0,.25)}
+.extended-equipment-row{grid-template-columns:repeat(4,minmax(140px,1fr)) auto auto;align-items:end}.extended-equipment-row .calculated-equipment-value{align-self:center;min-width:160px}.optical-row{grid-template-columns:minmax(180px,1.5fr) minmax(150px,1fr) minmax(120px,.7fr) auto}.equipment-settings-card .notice{align-self:center}.framing-controls button.active{border-color:var(--warn);background:#4b3a10;color:#fff2bd}.framing-info.hidden{display:none!important}.framing-view.info-pos-left .framing-info{left:12px;right:auto}.framing-view.info-pos-top .framing-info{left:12px;right:12px;top:52px;transform:none;max-width:none;display:flex;gap:10px;flex-wrap:wrap;z-index:5}.framing-view.info-pos-bottom .framing-info{left:12px;right:12px;top:auto;bottom:18px;transform:none;max-width:none;display:flex;gap:10px;flex-wrap:wrap;z-index:5}.framing-view.info-pos-top .framing-info.hidden,.framing-view.info-pos-bottom .framing-info.hidden{display:none!important}.framing-view.info-pos-top .framing-info>div,.framing-view.info-pos-bottom .framing-info>div{flex:1;min-width:180px}.calculated-equipment-value{color:var(--accent2)}
+@media (min-width:721px) and (max-width:1180px){
+  body{padding-bottom:24px}.app-header{grid-template-columns:minmax(180px,1fr) minmax(150px,auto) minmax(260px,1fr);gap:12px;padding:14px 18px}.app-header h1{font-size:1.55rem}.header-brand img{height:62px;max-width:190px}.header-actions{gap:8px}.header-actions select{min-width:132px}.header-main-nav{order:5;width:100%;justify-content:flex-end}.app-shell{padding:16px}.grid.four{grid-template-columns:repeat(2,minmax(0,1fr))}.grid.three{grid-template-columns:repeat(2,minmax(0,1fr))}.filters{grid-template-columns:repeat(2,minmax(0,1fr))}.framing-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:end}.framing-controls label,.framing-controls button,.framing-controls .comparison-frame-picker{min-width:0}.framing-view iframe{height:470px}.framing-info{max-width:min(330px,45%)}.extended-equipment-row{grid-template-columns:repeat(2,minmax(0,1fr))}.optical-row{grid-template-columns:repeat(2,minmax(0,1fr))}.save-bar-top{top:92px}.planning-profile-toolbar{grid-template-columns:repeat(2,minmax(0,1fr))}.object-table{min-width:880px}.weather-table{min-width:820px}
+}
+@media(max-width:720px){.extended-equipment-row,.optical-row{grid-template-columns:1fr}.framing-view.info-pos-top .framing-info,.framing-view.info-pos-bottom .framing-info{display:block}.save-bar-top{top:74px}}
+
+/* Test 1.1.0-test.8 weather source tabs */
+.weather-source-tabs-card .weather-source-panel{display:none;margin-top:12px}
+.weather-source-tabs-card .weather-source-panel.active{display:block}
+.weather-inner-details{border:1px solid var(--border);border-radius:18px;padding:12px;background:rgba(7,17,31,.45)}
+.flight-weather-grid .metric{min-height:150px}.flight-decoded{margin-top:8px;line-height:1.45}.raw-block{white-space:pre-wrap;overflow:auto;background:rgba(0,0,0,.28);border:1px solid var(--border);border-radius:12px;padding:10px;margin-top:8px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9rem}
+.button.small{display:inline-block;margin-top:8px;padding:6px 10px;border-radius:10px;text-decoration:none}
+.table-wrap{overflow:auto;margin-top:12px}.table-wrap table{width:100%;border-collapse:collapse}.table-wrap th,.table-wrap td{border-bottom:1px solid rgba(150,190,230,.18);padding:8px;text-align:left;white-space:nowrap}
+@media (max-width: 1100px){.grid.four{grid-template-columns:repeat(2,minmax(0,1fr))}.flight-weather-grid{grid-template-columns:1fr}.weather-source-tabs{flex-wrap:wrap}.framing-header-grid{grid-template-columns:1fr 1fr}.extended-equipment-row{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width: 780px){.grid.two,.grid.three,.grid.four,.framing-header-grid,.extended-equipment-row{grid-template-columns:1fr}.settings-tabs{overflow-x:auto;flex-wrap:nowrap}.app-header-inner{flex-wrap:wrap}.profile-bar{flex-wrap:wrap}.framing-controls{flex-wrap:wrap}}
+
+.framing-view .framing-info.hidden{display:none!important}

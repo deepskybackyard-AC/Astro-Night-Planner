@@ -1,7 +1,7 @@
-/* Astro Night Planner 1.0.3 – expliziter Produktiv-Cache */
+/* Astro Night Planner 1.1.0 - Produktiv-Cache */
 'use strict';
 const ENV = 'prod';
-const VERSION = '1.0.3';
+const VERSION = '1.1.0';
 const CACHE_NAME = `astro-night-planner-${ENV}-${VERSION}`;
 const CORE = [
   './', './index.html', './manifest.webmanifest', './VERSION.json', './icon.svg', './icon-192.png', './icon-512.png',
@@ -32,4 +32,8 @@ self.addEventListener('fetch', event => {
     if (response.ok) caches.open(CACHE_NAME).then(cache => cache.put(event.request,response.clone()));
     return response;
   })));
+});
+
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
 });

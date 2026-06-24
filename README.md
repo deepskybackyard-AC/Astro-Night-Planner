@@ -1,41 +1,18 @@
-# Astro Night Planner 1.0.3
+# Astro Night Planner 1.1.0
 
-Produktivversion des Astro Night Planners für GitHub Pages.
+Produktivversion mit erweiterten Wetterquellen, N.I.N.A.-Import/-Export, langfristiger Kalenderplanung, verbesserten Ausrüstungs- und Setup-Daten sowie korrigierter Aladin-Rahmung.
 
-Öffentliche Adresse:
+## Wichtigste Neuerungen
 
-https://planner.deepskyastrophoto.de
-
-## Inhalt der Version 1.0.3
-
-- Korrektur des Produktivpakets 1.0.1: Die Navigation „Planung“ und „Einstellungen“ ist nun auch in der Produktivversion oben rechts in der festen Kopfzeile enthalten.
-- Die versehentlich verbliebene untere/floating Navigation wurde entfernt.
-- LDN-Katalog aus Version 1.0.1 bleibt enthalten: 1787 benannte Lynds-Dunkelnebel, inklusive Suche nach `LDN 1093` und `LDN1093`.
-- Katalogfilter „LDN/LBN“ nutzt weiterhin die importierten LDN-Daten. LBN ist weiterhin noch kein eigener importierter Katalog.
+- Wetter-Tabs fuer Meteoblue, Flugwetter und MOSMIX/Standortprognose.
+- Flugwetterstationen fuer Deutschland koennen in den Einstellungen gewaehlt werden.
+- N.I.N.A.-Horizontimport und -export sowie N.I.N.A.-Export der aktuellen Aladin-Rahmung fuer ein einzelnes Objekt.
+- Kalenderdatum fuer langfristige Planung; wetterabhaengige Bereiche werden ausserhalb des Prognosebereichs ausgeblendet.
+- Planungsrubriken koennen in den Einstellungen vollstaendig angezeigt oder ausgeblendet werden.
+- Ausruestung und Setups unterstuetzen Sensor-/Aufloesungsdaten, Brennweite/f-Zahl und optische Faktoren wie Reducer, Flattener und Barlow.
+- Aladin-Kamerarahmen kann im Verschiebemodus per Dragging verschoben werden; Infofelder koennen positioniert und ausgeblendet werden.
+- Hilfe und Handbuch wurden um Browserdaten-FAQ, Sicherung, N.I.N.A.-Funktionen und neue Wetterbereiche erweitert.
 
 ## Deployment
 
-GitHub Pages ist für dieses Repository auf „Deploy from a branch“ eingestellt:
-
-- Branch: `main`
-- Ordner: `/ (root)`
-
-Zum Einspielen einer neuen Produktivversion den Inhalt des Produktivpakets in das Repository übernehmen, committen und nach `main` pushen.
-
-Die Datei `CNAME` muss im Hauptverzeichnis erhalten bleiben und enthält:
-
-```text
-planner.deepskyastrophoto.de
-```
-
-## Lokale Daten
-
-Persönliche Einstellungen, Profile, Standorte und Ausrüstung werden lokal im Browser in IndexedDB gespeichert. PWA-Dateien liegen im Cache Storage. Vor dem manuellen Löschen von Websitedaten sollte in der App eine Sicherung exportiert werden.
-
-## Dokumente
-
-- `INSTALLATION_ASTRO_NIGHT_PLANNER_1.0.3_PRODUKTIV.md`
-- `KORREKTUREN_PRODUKTVERSION_1.0.3.md`
-- `PRUEFPROTOKOLL_PRODUKTVERSION_1.0.3.md`
-- `docs/ASTRO_NIGHT_PLANNER_HANDBUCH.html`
-- `docs/ASTRO_NIGHT_PLANNER_HANDBUCH.pdf`
+Dieses Paket ist fuer das Produktiv-Repository vorgesehen. GitHub Pages veroeffentlicht aus `main` und `/ (root)`. Es wird kein GitHub-Actions-Workflow benoetigt.

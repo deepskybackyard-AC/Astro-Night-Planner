@@ -15,7 +15,7 @@ Fehlende Werte werden in der App nicht künstlich ergänzt. Wenn einzelne Katalo
 
 ## LDN - Lynds' Catalogue of Dark Nebulae
 
-Mit Produktivversion 1.0.1 wurden 1787 benannte LDN-Einträge importiert. Produktivversion 1.0.2 korrigiert zusätzlich die Kopfzeilen-Navigation des Produktivpakets. Die Filteroption `LDN/LBN` wählt in dieser Version die LDN-Einträge aus. LBN ist weiterhin noch nicht als eigener Katalog importiert.
+Mit Produktivversion 1.0.1 wurden 1787 benannte LDN-Einträge importiert. Ab Version 1.1.0 werden LDN und LBN als getrennte Katalogfilter dargestellt. LBN- und vollständige Barnard-Datensätze werden erst nach separater Prüfung einer maschinenlesbaren Rohquelle vollständig importiert.
 
 Die LDN-Daten enthalten unter anderem Positionen und Flächenangaben. Für die App werden Größenwerte der LDN-Objekte aus der katalogisierten Fläche als äquivalenter Kreis-Durchmesser berechnet. Diese Werte sind eine praktische Hilfe für Größenfilter, Rahmung und Suche, aber keine exakten sichtbaren Objektumrisse.
 
@@ -45,3 +45,15 @@ Für die Aladin-Survey-Auswahl sind zusätzlich HiPS-Einträge der Northern Sky 
 - NSNS DR0.2 · RGB-Kontinuum — `simg.de/P/NSNS/DR0_2/rgb8`
 
 Benutzerdefinierte HiPS-Surveys werden vom Nutzer selbst eingetragen; für deren Nutzbarkeit und Lizenzlage ist die jeweilige Quelle maßgeblich.
+
+
+## Ergänzungen in Version 1.1.0
+
+- LDN bleibt als Lynds Dark Nebulae eingebunden.
+- LBN wird in der Oberfläche als separater Katalogfilter vorbereitet. Der vollständige Import der LBN-Objektdaten muss nach Prüfung der maschinenlesbaren Rohquelle erfolgen.
+- Barnard wird als eigener Katalogfilter vorbereitet; bekannte vorhandene Barnard-Aliase wie B 33/B33 werden in der Suche berücksichtigt. Der vollständige Barnard-Datenbestand wird in einem separaten Katalogimport ergänzt, sobald eine belastbare maschinenlesbare Quelle im Build vorliegt.
+
+
+## Version 1.1.0
+
+Diese Version ergänzt die Wetter-Tabs Meteoblue, Flugwetter und MOSMIX. Flugwetterstationen können in den Einstellungen gewählt werden. METAR/TAF nutzt die AviationWeather-API, MOSMIX/Punktprognose Bright Sky/DWD-Daten. Bei Browser-CORS-Sperren zeigt die App Quellenlinks und Hinweise.

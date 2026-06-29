@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="assets/styles.css" />
   <script src="assets/build-config.js"></script>
   <script>document.documentElement.dataset.environment=(window.ANP_BUILD&&window.ANP_BUILD.environment)||'prod';</script>
-  <title>Astro Night Planner 1.1.0</title>
+  <title>Astro Night Planner 1.2.0</title>
 </head>
 <body>
   <div id="environmentBadge" class="environment-badge" hidden></div>
@@ -36,6 +36,7 @@
         <button type="button" data-main-tab="plan" class="active">☾<span id="bottomPlanLabel">Planung</span></button>
         <button type="button" data-main-tab="settings">⚙<span id="bottomSettingsLabel">Einstellungen</span></button>
       </nav>
+      <button id="headerHelpButton" type="button" class="header-help-button" data-open-help-section="help-storage" title="Hilfe öffnen" aria-label="Hilfe öffnen">?</button>
       <select id="headerProfileSelect" aria-label="Aktives Benutzerprofil"></select>
       <button id="installButton" type="button" hidden>App installieren</button>
     </div>
@@ -53,7 +54,7 @@
     <button type="button" data-legal-page="datenschutz">Datenschutz</button><span>·</span>
     <button type="button" data-legal-page="nutzung">Nutzungshinweise</button><span>·</span>
     <button type="button" data-legal-page="quellen">Datenquellen &amp; Lizenzen</button><span>·</span>
-    <a id="footerHelpLink" href="./docs/ASTRO_NIGHT_PLANNER_HANDBUCH_DE.html" target="_blank" rel="noopener">Hilfe</a><span>·</span>
+    <button id="footerHelpLink" type="button" data-open-help-section="help-storage">Hilfe</button><span>·</span>
     <button type="button" data-legal-page="version">Version</button>
   </footer>
 

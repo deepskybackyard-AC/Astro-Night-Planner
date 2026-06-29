@@ -1,29 +1,87 @@
 {
-  "version": "1.1.0",
-  "release": "1.1.0",
+  "version": "1.2.0",
+  "release": "1.2.0",
   "environment": "prod",
-  "builtAt": "2026-06-24T00:00:00+02:00",
-  "notes": "Produktivversion 1.1.0: Wetter-Tabs, N.I.N.A.-Import/-Export, erweiterte Ausrüstung/Setups, Aladin-Rahmung, Kalenderplanung und erweiterte Hilfe.",
-  "releaseNotes": {
+  "builtAt": "2026-06-28T17:07:22.316917Z",
+  "notes": "Produktivversion 1.2.0: Der separate Wettervergleich wurde entfernt. Externe Wetterquellen bleiben als einzelne Tabs verfügbar. Die Übersicht enthält außerdem die Neuerungen von 1.1.0 gegenüber 1.0.0.",
+  "changes": {
     "de": [
-      "Die zusätzlichen Wetterquellen sind als Tabs für Meteoblue, Flugwetter und MOSMIX organisiert.",
-      "Flugwetterstationen für Deutschland können in den Einstellungen gewählt werden; METAR/TAF-Bereiche enthalten Rohdaten und Quellenlinks.",
-      "MOSMIX bzw. die Standortprognose ergänzt stündliche Wetterhinweise, soweit Daten verfügbar sind.",
-      "N.I.N.A.-Horizontimport und -export sowie der Export der aktuellen Aladin-Rahmung für ein einzelnes Objekt wurden ergänzt.",
-      "Der Aladin-Kamerarahmen kann im Verschiebemodus per Dragging verschoben werden; Infofelder können positioniert und ausgeblendet werden.",
-      "Ausrüstung und Setups unterstützen Brennweite/f-Zahl, Sensor-/Auflösungsdaten sowie Reducer-, Flattener- und Barlow-Faktoren.",
-      "Die Kalenderplanung für spätere Nächte und das Ausblenden von Planungsrubriken wurden ergänzt.",
-      "Hilfe und Handbuch wurden um Browserdaten-FAQ, Sicherung, N.I.N.A.-Funktionen und neue Wetterbereiche erweitert."
+      "1.2.0 gegenüber 1.1.0: Wettervergleich entfernt; Windy, Ventusky, Meteoblue und Clear Outside bleiben als einzelne Quellen mit eigener Bedienung erhalten.",
+      "1.1.0 gegenüber 1.0.0: lokale Profile/PWA, erweiterte Ausrüstung, Aladin-Rahmung, Horizonteditor, zusätzliche Filter, Astro-Wolkenmodell und Sicherung wurden ergänzt."
     ],
     "en": [
-      "Additional weather sources are organized as tabs for Meteoblue, aviation weather and MOSMIX.",
-      "German aviation weather stations can be selected in the settings; METAR/TAF areas include raw data and source links.",
-      "MOSMIX/location forecast adds hourly weather guidance where data is available.",
-      "N.I.N.A. horizon import/export and export of the current Aladin framing for a single object have been added.",
-      "The Aladin camera frame can be dragged in move mode; info boxes can be positioned and hidden.",
-      "Equipment and setups support focal length/f-number, sensor/resolution data and reducer, flattener and Barlow factors.",
-      "Calendar planning for later nights and hiding complete planning sections have been added.",
-      "Help and manual now cover browser data, backups, N.I.N.A. functions and the new weather areas."
+      "1.2.0 compared with 1.1.0: weather comparison removed; Windy, Ventusky, Meteoblue and Clear Outside remain as individual sources with their own controls.",
+      "1.1.0 compared with 1.0.0: local profiles/PWA, extended equipment, Aladin framing, horizon editor, additional filters, astro cloud model and backup were added."
     ]
+  },
+  "releaseNotes": {
+    "de": [
+      "Der separate Wettervergleich in einem neuen Tab wurde entfernt.",
+      "Windy, Ventusky, Meteoblue und Clear Outside bleiben als einzelne externe Kontrollquellen unter „Zusätzliche Wetterquellen“ erhalten.",
+      "Jede externe Wetterquelle verwendet ihre eigene Bedienung und eigene Zeitachse; die Anwendung zeigt keine zentrale Vergleichszeit mehr für diese externen Karten an.",
+      "Die eigene Astro-Wolkenkarte bleibt ausschließlich in der Planungsansicht verfügbar und wird nicht mehr in einem separaten Vergleichsfenster nachgebaut.",
+      "Nicht mehr benötigter Code für Vergleichsfenster, gemeinsame Vergleichszeit und Zeitübergabe an externe Karten wurde entfernt.",
+      "Hilfe, Handbuch und Versionshinweise wurden auf die neue, stabilere Darstellung der Wetterquellen angepasst."
+    ],
+    "en": [
+      "The separate weather comparison in a new tab has been removed.",
+      "Windy, Ventusky, Meteoblue and Clear Outside remain available as individual external reference sources under “Additional weather sources”.",
+      "Each external weather source uses its own controls and timeline; the app no longer displays a shared comparison time for those external maps.",
+      "The own astro cloud map remains available only in the planning view and is no longer rebuilt in a separate comparison window.",
+      "No longer needed code for the comparison window, shared comparison time and time handoff to external maps has been removed.",
+      "Help, handbook and version notes have been adjusted to the more stable handling of weather sources."
+    ]
+  },
+  "versionHistory": {
+    "de": {
+      "version120": {
+        "title": "Version 1.2.0 gegenüber 1.1.0",
+        "items": [
+          "Der separate Wettervergleich in einem neuen Tab wurde entfernt.",
+          "Windy, Ventusky, Meteoblue und Clear Outside bleiben als einzelne externe Kontrollquellen unter „Zusätzliche Wetterquellen“ erhalten.",
+          "Jede externe Wetterquelle verwendet ihre eigene Bedienung und eigene Zeitachse; die Anwendung zeigt keine zentrale Vergleichszeit mehr für diese externen Karten an.",
+          "Die eigene Astro-Wolkenkarte bleibt ausschließlich in der Planungsansicht verfügbar und wird nicht mehr in einem separaten Vergleichsfenster nachgebaut.",
+          "Nicht mehr benötigter Code für Vergleichsfenster, gemeinsame Vergleichszeit und Zeitübergabe an externe Karten wurde entfernt.",
+          "Hilfe, Handbuch und Versionshinweise wurden auf die neue, stabilere Darstellung der Wetterquellen angepasst."
+        ]
+      },
+      "version110": {
+        "title": "Version 1.1.0 gegenüber 1.0.0",
+        "items": [
+          "PWA mit lokalen Benutzerprofilen, getrennter Test-/Produktivspeicherung und Sicherungs-/Wiederherstellungsfunktionen.",
+          "Erweiterte Ausrüstung: Kameras mit Sensor- und Auflösungsdaten, Teleskope und Objektive mit Brennweite und Öffnungsverhältnis sowie Reducer-, Flattener- und Barlow-Faktoren.",
+          "Verbesserte Aladin-Rahmung mit verschiebbarem Kamerarahmen, Infofeldern, Mondanzeige, Objektbeschriftungen, externer Himmelsbildansicht und N.I.N.A.-Export.",
+          "Standorte und Horizontprofile wurden ausgebaut, einschließlich interaktivem Horizonteditor sowie N.I.N.A.-Import und -Export.",
+          "Objektauswahl erweitert: Direktsuche ohne übrige Filter, konfigurierbare Objektlisteninformationen, persönliche Aufnahmeziele und zusätzliche Filteroptionen.",
+          "Wetterbereich erweitert: Astro-Wolkenmodell, stündlicher Wetterverlauf, Modellkonsens, Wolkenschichten, Niederschlag/Regen/Schnee und zusätzliche externe Wetterquellen.",
+          "Hilfe, Browserdaten-FAQ, Update-Mechanik und Bedienung auf Tablet/iPad wurden verbessert."
+        ]
+      }
+    },
+    "en": {
+      "version120": {
+        "title": "Version 1.2.0 compared with 1.1.0",
+        "items": [
+          "The separate weather comparison in a new tab has been removed.",
+          "Windy, Ventusky, Meteoblue and Clear Outside remain available as individual external reference sources under “Additional weather sources”.",
+          "Each external weather source uses its own controls and timeline; the app no longer displays a shared comparison time for those external maps.",
+          "The own astro cloud map remains available only in the planning view and is no longer rebuilt in a separate comparison window.",
+          "No longer needed code for the comparison window, shared comparison time and time handoff to external maps has been removed.",
+          "Help, handbook and version notes have been adjusted to the more stable handling of weather sources."
+        ]
+      },
+      "version110": {
+        "title": "Version 1.1.0 compared with 1.0.0",
+        "items": [
+          "PWA with local user profiles, separate test/production storage and backup/restore functions.",
+          "Extended equipment model: cameras with sensor and resolution data, telescopes and lenses with focal length and focal ratio, plus reducer, flattener and Barlow factors.",
+          "Improved Aladin framing with movable camera frame, information boxes, Moon display, object labels, external sky-image view and N.I.N.A. export.",
+          "Locations and horizon profiles have been extended, including interactive horizon editor and N.I.N.A. import/export.",
+          "Object selection extended with direct search without other filters, configurable object-list information, personal imaging targets and additional filter options.",
+          "Weather section extended with astro cloud model, hourly weather trend, model consensus, cloud layers, precipitation/rain/snow and additional external weather sources.",
+          "Help, browser data FAQ, update handling and tablet/iPad operation have been improved."
+        ]
+      }
+    }
   }
 }

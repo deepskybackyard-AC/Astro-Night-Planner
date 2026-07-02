@@ -1,7 +1,7 @@
-/* Astro Night Planner 1.2.0 - Produktions-Cache */
+/* Astro Night Planner 1.3.0 - Produktiv-Cache */
 'use strict';
 const ENV = 'prod';
-const VERSION = '1.2.0';
+const VERSION = '1.3.0';
 const CACHE_NAME = `astro-night-planner-${ENV}-${VERSION}`;
 const CORE = [
   './', './index.html', './manifest.webmanifest', './VERSION.json', './icon.svg', './icon-192.png', './icon-512.png',
@@ -33,7 +33,6 @@ self.addEventListener('fetch', event => {
     return response;
   })));
 });
-
 self.addEventListener('message', event => {
   if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
 });

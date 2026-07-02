@@ -3,79 +3,113 @@
 window.ANP_BUILD = Object.freeze({
   environment: 'prod',
   repositoryRole: 'prod',
-  appVersion: '1.2.0',
-  release: '1.2.0',
+  appVersion: '1.3.0',
+  release: '1.3.0',
   databaseName: 'astro-night-planner-prod-v1',
   badgeText: '',
-  documentTitle: 'Astro Night Planner 1.2.0',
+  documentTitle: 'Astro Night Planner 1.3.0',
   releaseNotes: {
-    "de": [
-        "Der separate Wettervergleich in einem neuen Tab wurde entfernt.",
-        "Windy, Ventusky, Meteoblue und Clear Outside bleiben als einzelne externe Kontrollquellen unter „Zusätzliche Wetterquellen“ erhalten.",
-        "Jede externe Wetterquelle verwendet ihre eigene Bedienung und eigene Zeitachse; die Anwendung zeigt keine zentrale Vergleichszeit mehr für diese externen Karten an.",
-        "Die eigene Astro-Wolkenkarte bleibt ausschließlich in der Planungsansicht verfügbar und wird nicht mehr in einem separaten Vergleichsfenster nachgebaut.",
-        "Nicht mehr benötigter Code für Vergleichsfenster, gemeinsame Vergleichszeit und Zeitübergabe an externe Karten wurde entfernt.",
-        "Hilfe, Handbuch und Versionshinweise wurden auf die neue, stabilere Darstellung der Wetterquellen angepasst."
-    ],
-    "en": [
-        "The separate weather comparison in a new tab has been removed.",
-        "Windy, Ventusky, Meteoblue and Clear Outside remain available as individual external reference sources under “Additional weather sources”.",
-        "Each external weather source uses its own controls and timeline; the app no longer displays a shared comparison time for those external maps.",
-        "The own astro cloud map remains available only in the planning view and is no longer rebuilt in a separate comparison window.",
-        "No longer needed code for the comparison window, shared comparison time and time handoff to external maps has been removed.",
-        "Help, handbook and version notes have been adjusted to the more stable handling of weather sources."
-    ]
+  "de": [
+    "Planungsnächte zeigen jetzt Mondbeleuchtung und eine farbige durchschnittliche Nachtqualität direkt in den Datumsbuttons.",
+    "Die Objektliste wurde um persönliche Horizontinformationen erweitert: Mini-Höhenprofil mit Horizontlinie sowie getrennte Sichtbarkeitsangaben für Mindesthöhe, persönlichen Horizont und die Kombination aus beiden.",
+    "Der stündliche Wetterverlauf kann als Mehrnächte-Ansicht in einem eigenen Tab geöffnet werden; die Anzahl zusätzlicher Nächte ist konfigurierbar.",
+    "Ein neuer Polarlicht-Hinweis lädt beim App-Start automatisch NOAA/SWPC-Daten, bewertet Kp/G-Werte standortbezogen und öffnet ein eigenes Polarlicht-Dashboard.",
+    "Polarlicht-Aktualisierung, Warnstufen und Benachrichtigungsschwellen sind in einer eigenen Einstellungsrubrik konfigurierbar.",
+    "Der externe Aladin-Tab wurde um Orientierungshilfen erweitert: Boden-/Horizontanzeige, optional persönlicher Horizont, azimutales App-Gradnetz mit Auto-Abstufung, Farbe, Linienstärke und Gradbeschriftungen.",
+    "Die Aladin-Infofelder unterscheiden nun Höhe über mathematischem Horizont und Höhe über persönlichem Horizont.",
+    "Anzeige- und Aladin-Einstellungen wurden neu strukturiert; Survey-Auswahl und Himmel-/Horizontoptionen sind getrennt auffindbar.",
+    "Die Objektlisten-Darstellung wurde stabilisiert, lange Spaltenüberschriften werden umbrochen und die horizontale Scrolllogik bleibt auch mit geöffneter Detailansicht nutzbar.",
+    "Hilfe, Handbuch und Übersetzungen wurden zu Polarlicht, Mehrnächte-Wetter, Horizont-/Sichtbarkeitsangaben und Aladin-Orientierungshilfen erweitert."
+  ],
+  "en": [
+    "Planning-night buttons now show Moon illumination and a color-coded average night quality directly in the date buttons.",
+    "The object list now includes personal-horizon information: mini altitude profiles with horizon line and separate visibility values for minimum altitude, personal horizon and the combination of both.",
+    "The hourly weather trend can be opened as a multi-night view in a separate tab; the number of additional nights is configurable.",
+    "A new aurora indicator automatically loads NOAA/SWPC data on app start, evaluates Kp/G values relative to the selected location and opens a dedicated aurora dashboard.",
+    "Aurora refresh interval, warning levels and notification threshold are configurable in a dedicated settings section.",
+    "The external Aladin tab adds orientation aids: ground/horizon display, optional personal horizon, azimuthal app grid with automatic spacing, color, line width and degree labels.",
+    "Aladin information boxes now distinguish altitude above mathematical horizon and altitude above personal horizon.",
+    "Display and Aladin settings were reorganized; survey selection and sky/horizon options are separated.",
+    "Object-list layout was stabilized, long column headings wrap, and horizontal scrolling remains usable with object details open.",
+    "Help, manual and translations were extended for aurora, multi-night weather, horizon/visibility values and Aladin orientation aids."
+  ]
 },
   versionHistory: {
-    "de": {
-        "version120": {
-            "title": "Version 1.2.0 gegenüber 1.1.0",
-            "items": [
-                "Der separate Wettervergleich in einem neuen Tab wurde entfernt.",
-                "Windy, Ventusky, Meteoblue und Clear Outside bleiben als einzelne externe Kontrollquellen unter „Zusätzliche Wetterquellen“ erhalten.",
-                "Jede externe Wetterquelle verwendet ihre eigene Bedienung und eigene Zeitachse; die Anwendung zeigt keine zentrale Vergleichszeit mehr für diese externen Karten an.",
-                "Die eigene Astro-Wolkenkarte bleibt ausschließlich in der Planungsansicht verfügbar und wird nicht mehr in einem separaten Vergleichsfenster nachgebaut.",
-                "Nicht mehr benötigter Code für Vergleichsfenster, gemeinsame Vergleichszeit und Zeitübergabe an externe Karten wurde entfernt.",
-                "Hilfe, Handbuch und Versionshinweise wurden auf die neue, stabilere Darstellung der Wetterquellen angepasst."
-            ]
-        },
-        "version110": {
-            "title": "Version 1.1.0 gegenüber 1.0.0",
-            "items": [
-                "PWA mit lokalen Benutzerprofilen, getrennter Test-/Produktivspeicherung und Sicherungs-/Wiederherstellungsfunktionen.",
-                "Erweiterte Ausrüstung: Kameras mit Sensor- und Auflösungsdaten, Teleskope und Objektive mit Brennweite und Öffnungsverhältnis sowie Reducer-, Flattener- und Barlow-Faktoren.",
-                "Verbesserte Aladin-Rahmung mit verschiebbarem Kamerarahmen, Infofeldern, Mondanzeige, Objektbeschriftungen, externer Himmelsbildansicht und N.I.N.A.-Export.",
-                "Standorte und Horizontprofile wurden ausgebaut, einschließlich interaktivem Horizonteditor sowie N.I.N.A.-Import und -Export.",
-                "Objektauswahl erweitert: Direktsuche ohne übrige Filter, konfigurierbare Objektlisteninformationen, persönliche Aufnahmeziele und zusätzliche Filteroptionen.",
-                "Wetterbereich erweitert: Astro-Wolkenmodell, stündlicher Wetterverlauf, Modellkonsens, Wolkenschichten, Niederschlag/Regen/Schnee und zusätzliche externe Wetterquellen.",
-                "Hilfe, Browserdaten-FAQ, Update-Mechanik und Bedienung auf Tablet/iPad wurden verbessert."
-            ]
-        }
+  "de": {
+    "version130": {
+      "title": "Version 1.3.0 gegenüber 1.2.0",
+      "items": [
+        "Planungsnächte zeigen jetzt Mondbeleuchtung und eine farbige durchschnittliche Nachtqualität direkt in den Datumsbuttons.",
+        "Die Objektliste wurde um persönliche Horizontinformationen erweitert: Mini-Höhenprofil mit Horizontlinie sowie getrennte Sichtbarkeitsangaben für Mindesthöhe, persönlichen Horizont und die Kombination aus beiden.",
+        "Der stündliche Wetterverlauf kann als Mehrnächte-Ansicht in einem eigenen Tab geöffnet werden; die Anzahl zusätzlicher Nächte ist konfigurierbar.",
+        "Ein neuer Polarlicht-Hinweis lädt beim App-Start automatisch NOAA/SWPC-Daten, bewertet Kp/G-Werte standortbezogen und öffnet ein eigenes Polarlicht-Dashboard.",
+        "Polarlicht-Aktualisierung, Warnstufen und Benachrichtigungsschwellen sind in einer eigenen Einstellungsrubrik konfigurierbar.",
+        "Der externe Aladin-Tab wurde um Orientierungshilfen erweitert: Boden-/Horizontanzeige, optional persönlicher Horizont, azimutales App-Gradnetz mit Auto-Abstufung, Farbe, Linienstärke und Gradbeschriftungen.",
+        "Die Aladin-Infofelder unterscheiden nun Höhe über mathematischem Horizont und Höhe über persönlichem Horizont.",
+        "Anzeige- und Aladin-Einstellungen wurden neu strukturiert; Survey-Auswahl und Himmel-/Horizontoptionen sind getrennt auffindbar.",
+        "Die Objektlisten-Darstellung wurde stabilisiert, lange Spaltenüberschriften werden umbrochen und die horizontale Scrolllogik bleibt auch mit geöffneter Detailansicht nutzbar.",
+        "Hilfe, Handbuch und Übersetzungen wurden zu Polarlicht, Mehrnächte-Wetter, Horizont-/Sichtbarkeitsangaben und Aladin-Orientierungshilfen erweitert."
+      ]
     },
-    "en": {
-        "version120": {
-            "title": "Version 1.2.0 compared with 1.1.0",
-            "items": [
-                "The separate weather comparison in a new tab has been removed.",
-                "Windy, Ventusky, Meteoblue and Clear Outside remain available as individual external reference sources under “Additional weather sources”.",
-                "Each external weather source uses its own controls and timeline; the app no longer displays a shared comparison time for those external maps.",
-                "The own astro cloud map remains available only in the planning view and is no longer rebuilt in a separate comparison window.",
-                "No longer needed code for the comparison window, shared comparison time and time handoff to external maps has been removed.",
-                "Help, handbook and version notes have been adjusted to the more stable handling of weather sources."
-            ]
-        },
-        "version110": {
-            "title": "Version 1.1.0 compared with 1.0.0",
-            "items": [
-                "PWA with local user profiles, separate test/production storage and backup/restore functions.",
-                "Extended equipment model: cameras with sensor and resolution data, telescopes and lenses with focal length and focal ratio, plus reducer, flattener and Barlow factors.",
-                "Improved Aladin framing with movable camera frame, information boxes, Moon display, object labels, external sky-image view and N.I.N.A. export.",
-                "Locations and horizon profiles have been extended, including interactive horizon editor and N.I.N.A. import/export.",
-                "Object selection extended with direct search without other filters, configurable object-list information, personal imaging targets and additional filter options.",
-                "Weather section extended with astro cloud model, hourly weather trend, model consensus, cloud layers, precipitation/rain/snow and additional external weather sources.",
-                "Help, browser data FAQ, update handling and tablet/iPad operation have been improved."
-            ]
-        }
+    "version120": {
+      "title": "Version 1.2.0 gegenüber 1.1.0",
+      "items": [
+        "Flugwetter/METAR/TAF und MOSMIX wurden nicht mehr als eigene Bereiche weitergeführt; stattdessen bleiben Meteoblue, Clear Outside, Windy und Ventusky als einzelne externe Kontrollquellen verfügbar.",
+        "Windy, Ventusky, Meteoblue und Clear Outside verwenden jeweils ihre eigene Bedienung und Zeitachse.",
+        "Die eigene Astro-Wolkenkarte bleibt in der Planungsansicht verfügbar und wird nicht in einem separaten Vergleichsfenster nachgebaut.",
+        "Hilfe, Handbuch und Versionshinweise wurden auf die stabilere Darstellung der Wetterquellen angepasst."
+      ]
+    },
+    "version110": {
+      "title": "Version 1.1.0 gegenüber 1.0.0",
+      "items": [
+        "PWA mit lokalen Benutzerprofilen, getrennter Test-/Produktivspeicherung und Sicherungs-/Wiederherstellungsfunktionen.",
+        "Erweiterte Ausrüstung: Kameras mit Sensor- und Auflösungsdaten, Teleskope und Objektive mit Brennweite und Öffnungsverhältnis sowie Reducer-, Flattener- und Barlow-Faktoren.",
+        "Verbesserte Aladin-Rahmung mit verschiebbarem Kamerarahmen, Infofeldern, Mondanzeige, Objektbeschriftungen, externer Himmelsbildansicht und N.I.N.A.-Export.",
+        "Standorte und Horizontprofile wurden ausgebaut, einschließlich interaktivem Horizonteditor sowie N.I.N.A.-Import und -Export.",
+        "Objektauswahl erweitert: Direktsuche ohne übrige Filter, konfigurierbare Objektlisteninformationen, persönliche Aufnahmeziele und zusätzliche Filteroptionen.",
+        "Wetterbereich erweitert: Astro-Wolkenmodell, stündlicher Wetterverlauf, Modellkonsens, Wolkenschichten, Niederschlag/Regen/Schnee und zusätzliche externe Wetterquellen.",
+        "Hilfe, Browserdaten-FAQ, Update-Mechanik und Bedienung auf Tablet/iPad wurden verbessert."
+      ]
     }
+  },
+  "en": {
+    "version130": {
+      "title": "Version 1.3.0 compared with 1.2.0",
+      "items": [
+        "Planning-night buttons now show Moon illumination and a color-coded average night quality directly in the date buttons.",
+        "The object list now includes personal-horizon information: mini altitude profiles with horizon line and separate visibility values for minimum altitude, personal horizon and the combination of both.",
+        "The hourly weather trend can be opened as a multi-night view in a separate tab; the number of additional nights is configurable.",
+        "A new aurora indicator automatically loads NOAA/SWPC data on app start, evaluates Kp/G values relative to the selected location and opens a dedicated aurora dashboard.",
+        "Aurora refresh interval, warning levels and notification threshold are configurable in a dedicated settings section.",
+        "The external Aladin tab adds orientation aids: ground/horizon display, optional personal horizon, azimuthal app grid with automatic spacing, color, line width and degree labels.",
+        "Aladin information boxes now distinguish altitude above mathematical horizon and altitude above personal horizon.",
+        "Display and Aladin settings were reorganized; survey selection and sky/horizon options are separated.",
+        "Object-list layout was stabilized, long column headings wrap, and horizontal scrolling remains usable with object details open.",
+        "Help, manual and translations were extended for aurora, multi-night weather, horizon/visibility values and Aladin orientation aids."
+      ]
+    },
+    "version120": {
+      "title": "Version 1.2.0 compared with 1.1.0",
+      "items": [
+        "Flight weather/METAR/TAF and MOSMIX are no longer continued as dedicated sections; Meteoblue, Clear Outside, Windy and Ventusky remain available as individual external reference sources.",
+        "Windy, Ventusky, Meteoblue and Clear Outside each use their own controls and timeline.",
+        "The own astro cloud map remains available in the planning view and is not rebuilt in a separate comparison window.",
+        "Help, manual and version notes have been adjusted to the more stable handling of weather sources."
+      ]
+    },
+    "version110": {
+      "title": "Version 1.1.0 compared with 1.0.0",
+      "items": [
+        "PWA with local user profiles, separate test/production storage and backup/restore functions.",
+        "Extended equipment model: cameras with sensor and resolution data, telescopes and lenses with focal length and focal ratio, plus reducer, flattener and Barlow factors.",
+        "Improved Aladin framing with movable camera frame, information boxes, Moon display, object labels, external sky-image view and N.I.N.A. export.",
+        "Locations and horizon profiles have been extended, including interactive horizon editor and N.I.N.A. import/export.",
+        "Object selection extended with direct search without other filters, configurable object-list information, personal imaging targets and additional filter options.",
+        "Weather section extended with astro cloud model, hourly weather trend, model consensus, cloud layers, precipitation/rain/snow and additional external weather sources.",
+        "Help, browser data FAQ, update handling and tablet/iPad operation have been improved."
+      ]
+    }
+  }
 }
 });

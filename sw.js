@@ -1,7 +1,7 @@
-/* Astro Night Planner 1.3.0 - Produktiv-Cache */
+/* Astro Night Planner 1.3.1 - Produktiv-Cache */
 'use strict';
 const ENV = 'prod';
-const VERSION = '1.3.0';
+const VERSION = '1.3.1';
 const CACHE_NAME = `astro-night-planner-${ENV}-${VERSION}`;
 const CORE = [
   './', './index.html', './manifest.webmanifest', './VERSION.json', './icon.svg', './icon-192.png', './icon-512.png',

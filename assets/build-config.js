@@ -1,115 +1,85 @@
-/* Explizite Build-Konfiguration: Produktiv-Repository */
+/* Explizite Build-Konfiguration: TEST-Repository */
 'use strict';
 window.ANP_BUILD = Object.freeze({
-  environment: 'prod',
-  repositoryRole: 'prod',
-  appVersion: '1.3.0',
-  release: '1.3.0',
-  databaseName: 'astro-night-planner-prod-v1',
-  badgeText: '',
-  documentTitle: 'Astro Night Planner 1.3.0',
+  environment: 'test',
+  repositoryRole: 'test',
+  appVersion: '1.3.1-test.2',
+  release: '1.3.1-test.2',
+  databaseName: 'astro-night-planner-test-v1',
+  badgeText: 'TESTVERSION',
+  documentTitle: 'Astro Night Planner 1.3.1-test.2',
   releaseNotes: {
-  "de": [
-    "Planungsnächte zeigen jetzt Mondbeleuchtung und eine farbige durchschnittliche Nachtqualität direkt in den Datumsbuttons.",
-    "Die Objektliste wurde um persönliche Horizontinformationen erweitert: Mini-Höhenprofil mit Horizontlinie sowie getrennte Sichtbarkeitsangaben für Mindesthöhe, persönlichen Horizont und die Kombination aus beiden.",
-    "Der stündliche Wetterverlauf kann als Mehrnächte-Ansicht in einem eigenen Tab geöffnet werden; die Anzahl zusätzlicher Nächte ist konfigurierbar.",
-    "Ein neuer Polarlicht-Hinweis lädt beim App-Start automatisch NOAA/SWPC-Daten, bewertet Kp/G-Werte standortbezogen und öffnet ein eigenes Polarlicht-Dashboard.",
-    "Polarlicht-Aktualisierung, Warnstufen und Benachrichtigungsschwellen sind in einer eigenen Einstellungsrubrik konfigurierbar.",
-    "Der externe Aladin-Tab wurde um Orientierungshilfen erweitert: Boden-/Horizontanzeige, optional persönlicher Horizont, azimutales App-Gradnetz mit Auto-Abstufung, Farbe, Linienstärke und Gradbeschriftungen.",
-    "Die Aladin-Infofelder unterscheiden nun Höhe über mathematischem Horizont und Höhe über persönlichem Horizont.",
-    "Anzeige- und Aladin-Einstellungen wurden neu strukturiert; Survey-Auswahl und Himmel-/Horizontoptionen sind getrennt auffindbar.",
-    "Die Objektlisten-Darstellung wurde stabilisiert, lange Spaltenüberschriften werden umbrochen und die horizontale Scrolllogik bleibt auch mit geöffneter Detailansicht nutzbar.",
-    "Hilfe, Handbuch und Übersetzungen wurden zu Polarlicht, Mehrnächte-Wetter, Horizont-/Sichtbarkeitsangaben und Aladin-Orientierungshilfen erweitert."
-  ],
-  "en": [
-    "Planning-night buttons now show Moon illumination and a color-coded average night quality directly in the date buttons.",
-    "The object list now includes personal-horizon information: mini altitude profiles with horizon line and separate visibility values for minimum altitude, personal horizon and the combination of both.",
-    "The hourly weather trend can be opened as a multi-night view in a separate tab; the number of additional nights is configurable.",
-    "A new aurora indicator automatically loads NOAA/SWPC data on app start, evaluates Kp/G values relative to the selected location and opens a dedicated aurora dashboard.",
-    "Aurora refresh interval, warning levels and notification threshold are configurable in a dedicated settings section.",
-    "The external Aladin tab adds orientation aids: ground/horizon display, optional personal horizon, azimuthal app grid with automatic spacing, color, line width and degree labels.",
-    "Aladin information boxes now distinguish altitude above mathematical horizon and altitude above personal horizon.",
-    "Display and Aladin settings were reorganized; survey selection and sky/horizon options are separated.",
-    "Object-list layout was stabilized, long column headings wrap, and horizontal scrolling remains usable with object details open.",
-    "Help, manual and translations were extended for aurora, multi-night weather, horizon/visibility values and Aladin orientation aids."
-  ]
-},
-  versionHistory: {
-  "de": {
-    "version130": {
-      "title": "Version 1.3.0 gegenüber 1.2.0",
-      "items": [
-        "Planungsnächte zeigen jetzt Mondbeleuchtung und eine farbige durchschnittliche Nachtqualität direkt in den Datumsbuttons.",
-        "Die Objektliste wurde um persönliche Horizontinformationen erweitert: Mini-Höhenprofil mit Horizontlinie sowie getrennte Sichtbarkeitsangaben für Mindesthöhe, persönlichen Horizont und die Kombination aus beiden.",
-        "Der stündliche Wetterverlauf kann als Mehrnächte-Ansicht in einem eigenen Tab geöffnet werden; die Anzahl zusätzlicher Nächte ist konfigurierbar.",
-        "Ein neuer Polarlicht-Hinweis lädt beim App-Start automatisch NOAA/SWPC-Daten, bewertet Kp/G-Werte standortbezogen und öffnet ein eigenes Polarlicht-Dashboard.",
-        "Polarlicht-Aktualisierung, Warnstufen und Benachrichtigungsschwellen sind in einer eigenen Einstellungsrubrik konfigurierbar.",
-        "Der externe Aladin-Tab wurde um Orientierungshilfen erweitert: Boden-/Horizontanzeige, optional persönlicher Horizont, azimutales App-Gradnetz mit Auto-Abstufung, Farbe, Linienstärke und Gradbeschriftungen.",
-        "Die Aladin-Infofelder unterscheiden nun Höhe über mathematischem Horizont und Höhe über persönlichem Horizont.",
-        "Anzeige- und Aladin-Einstellungen wurden neu strukturiert; Survey-Auswahl und Himmel-/Horizontoptionen sind getrennt auffindbar.",
-        "Die Objektlisten-Darstellung wurde stabilisiert, lange Spaltenüberschriften werden umbrochen und die horizontale Scrolllogik bleibt auch mit geöffneter Detailansicht nutzbar.",
-        "Hilfe, Handbuch und Übersetzungen wurden zu Polarlicht, Mehrnächte-Wetter, Horizont-/Sichtbarkeitsangaben und Aladin-Orientierungshilfen erweitert."
-      ]
-    },
-    "version120": {
-      "title": "Version 1.2.0 gegenüber 1.1.0",
-      "items": [
-        "Flugwetter/METAR/TAF und MOSMIX wurden nicht mehr als eigene Bereiche weitergeführt; stattdessen bleiben Meteoblue, Clear Outside, Windy und Ventusky als einzelne externe Kontrollquellen verfügbar.",
-        "Windy, Ventusky, Meteoblue und Clear Outside verwenden jeweils ihre eigene Bedienung und Zeitachse.",
-        "Die eigene Astro-Wolkenkarte bleibt in der Planungsansicht verfügbar und wird nicht in einem separaten Vergleichsfenster nachgebaut.",
-        "Hilfe, Handbuch und Versionshinweise wurden auf die stabilere Darstellung der Wetterquellen angepasst."
-      ]
-    },
-    "version110": {
-      "title": "Version 1.1.0 gegenüber 1.0.0",
-      "items": [
-        "PWA mit lokalen Benutzerprofilen, getrennter Test-/Produktivspeicherung und Sicherungs-/Wiederherstellungsfunktionen.",
-        "Erweiterte Ausrüstung: Kameras mit Sensor- und Auflösungsdaten, Teleskope und Objektive mit Brennweite und Öffnungsverhältnis sowie Reducer-, Flattener- und Barlow-Faktoren.",
-        "Verbesserte Aladin-Rahmung mit verschiebbarem Kamerarahmen, Infofeldern, Mondanzeige, Objektbeschriftungen, externer Himmelsbildansicht und N.I.N.A.-Export.",
-        "Standorte und Horizontprofile wurden ausgebaut, einschließlich interaktivem Horizonteditor sowie N.I.N.A.-Import und -Export.",
-        "Objektauswahl erweitert: Direktsuche ohne übrige Filter, konfigurierbare Objektlisteninformationen, persönliche Aufnahmeziele und zusätzliche Filteroptionen.",
-        "Wetterbereich erweitert: Astro-Wolkenmodell, stündlicher Wetterverlauf, Modellkonsens, Wolkenschichten, Niederschlag/Regen/Schnee und zusätzliche externe Wetterquellen.",
-        "Hilfe, Browserdaten-FAQ, Update-Mechanik und Bedienung auf Tablet/iPad wurden verbessert."
-      ]
-    }
+    de: [
+      'Polarlicht-Bewertung korrigiert: NOAA-Alert-Meldungen setzen nicht mehr allein eine lokale Warnfarbe; maßgeblich sind auswertbare Kp-Daten.',
+      'NOAA-Kp-Prognose, beobachteter NOAA-Kp und GFZ-Kp-Prognose werden getrennt ausgewertet und im Dashboard nachvollziehbar angezeigt.',
+      'Das Polarlicht-Dashboard enthält einen Button „Polarlichtdaten aktualisieren“ sowie NOAA- und GFZ-Kontrollgrafiken mit Vergrößern- und Quellenfunktionen.',
+      'Der GFZ-Kontrolllink führt jetzt zur Vorhersageseite. Hilfe und Handbuch erklären Datenquellen, Warnstufen und Grenzen der lokalen Polarlichtbewertung.',
+      'Der Hilfe-Button „Neuerungen“ öffnet wieder eine versionsweise Übersicht: aktuelle Version zuerst, danach ältere Versionsschritte.'
+    ],
+    en: [
+      'Aurora assessment corrected: NOAA alert messages no longer set a local warning color by themselves; machine-readable Kp data is decisive.',
+      'NOAA Kp forecast, observed NOAA Kp and GFZ Kp forecast are evaluated separately and shown transparently in the dashboard.',
+      'The aurora dashboard now includes a Refresh aurora data button plus NOAA and GFZ reference graphics with enlarge and source actions.',
+      'The GFZ reference link now opens the forecast page. Help and manual explain data sources, warning levels and limits of local aurora assessment.',
+      'The Help button “What’s new” now opens a versioned overview: current version first, followed by older version steps.'
+    ]
   },
-  "en": {
-    "version130": {
-      "title": "Version 1.3.0 compared with 1.2.0",
-      "items": [
-        "Planning-night buttons now show Moon illumination and a color-coded average night quality directly in the date buttons.",
-        "The object list now includes personal-horizon information: mini altitude profiles with horizon line and separate visibility values for minimum altitude, personal horizon and the combination of both.",
-        "The hourly weather trend can be opened as a multi-night view in a separate tab; the number of additional nights is configurable.",
-        "A new aurora indicator automatically loads NOAA/SWPC data on app start, evaluates Kp/G values relative to the selected location and opens a dedicated aurora dashboard.",
-        "Aurora refresh interval, warning levels and notification threshold are configurable in a dedicated settings section.",
-        "The external Aladin tab adds orientation aids: ground/horizon display, optional personal horizon, azimuthal app grid with automatic spacing, color, line width and degree labels.",
-        "Aladin information boxes now distinguish altitude above mathematical horizon and altitude above personal horizon.",
-        "Display and Aladin settings were reorganized; survey selection and sky/horizon options are separated.",
-        "Object-list layout was stabilized, long column headings wrap, and horizontal scrolling remains usable with object details open.",
-        "Help, manual and translations were extended for aurora, multi-night weather, horizon/visibility values and Aladin orientation aids."
-      ]
+  versionHistory: {
+    de: {
+      version131: { title: 'Version 1.3.1 gegenüber 1.3.0', items: [
+        'Korrigierte Polarlicht-Bewertung mit strengerer Trennung von Kp-Daten, NOAA-Warnmeldungen und lokalen Warnfarben.',
+        'GFZ-Kp-Prognose als zusätzliche seriöse Kontroll- und Bewertungsquelle.',
+        'Polarlicht-Dashboard mit Aktualisieren-Button, NOAA-/GFZ-Kontrollgrafiken, Vergrößerungsansicht und Quellenlinks.',
+        'Neuerungsübersicht in der Hilfe funktioniert wieder und zeigt aktuelle Neuerungen vor älteren Versionen.'
+      ]},
+      version130: { title: 'Version 1.3.0 gegenüber 1.2.0', items: [
+        'Datumsbuttons mit Mondbeleuchtung und farbiger durchschnittlicher Nachtqualität.',
+        'Objektliste mit persönlicher Horizontlinie im Mini-Höhenprofil und getrennten Sichtbarkeitsangaben.',
+        'Mehrnächte-Wetterverlauf in einem eigenen Tab.',
+        'Polarlicht-Hinweis mit Dashboard und konfigurierbarem Aktualisierungsintervall.',
+        'Externer Aladin-Tab mit Boden-/Horizontanzeige und azimutalem App-Gradnetz.'
+      ]},
+      version120: { title: 'Version 1.2.0 gegenüber 1.1.0', items: [
+        'Flugwetter/METAR/TAF und MOSMIX wurden nicht mehr als eigene Bereiche geführt.',
+        'Meteoblue, Clear Outside, Windy und Ventusky bleiben als einzelne externe Kontrollquellen verfügbar.',
+        'Der Wettervergleich wurde zugunsten stabiler Einzelquellen entfernt.',
+        'Hilfe, Handbuch und Versionshinweise wurden an die stabilere Darstellung der Wetterquellen angepasst.'
+      ]},
+      version110: { title: 'Version 1.1.0 gegenüber 1.0.0', items: [
+        'PWA mit lokalen Benutzerprofilen und Sicherungs-/Wiederherstellungsfunktionen.',
+        'Erweiterte Ausrüstung, Standorte und Horizontprofile.',
+        'Verbesserte Aladin-Rahmung mit Mondanzeige, Objektlabels und N.I.N.A.-Export.',
+        'Erweiterte Objektfilter, Direktsuche, Aufnahmeziele und konfigurierbare Objektlisteninformationen.',
+        'Ausgebauter Wetterbereich mit Astro-Wolkenmodell, stündlichem Verlauf und Modellkonsens.'
+      ]}
     },
-    "version120": {
-      "title": "Version 1.2.0 compared with 1.1.0",
-      "items": [
-        "Flight weather/METAR/TAF and MOSMIX are no longer continued as dedicated sections; Meteoblue, Clear Outside, Windy and Ventusky remain available as individual external reference sources.",
-        "Windy, Ventusky, Meteoblue and Clear Outside each use their own controls and timeline.",
-        "The own astro cloud map remains available in the planning view and is not rebuilt in a separate comparison window.",
-        "Help, manual and version notes have been adjusted to the more stable handling of weather sources."
-      ]
-    },
-    "version110": {
-      "title": "Version 1.1.0 compared with 1.0.0",
-      "items": [
-        "PWA with local user profiles, separate test/production storage and backup/restore functions.",
-        "Extended equipment model: cameras with sensor and resolution data, telescopes and lenses with focal length and focal ratio, plus reducer, flattener and Barlow factors.",
-        "Improved Aladin framing with movable camera frame, information boxes, Moon display, object labels, external sky-image view and N.I.N.A. export.",
-        "Locations and horizon profiles have been extended, including interactive horizon editor and N.I.N.A. import/export.",
-        "Object selection extended with direct search without other filters, configurable object-list information, personal imaging targets and additional filter options.",
-        "Weather section extended with astro cloud model, hourly weather trend, model consensus, cloud layers, precipitation/rain/snow and additional external weather sources.",
-        "Help, browser data FAQ, update handling and tablet/iPad operation have been improved."
-      ]
+    en: {
+      version131: { title: 'Version 1.3.1 compared with 1.3.0', items: [
+        'Corrected aurora assessment with a stricter separation of Kp data, NOAA alerts and local warning colors.',
+        'GFZ Kp forecast added as an additional authoritative reference and assessment source.',
+        'Aurora dashboard with refresh button, NOAA/GFZ reference graphics, enlarged view and source links.',
+        'The Help “What’s new” entry works again and shows current changes before older versions.'
+      ]},
+      version130: { title: 'Version 1.3.0 compared with 1.2.0', items: [
+        'Date buttons with Moon illumination and colored average night quality.',
+        'Object list with personal horizon line in the mini altitude chart and separate visibility values.',
+        'Multi-night weather trend in a dedicated tab.',
+        'Aurora notice with dashboard and configurable refresh interval.',
+        'External Aladin tab with ground/horizon view and azimuthal app grid.'
+      ]},
+      version120: { title: 'Version 1.2.0 compared with 1.1.0', items: [
+        'METAR/TAF aviation weather and MOSMIX are no longer maintained as separate app sections.',
+        'Meteoblue, Clear Outside, Windy and Ventusky remain available as individual external reference sources.',
+        'The weather comparison was removed in favor of stable single-source tabs.',
+        'Help, manual and version notes were adjusted to the more stable weather-source handling.'
+      ]},
+      version110: { title: 'Version 1.1.0 compared with 1.0.0', items: [
+        'PWA with local user profiles and backup/restore functions.',
+        'Extended equipment, locations and horizon profiles.',
+        'Improved Aladin framing with Moon display, object labels and N.I.N.A. export.',
+        'Extended object filters, direct search, imaging targets and configurable object-list information.',
+        'Extended weather section with astro cloud model, hourly trend and model consensus.'
+      ]}
     }
   }
-}
 });

@@ -1,41 +1,62 @@
-/* Astro Night Planner 1.3.1-test.2 – Testversion */
+/* Astro Night Planner 1.3.0 – Produktivversion */
 'use strict';
 
-const BUILD = Object.freeze(window.ANP_BUILD || {environment:'test', appVersion:'1.3.1-test.2', release:'1.3.1-test.2', databaseName:'astro-night-planner-test-v1', documentTitle:'Astro Night Planner 1.3.1-test.2'});
+const BUILD = Object.freeze(window.ANP_BUILD || {environment:'prod', appVersion:'1.3.0', release:'1.3.0', databaseName:'astro-night-planner-prod-v1', documentTitle:'Astro Night Planner 1.3.0'});
 const ENV = BUILD.environment === 'test' ? 'test' : 'prod';
 const APP_VERSION = BUILD.appVersion || '1.0.0';
 const RELEASE = BUILD.release || '1.0';
 const DB_NAME = BUILD.databaseName || `astro-night-planner-${ENV}-v1`;
 const DEFAULT_RELEASE_NOTES = {
   "de": [
-    "Der separate Wettervergleich in einem neuen Tab wurde entfernt.",
-    "Windy, Ventusky, Meteoblue und Clear Outside bleiben als einzelne externe Kontrollquellen unter „Zusätzliche Wetterquellen“ erhalten.",
-    "Jede externe Wetterquelle verwendet ihre eigene Bedienung und eigene Zeitachse; die Anwendung zeigt keine zentrale Vergleichszeit mehr für diese externen Karten an.",
-    "Die eigene Astro-Wolkenkarte bleibt ausschließlich in der Planungsansicht verfügbar und wird nicht mehr in einem separaten Vergleichsfenster nachgebaut.",
-    "Nicht mehr benötigter Code für Vergleichsfenster, gemeinsame Vergleichszeit und Zeitübergabe an externe Karten wurde entfernt.",
-    "Hilfe, Handbuch und Versionshinweise wurden auf die neue, stabilere Darstellung der Wetterquellen angepasst."
+    "Planungsnächte zeigen jetzt Mondbeleuchtung und eine farbige durchschnittliche Nachtqualität direkt in den Datumsbuttons.",
+    "Die Objektliste wurde um persönliche Horizontinformationen erweitert: Mini-Höhenprofil mit Horizontlinie sowie getrennte Sichtbarkeitsangaben für Mindesthöhe, persönlichen Horizont und die Kombination aus beiden.",
+    "Der stündliche Wetterverlauf kann als Mehrnächte-Ansicht in einem eigenen Tab geöffnet werden; die Anzahl zusätzlicher Nächte ist konfigurierbar.",
+    "Ein neuer Polarlicht-Hinweis lädt beim App-Start automatisch NOAA/SWPC-Daten, bewertet Kp/G-Werte standortbezogen und öffnet ein eigenes Polarlicht-Dashboard.",
+    "Polarlicht-Aktualisierung, Warnstufen und Benachrichtigungsschwellen sind in einer eigenen Einstellungsrubrik konfigurierbar.",
+    "Der externe Aladin-Tab wurde um Orientierungshilfen erweitert: Boden-/Horizontanzeige, optional persönlicher Horizont, azimutales App-Gradnetz mit Auto-Abstufung, Farbe, Linienstärke und Gradbeschriftungen.",
+    "Die Aladin-Infofelder unterscheiden nun Höhe über mathematischem Horizont und Höhe über persönlichem Horizont.",
+    "Anzeige- und Aladin-Einstellungen wurden neu strukturiert; Survey-Auswahl und Himmel-/Horizontoptionen sind getrennt auffindbar.",
+    "Die Objektlisten-Darstellung wurde stabilisiert, lange Spaltenüberschriften werden umbrochen und die horizontale Scrolllogik bleibt auch mit geöffneter Detailansicht nutzbar.",
+    "Hilfe, Handbuch und Übersetzungen wurden zu Polarlicht, Mehrnächte-Wetter, Horizont-/Sichtbarkeitsangaben und Aladin-Orientierungshilfen erweitert."
   ],
   "en": [
-    "The separate weather comparison in a new tab has been removed.",
-    "Windy, Ventusky, Meteoblue and Clear Outside remain available as individual external reference sources under “Additional weather sources”.",
-    "Each external weather source uses its own controls and timeline; the app no longer displays a shared comparison time for those external maps.",
-    "The own astro cloud map remains available only in the planning view and is no longer rebuilt in a separate comparison window.",
-    "No longer needed code for the comparison window, shared comparison time and time handoff to external maps has been removed.",
-    "Help, handbook and version notes have been adjusted to the more stable handling of weather sources."
+    "Planning-night buttons now show Moon illumination and a color-coded average night quality directly in the date buttons.",
+    "The object list now includes personal-horizon information: mini altitude profiles with horizon line and separate visibility values for minimum altitude, personal horizon and the combination of both.",
+    "The hourly weather trend can be opened as a multi-night view in a separate tab; the number of additional nights is configurable.",
+    "A new aurora indicator automatically loads NOAA/SWPC data on app start, evaluates Kp/G values relative to the selected location and opens a dedicated aurora dashboard.",
+    "Aurora refresh interval, warning levels and notification threshold are configurable in a dedicated settings section.",
+    "The external Aladin tab adds orientation aids: ground/horizon display, optional personal horizon, azimuthal app grid with automatic spacing, color, line width and degree labels.",
+    "Aladin information boxes now distinguish altitude above mathematical horizon and altitude above personal horizon.",
+    "Display and Aladin settings were reorganized; survey selection and sky/horizon options are separated.",
+    "Object-list layout was stabilized, long column headings wrap, and horizontal scrolling remains usable with object details open.",
+    "Help, manual and translations were extended for aurora, multi-night weather, horizon/visibility values and Aladin orientation aids."
   ]
 }
 const RELEASE_NOTES = BUILD.releaseNotes || DEFAULT_RELEASE_NOTES;
 const DEFAULT_VERSION_HISTORY = {
   "de": {
+    "version130": {
+      "title": "Version 1.3.0 gegenüber 1.2.0",
+      "items": [
+        "Planungsnächte zeigen jetzt Mondbeleuchtung und eine farbige durchschnittliche Nachtqualität direkt in den Datumsbuttons.",
+        "Die Objektliste wurde um persönliche Horizontinformationen erweitert: Mini-Höhenprofil mit Horizontlinie sowie getrennte Sichtbarkeitsangaben für Mindesthöhe, persönlichen Horizont und die Kombination aus beiden.",
+        "Der stündliche Wetterverlauf kann als Mehrnächte-Ansicht in einem eigenen Tab geöffnet werden; die Anzahl zusätzlicher Nächte ist konfigurierbar.",
+        "Ein neuer Polarlicht-Hinweis lädt beim App-Start automatisch NOAA/SWPC-Daten, bewertet Kp/G-Werte standortbezogen und öffnet ein eigenes Polarlicht-Dashboard.",
+        "Polarlicht-Aktualisierung, Warnstufen und Benachrichtigungsschwellen sind in einer eigenen Einstellungsrubrik konfigurierbar.",
+        "Der externe Aladin-Tab wurde um Orientierungshilfen erweitert: Boden-/Horizontanzeige, optional persönlicher Horizont, azimutales App-Gradnetz mit Auto-Abstufung, Farbe, Linienstärke und Gradbeschriftungen.",
+        "Die Aladin-Infofelder unterscheiden nun Höhe über mathematischem Horizont und Höhe über persönlichem Horizont.",
+        "Anzeige- und Aladin-Einstellungen wurden neu strukturiert; Survey-Auswahl und Himmel-/Horizontoptionen sind getrennt auffindbar.",
+        "Die Objektlisten-Darstellung wurde stabilisiert, lange Spaltenüberschriften werden umbrochen und die horizontale Scrolllogik bleibt auch mit geöffneter Detailansicht nutzbar.",
+        "Hilfe, Handbuch und Übersetzungen wurden zu Polarlicht, Mehrnächte-Wetter, Horizont-/Sichtbarkeitsangaben und Aladin-Orientierungshilfen erweitert."
+      ]
+    },
     "version120": {
       "title": "Version 1.2.0 gegenüber 1.1.0",
       "items": [
-        "Der separate Wettervergleich in einem neuen Tab wurde entfernt.",
-        "Windy, Ventusky, Meteoblue und Clear Outside bleiben als einzelne externe Kontrollquellen unter „Zusätzliche Wetterquellen“ erhalten.",
-        "Jede externe Wetterquelle verwendet ihre eigene Bedienung und eigene Zeitachse; die Anwendung zeigt keine zentrale Vergleichszeit mehr für diese externen Karten an.",
-        "Die eigene Astro-Wolkenkarte bleibt ausschließlich in der Planungsansicht verfügbar und wird nicht mehr in einem separaten Vergleichsfenster nachgebaut.",
-        "Nicht mehr benötigter Code für Vergleichsfenster, gemeinsame Vergleichszeit und Zeitübergabe an externe Karten wurde entfernt.",
-        "Hilfe, Handbuch und Versionshinweise wurden auf die neue, stabilere Darstellung der Wetterquellen angepasst."
+        "Flugwetter/METAR/TAF und MOSMIX wurden nicht mehr als eigene Bereiche weitergeführt; stattdessen bleiben Meteoblue, Clear Outside, Windy und Ventusky als einzelne externe Kontrollquellen verfügbar.",
+        "Windy, Ventusky, Meteoblue und Clear Outside verwenden jeweils ihre eigene Bedienung und Zeitachse.",
+        "Die eigene Astro-Wolkenkarte bleibt in der Planungsansicht verfügbar und wird nicht in einem separaten Vergleichsfenster nachgebaut.",
+        "Hilfe, Handbuch und Versionshinweise wurden auf die stabilere Darstellung der Wetterquellen angepasst."
       ]
     },
     "version110": {
@@ -52,15 +73,28 @@ const DEFAULT_VERSION_HISTORY = {
     }
   },
   "en": {
+    "version130": {
+      "title": "Version 1.3.0 compared with 1.2.0",
+      "items": [
+        "Planning-night buttons now show Moon illumination and a color-coded average night quality directly in the date buttons.",
+        "The object list now includes personal-horizon information: mini altitude profiles with horizon line and separate visibility values for minimum altitude, personal horizon and the combination of both.",
+        "The hourly weather trend can be opened as a multi-night view in a separate tab; the number of additional nights is configurable.",
+        "A new aurora indicator automatically loads NOAA/SWPC data on app start, evaluates Kp/G values relative to the selected location and opens a dedicated aurora dashboard.",
+        "Aurora refresh interval, warning levels and notification threshold are configurable in a dedicated settings section.",
+        "The external Aladin tab adds orientation aids: ground/horizon display, optional personal horizon, azimuthal app grid with automatic spacing, color, line width and degree labels.",
+        "Aladin information boxes now distinguish altitude above mathematical horizon and altitude above personal horizon.",
+        "Display and Aladin settings were reorganized; survey selection and sky/horizon options are separated.",
+        "Object-list layout was stabilized, long column headings wrap, and horizontal scrolling remains usable with object details open.",
+        "Help, manual and translations were extended for aurora, multi-night weather, horizon/visibility values and Aladin orientation aids."
+      ]
+    },
     "version120": {
       "title": "Version 1.2.0 compared with 1.1.0",
       "items": [
-        "The separate weather comparison in a new tab has been removed.",
-        "Windy, Ventusky, Meteoblue and Clear Outside remain available as individual external reference sources under “Additional weather sources”.",
-        "Each external weather source uses its own controls and timeline; the app no longer displays a shared comparison time for those external maps.",
-        "The own astro cloud map remains available only in the planning view and is no longer rebuilt in a separate comparison window.",
-        "No longer needed code for the comparison window, shared comparison time and time handoff to external maps has been removed.",
-        "Help, handbook and version notes have been adjusted to the more stable handling of weather sources."
+        "Flight weather/METAR/TAF and MOSMIX are no longer continued as dedicated sections; Meteoblue, Clear Outside, Windy and Ventusky remain available as individual external reference sources.",
+        "Windy, Ventusky, Meteoblue and Clear Outside each use their own controls and timeline.",
+        "The own astro cloud map remains available in the planning view and is not rebuilt in a separate comparison window.",
+        "Help, manual and version notes have been adjusted to the more stable handling of weather sources."
       ]
     },
     "version110": {
@@ -1263,10 +1297,8 @@ function releaseNotesListHtml(lang=language){
 function versionNotesHtml(lang=language){
   const overview=VERSION_HISTORY?.[lang]||VERSION_HISTORY?.de||DEFAULT_VERSION_HISTORY.de;
   const title=lang==='en'?'Version overview':'Neuerungsübersicht';
-  const intro=lang==='en'?'The latest changes are shown first; older version steps follow below.':'Die Neuerungen der aktuellen Version stehen oben; ältere Versionsschritte folgen darunter.';
-  const preferred=['version131','version130','version120','version110'];
-  const keys=[...preferred.filter(key=>overview?.[key]),...Object.keys(overview||{}).filter(key=>!preferred.includes(key))];
-  const groups=keys.map(key=>{
+  const intro=lang==='en'?'The overview shows the changes from 1.3.0 to 1.2.0 and also the main changes from 1.2.0 to 1.1.0 and from 1.1.0 to 1.0.0.':'Die Übersicht zeigt die Änderungen von 1.3.0 gegenüber 1.2.0 und zusätzlich die wichtigsten Änderungen von 1.2.0 gegenüber 1.1.0 sowie von 1.1.0 gegenüber 1.0.0.';
+  const groups=['version130','version120','version110'].map(key=>{
     const group=overview?.[key];
     if(!group||!Array.isArray(group.items))return '';
     return `<h4>${esc(group.title||key)}</h4><ul>${group.items.map(item=>`<li>${esc(item)}</li>`).join('')}</ul>`;
@@ -1298,7 +1330,7 @@ async function showUpdateBanner(){
     }
     if(notes.length){
       const lead=language==='en'?'What\'s new':'Neu';
-      message+=` ${lead}: ${notes.slice(0,2).join(' · ')}`;
+      message+=` ${lead}: ${notes.slice(0,4).join(' · ')}`;
     }
     text.textContent=message;
   }
@@ -2087,7 +2119,7 @@ function renderPlan(){
   const horizonOptions=horizonProfilesFor(loc).map(item=>`<option value="${esc(item.id)}" ${item.id===horizon?.id?'selected':''}>${esc(item.name)}${item.id===loc.defaultHorizonProfileId?' (Standard)':''}</option>`).join('');
   return `<div data-page="plan">
     <section class="card">
-      <div class="section-title-row planning-night-header"><div class="planning-title-block"><h2>${language==='en'?'Planning night':'Planungsnacht'}</h2><div class="muted planning-night-subtitle">${language==='en'?'Location and date apply only for this planning session.<br>Set the default location in the settings.':'Standort und Datum gelten nur für diese Planung.<br>Den Standardstandort legst du in den Einstellungen fest.'}</div></div><div class="planning-night-actions">${renderAuroraButton(loc)}<button id="weatherRefresh" ${hasWeatherDate?'':'disabled'}>${language==='en'?'Refresh weather':'Wetter aktualisieren'}</button></div></div>
+      <div class="section-title-row planning-night-header"><div><h2>Planungsnacht</h2><div class="muted">Standort und Datum gelten nur für diese Planung. Den Standardstandort legst du in den Einstellungen fest.</div></div><div class="planning-night-actions">${renderAuroraButton(loc)}<button id="weatherRefresh" ${hasWeatherDate?'':'disabled'}>Wetter aktualisieren</button></div></div>
       <div class="planning-night-selector" style="margin-top:14px"><label class="planning-location-select">Standort für diese Planung<select id="planningLocationSelect">${locationOptions}</select><span class="planning-location-coordinates">${fmt(loc.latitude,4)}°, ${fmt(loc.longitude,4)}° · ${fmt(Number(loc.elevation)||0)} m</span></label><div class="date-buttons enhanced-date-buttons">${keys.map((key,index)=>{const info=dateButtonInfo(key,loc,index);return`<button data-date="${key}" class="${key===selectedDateKey?'active':''} date-quality-${info.className}" title="${esc(`Mond ${fmt(info.moon)} % · ${info.qualityText}`)}"><strong>${info.title}</strong><br><span class="small">${fmtDate(key,loc.timezone)}</span><br><span class="small moon-date-info">☾ ${fmt(info.moon)} %</span><br><span class="small quality-date-info">${esc(info.qualityText)}</span></button>`}).join('')}</div><label class="calendar-date-field">${language==='en'?'Calendar date':'Kalenderdatum'}<input id="planningCalendarDate" type="date" value="${esc(selectedDateKey)}"></label></div>
       <div class="grid four" style="margin-top:14px"><div class="metric"><div class="label">Sonnenuntergang</div><div class="value">${fmtTime(night.sunset,loc.timezone)}</div></div><div class="metric"><div class="label">Gewählter Zeitraum</div><div class="value">${fmtTime(windowRange.start,loc.timezone)}–${fmtTime(windowRange.end,loc.timezone)}</div><div class="small muted">${windowRange.label}</div></div><div class="metric"><div class="label">Astronomische Nacht</div><div class="value">${night.hasAstronomicalNight?`${fmtTime(night.astronomicalDusk,loc.timezone)}–${fmtTime(night.astronomicalDawn,loc.timezone)}`:'keine'}</div></div><div class="metric"><div class="label">Sonnenaufgang</div><div class="value">${fmtTime(night.sunrise,loc.timezone)}</div></div></div>
       <div class="grid four" style="margin-top:12px"><div class="metric"><div class="label">Mondaufgang</div><div class="value moon-event-value">${moonEventDisplay(night.moonrise,'rise',night,windowRange,loc)}</div></div><div class="metric"><div class="label">Mondkulmination</div><div class="value">${fmtTime(night.moonTransit,loc.timezone)} · ${fmt(night.moonMaxAltitude)}°</div></div><div class="metric"><div class="label">Monduntergang</div><div class="value moon-event-value">${moonEventDisplay(night.moonset,'set',night,windowRange,loc)}</div></div><div class="metric"><div class="label">Mondbeleuchtung</div><div class="value">${fmt(night.moonIllumination)} %</div></div></div>
@@ -2469,54 +2501,13 @@ function renderAuroraButton(loc){
   if(settings.enabled===false)return'';
   const level=auroraStatus?.level||'none';
   const updated=auroraStatus?.updatedAt?fmtTime(new Date(auroraStatus.updatedAt),loc?.timezone||'Europe/Berlin'):'';
-  const label=language==='en'?'Open aurora details':'Polarlichtdetails öffnen';
-  const refreshTitle=language==='en'?'Refresh aurora data':'Polarlichtdaten aktualisieren';
-  const statusText=auroraStatus.message|| (language==='en'?'Aurora data not loaded yet.':'Polarlichtdaten noch nicht geladen.');
-  const sub=updated?`<div class="small muted aurora-status-line">${esc(statusText)} · ${updated}</div>`:`<div class="small muted aurora-status-line">${esc(statusText)}</div>`;
-  return `<div class="aurora-box ${auroraLevelClass(level)}"><div class="aurora-row"><button type="button" id="auroraDashboard" class="aurora-main-button">${label}</button><button type="button" id="auroraRefresh" class="secondary" title="${refreshTitle}">↻</button></div>${sub}</div>`;
+  const sub=updated?`<div class="small muted">${esc(auroraStatus.message)} · ${updated}</div>`:`<div class="small muted">${esc(auroraStatus.message||'Polarlichtdaten noch nicht geladen.')}</div>`;
+  return `<div class="aurora-box ${auroraLevelClass(level)}"><div class="aurora-row"><button type="button" id="auroraDashboard" class="aurora-main-button">${level==='none'?'Polarlicht prüfen':'Polarlicht-Hinweis'}</button><button type="button" id="auroraRefresh" class="secondary" title="Polarlichtdaten aktualisieren">↻</button></div>${sub}</div>`;
 }
-function noaaKpForecastUrl(){return 'https://services.swpc.noaa.gov/products/noaa-planetary-k-index-forecast.json'}
-function noaaObservedKpUrl(){return 'https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json'}
+function noaaKpStatusUrl(){return 'https://services.swpc.noaa.gov/products/noaa-planetary-k-index-forecast.json'}
 function noaaAlertsUrl(){return 'https://services.swpc.noaa.gov/products/alerts.json'}
-function noaaScalesUrl(){return 'https://services.swpc.noaa.gov/products/noaa-scales.json'}
 function noaaSolarWindUrl(){return 'https://services.swpc.noaa.gov/products/solar-wind/mag-1-day.json'}
-function gfzKpForecastUrl(){return 'https://spaceweather.gfz.de/fileadmin/Kp-Forecast/CSV/kp_product_file_FORECAST_PAGER_SWIFT_LAST.json'}
-function gfzForecastsPageUrl(){return language==='en'?'https://spaceweather.gfz.de/products-data/forecasts':'https://spaceweather.gfz.de/de/produkte-daten/vorhersagen'}
 function parseKpNumber(value){const n=Number(String(value??'').replace(/[^0-9.+-]/g,''));return Number.isFinite(n)?n:NaN}
-function parseDateFlexible(value){
-  if(value instanceof Date)return value;
-  if(typeof value!=='string')return new Date(NaN);
-  const trimmed=value.trim();
-  let d=new Date(trimmed.endsWith('Z')||/[+-]\d\d:?\d\d$/.test(trimmed)?trimmed:`${trimmed}Z`);
-  if(!isNaN(d))return d;
-  const m=trimmed.match(/^(\d{2})-(\d{2})-(\d{4})\s+(\d{2}):(\d{2})/);
-  if(m)return new Date(Date.UTC(Number(m[3]),Number(m[2])-1,Number(m[1]),Number(m[4]),Number(m[5])));
-  const n=trimmed.match(/^(\d{4})\s+([A-Za-z]{3})\s+(\d{1,2})\s+(\d{2})(\d{2})/);
-  if(n){const mon=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'].indexOf(n[2]);if(mon>=0)return new Date(Date.UTC(Number(n[1]),mon,Number(n[3]),Number(n[4]),Number(n[5])))}
-  return new Date(NaN);
-}
-function parseNoaaKpRows(data,source='NOAA'){return (Array.isArray(data)?data:[]).map(item=>{
-  if(Array.isArray(item))return{time:parseDateFlexible(item[0]||item[1]),kp:parseKpNumber(item[item.length-1]),kind:'unknown',scale:'' ,source};
-  const time=parseDateFlexible(item.time_tag||item.time||item[0]);
-  const kp=parseKpNumber(item.kp??item.Kp??item.estimated_kp??item.value);
-  return{time,kp,kind:String(item.observed||item.type||source).toLowerCase(),scale:String(item.noaa_scale||''),source};
-}).filter(row=>row.time instanceof Date&&!isNaN(row.time)&&Number.isFinite(row.kp))}
-function parseGfzForecastRows(data){
-  const times=data?.['Time (UTC)']||data?.time||{};
-  const median=data?.median||data?.MEDIAN||{};
-  const maximum=data?.maximum||data?.MAX||{};
-  const rows=[];
-  for(const key of Object.keys(times)){
-    const time=parseDateFlexible(times[key]);
-    const kp=parseKpNumber(median[key]);
-    const kpMax=parseKpNumber(maximum[key]);
-    if(time instanceof Date&&!isNaN(time)&&(Number.isFinite(kp)||Number.isFinite(kpMax)))rows.push({time,kp:Number.isFinite(kp)?kp:kpMax,kpMax:Number.isFinite(kpMax)?kpMax:kp,kind:'forecast',source:'GFZ'});
-  }
-  return rows;
-}
-function kpRowsInRange(rows,from,to){const a=Number(from),b=Number(to);return (rows||[]).filter(row=>row.time&&row.time.getTime()>=a&&row.time.getTime()<=b)}
-function kpMaxOf(rows,key='kp'){return (rows||[]).reduce((max,row)=>Math.max(max,Number(row[key])), -Infinity)}
-function gScaleForKp(kp){if(!Number.isFinite(kp)||kp<5)return'';if(kp<6)return'G1';if(kp<7)return'G2';if(kp<8)return'G3';if(kp<9)return'G4';return'G5'}
 function auroraLocalKpOffset(loc=activeLocation()){
   const lat=Math.abs(Number(loc?.latitude));
   if(!Number.isFinite(lat))return 0;
@@ -2534,82 +2525,63 @@ function auroraLevelFromKp(kp,loc=activeLocation()){
   if(kp>=r)return'red';if(kp>=o)return'orange';if(kp>=y)return'yellow';return'none'
 }
 function auroraLevelLabel(level){return{none:'keine Warnung',yellow:'erhöhte geomagnetische Aktivität',orange:'Polarlicht am Standort möglich',red:'Polarlicht am Standort deutlich möglich'}[level]||'keine Warnung'}
-function auroraLevelLabelEn(level){return{none:'no warning',yellow:'increased geomagnetic activity',orange:'aurora possible at the selected location',red:'aurora clearly possible at the selected location'}[level]||'no warning'}
 function auroraStrengthFromAlert(item){
-  const text=String(item?.message||'');
-  if(!/Geomagnetic|K-index|Storm Category|NOAA Scale:\s*G/i.test(text))return null;
-  if(/CANCEL|Cancel|cancelled|expired/i.test(text))return null;
-  const issue=parseDateFlexible(item?.issue_datetime||'');
-  const now=Date.now();
-  if(issue instanceof Date&&!isNaN(issue)&&issue.getTime()<now-96*3600000)return null;
-  const g=[...text.matchAll(/(?:NOAA\s+Scale:\s*)?G\s*([1-5])|Storm\s+Category\s+G\s*([1-5])/gi)].map(m=>Number(m[1]||m[2])).filter(Number.isFinite);
-  const k=[...text.matchAll(/K(?:p|-index|\s+index)?\s*(?:of|=|:)?\s*([4-9](?:\.\d)?)/gi)].map(m=>Number(m[1])).filter(Number.isFinite);
-  const values=[];g.forEach(v=>values.push({type:'G',value:v,kp:Math.min(9,4+v),issue}));k.forEach(v=>values.push({type:'Kp',value:v,kp:v,issue}));
+  const text=JSON.stringify(item||{});
+  const g=[...text.matchAll(/G\s*([1-5])/gi)].map(m=>Number(m[1]));
+  const k=[...text.matchAll(/Kp\s*(?:index)?\s*(?:of|=|:)?\s*([5-9](?:\.\d)?)/gi)].map(m=>Number(m[1]));
+  const values=[];g.forEach(v=>values.push({type:'G',value:v,kp:Math.min(9,4+v)}));k.forEach(v=>values.push({type:'Kp',value:v,kp:v}));
   return values.sort((a,b)=>b.kp-a.kp)[0]||null;
-}
-function parseNoaaAlertsSummary(alerts){
-  const items=Array.isArray(alerts)?alerts:[];
-  const sorted=items.slice().sort((a,b)=>parseDateFlexible(b.issue_datetime).getTime()-parseDateFlexible(a.issue_datetime).getTime());
-  const geomagnetic=sorted.filter(item=>/Geomagnetic|K-index|Storm Category|NOAA Scale:\s*G/i.test(String(item?.message||'')));
-  const strengths=geomagnetic.map(auroraStrengthFromAlert).filter(Boolean);
-  const strongest=strengths.sort((a,b)=>b.kp-a.kp)[0]||null;
-  return{count:geomagnetic.length,strongest,recent:geomagnetic.slice(0,5)};
 }
 async function fetchJsonSafe(url){const response=await fetch(url,{cache:'no-store'});if(!response.ok)throw new Error(`${response.status} ${response.statusText}`);return response.json()}
 async function fetchAuroraStatus(options={}){
   if(profile?.central?.aurora?.enabled===false)return;
-  auroraStatus={...(auroraStatus||{}),level:'none',message:'Polarlichtdaten werden geladen …',dataStatus:'loading',reason:'Abruf läuft.',updatedAt:new Date().toISOString(),details:[],windows:[],kpMax:NaN,source:'NOAA/SWPC + GFZ',data:{}};
+  auroraStatus={...(auroraStatus||{}),level:'none',message:'Polarlichtdaten werden geladen …',dataStatus:'loading',reason:'Abruf läuft.',updatedAt:new Date().toISOString(),details:[],windows:[],kpMax:NaN,source:'NOAA/SWPC'};
   if(options.manual)render();
   try{
-    const [noaaForecast,noaaObserved,gfzForecast,alerts,mag,scales]=await Promise.allSettled([fetchJsonSafe(noaaKpForecastUrl()),fetchJsonSafe(noaaObservedKpUrl()),fetchJsonSafe(gfzKpForecastUrl()),fetchJsonSafe(noaaAlertsUrl()),fetchJsonSafe(noaaSolarWindUrl()),fetchJsonSafe(noaaScalesUrl())]);
-    const loc=activeLocation();const details=[],problems=[];const now=Date.now(),limit=now+48*3600000;const localOffset=auroraLocalKpOffset(loc);
-    let noaaForecastRows=[],noaaObservedRows=[],gfzRows=[],alertInfo={count:0,strongest:null,recent:[]};
-    if(noaaForecast.status==='fulfilled'){
-      noaaForecastRows=parseNoaaKpRows(noaaForecast.value,'NOAA forecast');
-      const f=kpRowsInRange(noaaForecastRows,now-3*3600000,limit).filter(row=>row.kind!=='observed');
-      details.push(`NOAA Kp-Prognose: ${f.length?`Maximum nächste 48 h ${kpMaxOf(f,'kp').toFixed(1)}`:'keine Vorhersagewerte im 48-h-Zeitraum'}`);
-    }else{problems.push(`NOAA Kp-Prognose konnte nicht geladen werden: ${noaaForecast.reason?.message||noaaForecast.reason}.`)}
-    if(noaaObserved.status==='fulfilled'){
-      noaaObservedRows=parseNoaaKpRows(noaaObserved.value,'NOAA observed');
-      const recent=kpRowsInRange(noaaObservedRows,now-24*3600000,now+3600000);
-      const latest=recent.slice().sort((a,b)=>b.time-a.time)[0];
-      details.push(`NOAA beobachteter Kp: ${latest?`${latest.kp.toFixed(1)} (${fmtDateTime(latest.time,loc.timezone)})`:'kein aktueller Wert'}`);
-    }else{problems.push(`NOAA beobachteter Kp konnte nicht geladen werden: ${noaaObserved.reason?.message||noaaObserved.reason}.`)}
-    if(gfzForecast.status==='fulfilled'){
-      gfzRows=parseGfzForecastRows(gfzForecast.value);
-      const f=kpRowsInRange(gfzRows,now-3*3600000,limit);
-      const med=kpMaxOf(f,'kp'),max=kpMaxOf(f,'kpMax');
-      details.push(`GFZ Kp-Prognose: ${f.length?`Median-Max ${med.toFixed(1)}, Ensemble-Max ${max.toFixed(1)}`:'keine auswertbaren Werte im 48-h-Zeitraum'}`);
-    }else{problems.push(`GFZ Kp-Prognose konnte nicht geladen werden: ${gfzForecast.reason?.message||gfzForecast.reason}.`)}
-    if(alerts.status==='fulfilled'){
-      alertInfo=parseNoaaAlertsSummary(alerts.value);
-      details.push(`${alertInfo.count} geomagnetische NOAA-Meldungen in den aktuellen Alert-Daten.`);
-      if(alertInfo.strongest)details.push(`Stärkste NOAA-Meldung als Kontext: ${alertInfo.strongest.type} ${alertInfo.strongest.value} (entspricht etwa Kp ${alertInfo.strongest.kp.toFixed(1)}).`);
-      details.push('NOAA-Meldungen allein setzen keine lokale Warnfarbe; maßgeblich sind aktuelle oder prognostizierte Kp-Daten.');
-    }else{problems.push(`NOAA-Warnmeldungen konnten nicht geladen werden: ${alerts.reason?.message||alerts.reason}.`)}
+    const [kpData,alerts,mag]=await Promise.allSettled([fetchJsonSafe(noaaKpStatusUrl()),fetchJsonSafe(noaaAlertsUrl()),fetchJsonSafe(noaaSolarWindUrl())]);
+    const loc=activeLocation();const details=[],problems=[];let windows=[],kpMax=NaN,bestLevel='none',reason='Keine Warnschwelle erreicht.',hasStrongSignal=false;let alertStrength=null;const localOffset=auroraLocalKpOffset(loc);
+    if(kpData.status==='fulfilled'&&Array.isArray(kpData.value)){
+      const rows=kpData.value.slice(1).map(row=>({time:new Date(row[0]||row[1]),kp:parseKpNumber(row[row.length-1])})).filter(row=>row.time instanceof Date&&!isNaN(row.time)&&Number.isFinite(row.kp));
+      const now=Date.now(),limit=now+48*3600000;
+      windows=rows.filter(row=>row.time.getTime()>=now-3*3600000&&row.time.getTime()<=limit);
+      kpMax=windows.reduce((m,row)=>Math.max(m,row.kp),-Infinity);
+      if(!Number.isFinite(kpMax)){
+        kpMax=NaN;problems.push('Kp-Prognose geladen, aber keine auswertbaren Werte im 48-h-Zeitraum gefunden.');
+      }else{
+        for(const row of windows){const lvl=auroraLevelFromKp(row.kp,loc);if(auroraLevelRank(lvl)>auroraLevelRank(bestLevel))bestLevel=lvl}
+        if(auroraLevelRank(bestLevel)>0){hasStrongSignal=true;reason=`Kp-Prognose erreicht ${kpMax.toFixed(1)} in den nächsten 48 Stunden. Bewertung mit standortabhängiger Schwelle (Breite ${Number.isFinite(Number(loc?.latitude))?Number(loc.latitude).toFixed(1):'–'}°, Offset ${localOffset>=0?'+':''}${localOffset.toFixed(1)} Kp).`;}
+      }
+      details.push(`NOAA Kp-Prognose: ${Number.isFinite(kpMax)?`Maximum nächste 48 h ${kpMax.toFixed(1)}`:'keine auswertbaren Werte im 48-h-Zeitraum'}`);
+    }else{
+      problems.push(`Kp-Prognose konnte nicht geladen werden${kpData.status==='rejected'?`: ${kpData.reason?.message||kpData.reason}`:''}.`);
+      details.push('NOAA Kp-Prognose: nicht verfügbar.');
+    }
+    if(alerts.status==='fulfilled'&&Array.isArray(alerts.value)){
+      const recent=alerts.value.slice(-30).filter(item=>/Geomagnetic|G[1-5]|Kp/i.test([item.message,item.product_id,item.swpc_product_type].join(' ')));
+      if(recent.length)details.push(`${recent.length} NOAA-Warn-/Hinweismeldungen in den aktuellen Daten.`);
+      alertStrength=recent.map(auroraStrengthFromAlert).filter(Boolean).sort((a,b)=>b.kp-a.kp)[0]||null;
+      if(alertStrength){
+        const alertLevel=auroraLevelFromKp(alertStrength.kp,loc);
+        details.push(`Stärkste auswertbare NOAA-Meldung: ${alertStrength.type} ${alertStrength.value} (entspricht etwa Kp ${alertStrength.kp.toFixed(1)}).`);
+        if(auroraLevelRank(alertLevel)>auroraLevelRank(bestLevel))bestLevel=alertLevel;
+        if(auroraLevelRank(alertLevel)>0){hasStrongSignal=true;reason=`Offizielle NOAA-Meldung mit auswertbarer Stärke (${alertStrength.type} ${alertStrength.value}) erreicht die standortabhängige Schwelle.`;}
+        else details.push('NOAA-Meldung erkannt, für den gewählten Standort aber unterhalb der eingestellten Warnschwelle.');
+      }else if(recent.length){details.push('NOAA-Meldungen vorhanden, aber ohne auswertbare G-/Kp-Stärke. Lokale Sichtbarkeit bleibt unklar.')}
+    }else{
+      problems.push(`NOAA-Warnmeldungen konnten nicht geladen werden${alerts.status==='rejected'?`: ${alerts.reason?.message||alerts.reason}`:''}.`);
+    }
     if(mag.status==='fulfilled'&&Array.isArray(mag.value)){
-      const last=mag.value.slice(-1)[0]||[];const bz=Number(last[3]);const bt=Number(last[6]??last[4]);if(Number.isFinite(bz))details.push(`Sonnenwind Bz zuletzt ${bz.toFixed(1)} nT${Number.isFinite(bt)?`, Bt ${bt.toFixed(1)} nT`:''}.`);
-    }else{problems.push(`Sonnenwinddaten konnten nicht geladen werden${mag.status==='rejected'?`: ${mag.reason?.message||mag.reason}`:''}.`)}
-    if(scales.status==='fulfilled')details.push('NOAA-Skalenstatus geladen. R- und S-Skalen werden nicht für Polarlichtwarnungen verwendet.');
-    const noaaFuture=kpRowsInRange(noaaForecastRows,now-3*3600000,limit).filter(row=>row.kind!=='observed');
-    const gfzFuture=kpRowsInRange(gfzRows,now-3*3600000,limit);
-    const observedRecent=kpRowsInRange(noaaObservedRows,now-6*3600000,now+3600000);
-    const noaaForecastMax=kpMaxOf(noaaFuture,'kp');
-    const gfzMedianMax=kpMaxOf(gfzFuture,'kp');
-    const observedMax=kpMaxOf(observedRecent,'kp');
-    const candidates=[noaaForecastMax,gfzMedianMax,observedMax].filter(Number.isFinite);
-    const kpMax=candidates.length?Math.max(...candidates):NaN;
-    const bestSource=Number.isFinite(kpMax)?(kpMax===noaaForecastMax?'NOAA Kp-Prognose':kpMax===gfzMedianMax?'GFZ Kp-Prognose':'NOAA beobachteter Kp'):'keine Kp-Quelle';
-    let bestLevel=auroraLevelFromKp(kpMax,loc);let dataStatus='ok';let reason='Keine Warnschwelle erreicht.';
-    if(!Number.isFinite(kpMax)){bestLevel='none';dataStatus=problems.length?'partial':'no-kp';reason='Keine auswertbaren Kp-Werte aus NOAA oder GFZ verfügbar.'}
-    else if(auroraLevelRank(bestLevel)>0){reason=`${bestSource} erreicht Kp ${kpMax.toFixed(1)}. Bewertung mit standortabhängiger Schwelle (Breite ${Number.isFinite(Number(loc?.latitude))?Number(loc.latitude).toFixed(1):'–'}°, Offset ${localOffset>=0?'+':''}${localOffset.toFixed(1)} Kp).`}
-    else{reason=`Maximal auswertbarer Kp-Wert ${kpMax.toFixed(1)} bleibt unter der standortabhängigen Warnschwelle.`}
-    const message=auroraLevelRank(bestLevel)>0?`${auroraLevelLabel(bestLevel)} · Kp bis ${kpMax.toFixed(1)} in den nächsten 48 h`:(dataStatus==='ok'?'Keine relevante Polarlichtwarnung für den gewählten Standort.':'Polarlichtdaten unvollständig · keine belastbare Warnung');
-    const windows=[...noaaFuture.map(row=>({...row,displaySource:'NOAA'})),...gfzFuture.map(row=>({...row,displaySource:'GFZ median'}))].sort((a,b)=>a.time-b.time);
-    auroraStatus={level:bestLevel,message,details:[...details,...problems],updatedAt:new Date().toISOString(),windows,kpMax,source:'NOAA/SWPC + GFZ',dataStatus,reason,data:{noaaForecastRows:noaaFuture,noaaObservedRows:observedRecent,gfzRows:gfzFuture,alerts:alertInfo}};
+      const last=mag.value.slice(-1)[0]||[];const bz=Number(last[3]);if(Number.isFinite(bz))details.push(`Sonnenwind Bz zuletzt ${bz.toFixed(1)} nT.`);
+    }else{
+      problems.push(`Sonnenwinddaten konnten nicht geladen werden${mag.status==='rejected'?`: ${mag.reason?.message||mag.reason}`:''}.`);
+    }
+    let dataStatus='ok';
+    if(!Number.isFinite(kpMax)&&!hasStrongSignal){bestLevel='none';dataStatus=problems.length?'partial':'no-kp';reason='Keine belastbare Kp-Prognose oder offizielle starke Warnmeldung vorhanden.';}
+    const message=auroraLevelRank(bestLevel)>0?(Number.isFinite(kpMax)?`${auroraLevelLabel(bestLevel)} · Kp bis ${kpMax.toFixed(1)} in den nächsten 48 h`:(alertStrength?`${auroraLevelLabel(bestLevel)} · NOAA ${alertStrength.type} ${alertStrength.value}`:'Geomagnetische Warnlage aktiv · lokale Sichtbarkeit unklar')):(dataStatus==='ok'?'Keine relevante Polarlichtwarnung für den gewählten Standort.':'Polarlichtdaten unvollständig · keine belastbare Warnung');
+    auroraStatus={level:bestLevel,message,details:[...details,...problems],updatedAt:new Date().toISOString(),windows,kpMax,source:'NOAA/SWPC',dataStatus,reason};
     updateAuroraBadgeAndNotify(bestLevel,message,options.manual);
   }catch(error){
-    auroraStatus={level:'none',message:`Polarlichtdaten konnten nicht geladen werden: ${error.message}`,details:[String(error.message)],updatedAt:new Date().toISOString(),windows:[],kpMax:NaN,source:'NOAA/SWPC + GFZ',dataStatus:'error',reason:'Datenquelle nicht erreichbar oder Format nicht erkannt.',data:{}};
+    auroraStatus={level:'none',message:`Polarlichtdaten konnten nicht geladen werden: ${error.message}`,details:[String(error.message)],updatedAt:new Date().toISOString(),windows:[],kpMax:NaN,source:'NOAA/SWPC',dataStatus:'error',reason:'Datenquelle nicht erreichbar oder Format nicht erkannt.'};
   }
   render();
 }
@@ -2638,33 +2610,14 @@ function openMultiNightWeatherWindow(){
   const doc=`<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mehrnächte-Wetterverlauf</title><link rel="stylesheet" href="assets/styles.css"><style>body{padding:24px}.multi-night-section{margin:18px 0 28px;padding:18px;border:1px solid #264564;border-radius:18px;background:#0b1b2c}.weather-scroll{overflow:auto}</style></head><body><main><h1>Mehrnächte-Wetterverlauf</h1><p class="muted">${esc(loc.name)} · ${extra+1} Planungsnächte · Wetterdarstellung: ${esc(weatherViewLabel(currentWeatherView()))}</p>${sections}</main></body></html>`;
   const win=window.open('about:blank','_blank');if(!win){alert('Popup blockiert. Bitte Popups für diese Seite erlauben.');return}win.document.open();win.document.write(doc);win.document.close();
 }
-function auroraGraphicUrl(url){return `${url}${url.includes('?')?'&':'?'}ts=${Date.now()}`}
 function openAuroraDashboard(){
   const loc=activeLocation();if(!loc)return;
   const details=(auroraStatus.details||[]).map(item=>`<li>${esc(item)}</li>`).join('')||'<li>Keine Detaildaten vorhanden.</li>';
-  const rows=(auroraStatus.windows||[]).length?(auroraStatus.windows||[]).map(row=>`<tr><td>${fmtDateTime(row.time,loc.timezone)}</td><td>${fmt(row.kp,1)}</td><td>${esc(row.displaySource||row.source||'')}</td><td>${esc(gScaleForKp(row.kp)||'')}</td><td>${esc(auroraLevelLabel(auroraLevelFromKp(row.kp,loc)))}</td></tr>`).join(''):`<tr><td colspan="5">${auroraStatus.dataStatus==='loading'?'Daten werden geladen …':auroraStatus.dataStatus==='error'?'Datenquelle nicht erreichbar oder Format nicht erkannt.':auroraStatus.dataStatus==='partial'?'Kp-Daten konnten nicht vollständig geladen oder ausgewertet werden.':'Keine Kp-Werte im Zeitraum gefunden.'}</td></tr>`;
+  const rows=(auroraStatus.windows||[]).length?(auroraStatus.windows||[]).map(row=>`<tr><td>${fmtDateTime(row.time,loc.timezone)}</td><td>${fmt(row.kp,1)}</td><td>${esc(auroraLevelLabel(auroraLevelFromKp(row.kp,loc)))}</td></tr>`).join(''):`<tr><td colspan="3">${auroraStatus.dataStatus==='loading'?'Daten werden geladen …':auroraStatus.dataStatus==='error'?'Datenquelle nicht erreichbar oder Format nicht erkannt.':auroraStatus.dataStatus==='partial'?'Kp-Prognose konnte nicht geladen oder nicht ausgewertet werden.':'Kp-Prognose geladen, aber keine Werte im Zeitraum gefunden.'}</td></tr>`;
   const statusText=auroraStatus.reason||'Keine Bewertungsgrundlage vorhanden.';
-  const northSouth=Number(loc.latitude)<0?'south':'north';
-  const NOAA_AURORA=`https://services.swpc.noaa.gov/images/animations/ovation/${northSouth}/latest.jpg`;
-  const NOAA_CME='https://services.swpc.noaa.gov/images/animations/lasco-c2/latest.jpg';
-  const NOAA_EUV='https://services.swpc.noaa.gov/images/animations/suvi/primary/195/latest.png';
-  const GFZ_KP='https://spaceweather.gfz.de/fileadmin/SW-Monitor/kp_swift_ensemble_LAST.png';
-  const GFZ_HPO='https://isdc-data.gfz.de/geomagnetism/HpoForecast/v0102/output/Hpo/png/hpo_forecast_mean_bars.png';
-  const GFZ_AURORA='https://spaceweather.gfz.de/sw-monitor/aurora-forecast';
-  const gfzPage=gfzForecastsPageUrl();
-  const visualCards=`<section class="dashboard-card"><div class="section-title-row"><div><h2>Kontrollgrafiken</h2><p class="muted">Grafiken dienen der Plausibilitätsprüfung. Die automatische Warnstufe wird aus maschinenlesbaren Kp-Daten berechnet.</p></div><button type="button" id="auroraDataRefresh" class="primary">Polarlichtdaten aktualisieren</button></div><div class="aurora-visual-grid">
-    ${auroraVisualCard('NOAA Aurora Forecast / OVATION',NOAA_AURORA,'https://www.spaceweather.gov/products/aurora-30-minute-forecast')}
-    ${auroraVisualCard('GFZ Kp-Index Prognose',GFZ_KP,'https://spaceweather.gfz.de/products-data/forecasts/forecast-kp-index')}
-    ${auroraVisualCard('GFZ Hp30/Hp60/Kp Prognose',GFZ_HPO,'https://spaceweather.gfz.de/products-data/observatory-based-geomagnetic-forecasts/forecasting-global-kp-and-hpo-indices')}
-    ${auroraVisualIframeCard('GFZ Polarlicht-Vorhersage',GFZ_AURORA,GFZ_AURORA)}
-    ${auroraVisualCard('NOAA LASCO C2 / CME-Kontext',NOAA_CME,'https://www.spaceweather.gov/products/coronagraph')}
-    ${auroraVisualCard('NOAA GOES SUVI 195 Å / Sonnenaktivität',NOAA_EUV,'https://www.spaceweather.gov/products/goes-solar-ultraviolet-imager-suvi')}
-  </div></section>`;
-  const doc=`<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Polarlicht-Dashboard</title><link rel="stylesheet" href="assets/styles.css"><style>body{padding:24px}.dashboard-card{margin:18px 0;padding:18px;border:5px solid #264564;border-radius:18px;background:#0b1b2c}.dashboard-card.aurora-yellow{border-color:#ffd84d;background:linear-gradient(135deg,rgba(255,216,77,.18),#0b1b2c 45%)}.dashboard-card.aurora-orange{border-color:#ff7a21;background:linear-gradient(135deg,rgba(255,122,33,.22),#0b1b2c 45%)}.dashboard-card.aurora-red{border-color:#ff355e;background:linear-gradient(135deg,rgba(255,53,94,.24),#0b1b2c 45%)}.external-links a{display:inline-block;margin:6px 10px 6px 0}.dashboard-top-actions{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:8px 0 18px}.aurora-visual-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;max-width:1500px}.aurora-visual-card{border:1px solid #264564;border-radius:14px;padding:12px;background:#071421;max-width:480px}.aurora-visual-card img,.aurora-visual-card iframe{width:100%;height:310px;object-fit:contain;background:#000;border:0;border-radius:10px}@media(max-width:1280px){.aurora-visual-grid{grid-template-columns:repeat(2,minmax(0,1fr));max-width:980px}}@media(max-width:760px){.aurora-visual-grid{grid-template-columns:1fr}.aurora-visual-card{max-width:none}}.aurora-visual-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.aurora-modal{position:fixed;inset:0;background:rgba(0,0,0,.82);display:none;align-items:center;justify-content:center;z-index:9999;padding:24px}.aurora-modal.open{display:flex}.aurora-modal-inner{max-width:95vw;max-height:95vh;background:#06111d;border:2px solid #4c7ba6;border-radius:16px;padding:14px}.aurora-modal img,.aurora-modal iframe{max-width:90vw;width:90vw;height:80vh;object-fit:contain;background:#000;border:0}.aurora-modal button{margin-bottom:8px}</style></head><body><main><h1>Polarlicht-Dashboard</h1><div class="dashboard-top-actions"><button type="button" id="auroraDataRefreshTop" class="primary">Polarlichtdaten aktualisieren</button><span class="muted small">Daten und Kontrollgrafiken neu laden.</span></div><section class="dashboard-card ${auroraLevelClass(auroraStatus.level)}"><h2>Status: ${esc(auroraStatus.message)}</h2><p class="muted">Quelle: ${esc(auroraStatus.source||'NOAA/SWPC + GFZ')} · Stand ${auroraStatus.updatedAt?fmtDateTime(new Date(auroraStatus.updatedAt),loc.timezone):'–'} · Datenstatus: ${esc(auroraStatus.dataStatus||'unbekannt')}</p><p><strong>Bewertung:</strong> ${esc(statusText)}</p><ul>${details}</ul></section><section class="dashboard-card"><h2>Kp-Daten nächste 48 Stunden</h2><div class="weather-scroll"><table class="weather-table"><thead><tr><th>Zeit</th><th>Kp</th><th>Quelle</th><th>NOAA-Stufe</th><th>lokale Bewertung</th></tr></thead><tbody>${rows}</tbody></table></div></section>${visualCards}<section class="dashboard-card external-links"><h2>Externe Kontrollquellen</h2><a href="https://www.spaceweather.gov/" target="_blank" rel="noopener">NOAA/SWPC</a><a href="${esc(gfzPage)}" target="_blank" rel="noopener">GFZ Prognosen</a><a href="https://kp.gfz.de/" target="_blank" rel="noopener">GFZ aktueller Kp</a></section></main><div class="aurora-modal" id="auroraModal"><div class="aurora-modal-inner"><button type="button" id="auroraModalClose">Schließen</button><div id="auroraModalContent"></div></div></div><script>function refreshGraphics(){document.querySelectorAll('[data-refresh-src]').forEach(el=>{const base=el.getAttribute('data-refresh-src');el.src=base+(base.includes('?')?'&':'?')+'ts='+Date.now();});document.querySelectorAll('[data-refresh-iframe]').forEach(el=>{const base=el.getAttribute('data-refresh-iframe');el.src=base+(base.includes('?')?'&':'?')+'ts='+Date.now();});if(window.opener&&!window.opener.closed&&window.opener.fetchAuroraStatus)window.opener.fetchAuroraStatus({manual:true});}document.querySelectorAll('#auroraDataRefresh,#auroraDataRefreshTop').forEach(btn=>btn.addEventListener('click',refreshGraphics));const modal=document.getElementById('auroraModal'),content=document.getElementById('auroraModalContent');document.querySelectorAll('[data-enlarge-src]').forEach(btn=>btn.addEventListener('click',()=>{const src=btn.getAttribute('data-enlarge-src');const type=btn.getAttribute('data-enlarge-type')||'img';content.innerHTML=type==='iframe'?'<iframe src="'+src+'"></iframe>':'<img src="'+src+'">';modal.classList.add('open')}));document.getElementById('auroraModalClose')?.addEventListener('click',()=>{modal.classList.remove('open');content.innerHTML='';});</script></body></html>`;
+  const doc=`<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Polarlicht-Dashboard</title><link rel="stylesheet" href="assets/styles.css"><style>body{padding:24px}.dashboard-card{margin:18px 0;padding:18px;border:5px solid #264564;border-radius:18px;background:#0b1b2c}.dashboard-card.aurora-yellow{border-color:#e6c857;background:linear-gradient(135deg,rgba(230,200,87,.16),#0b1b2c 45%)}.dashboard-card.aurora-orange{border-color:#ff9b3d;background:linear-gradient(135deg,rgba(255,155,61,.18),#0b1b2c 45%)}.dashboard-card.aurora-red{border-color:#ff5a6d;background:linear-gradient(135deg,rgba(255,90,109,.20),#0b1b2c 45%)}.external-links a{display:inline-block;margin:6px 10px 6px 0}</style></head><body><main><h1>Polarlicht-Dashboard</h1><section class="dashboard-card ${auroraLevelClass(auroraStatus.level)}"><h2>Status: ${esc(auroraStatus.message)}</h2><p class="muted">Quelle: ${esc(auroraStatus.source||'NOAA/SWPC')} · Stand ${auroraStatus.updatedAt?fmtDateTime(new Date(auroraStatus.updatedAt),loc.timezone):'–'} · Datenstatus: ${esc(auroraStatus.dataStatus||'unbekannt')}</p><p><strong>Bewertung:</strong> ${esc(statusText)}</p><ul>${details}</ul></section><section class="dashboard-card"><h2>Kp-Prognose nächste 48 Stunden</h2><div class="weather-scroll"><table class="weather-table"><thead><tr><th>Zeit</th><th>Kp</th><th>Stufe</th></tr></thead><tbody>${rows}</tbody></table></div></section><section class="dashboard-card external-links"><h2>Externe Kontrollquellen</h2><a href="https://www.spaceweather.gov/" target="_blank" rel="noopener">NOAA/SWPC</a><a href="https://www.spaceweatherlive.com/" target="_blank" rel="noopener">SpaceWeatherLive</a><a href="https://www.gfz-potsdam.de/kp-index" target="_blank" rel="noopener">GFZ Kp-Index</a></section></main></body></html>`;
   const win=window.open('about:blank','_blank');if(!win){alert('Popup blockiert. Bitte Popups für diese Seite erlauben.');return}win.document.open();win.document.write(doc);win.document.close();
 }
-function auroraVisualCard(title,src,sourceUrl){const safeSrc=esc(src);return `<article class="aurora-visual-card"><h3>${esc(title)}</h3><img class="spaceweather-graphic" data-refresh-src="${safeSrc}" src="${esc(auroraGraphicUrl(src))}" alt="${esc(title)}" loading="lazy"><div class="aurora-visual-actions"><button type="button" data-enlarge-src="${safeSrc}" data-enlarge-type="img">Vergrößern</button><a class="button" href="${esc(sourceUrl)}" target="_blank" rel="noopener">Quelle öffnen</a></div></article>`}
-function auroraVisualIframeCard(title,src,sourceUrl){const safeSrc=esc(src);return `<article class="aurora-visual-card"><h3>${esc(title)}</h3><iframe data-refresh-iframe="${safeSrc}" src="${esc(auroraGraphicUrl(src))}" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="aurora-visual-actions"><button type="button" data-enlarge-src="${safeSrc}" data-enlarge-type="iframe">Vergrößern</button><a class="button" href="${esc(sourceUrl)}" target="_blank" rel="noopener">Quelle öffnen</a></div></article>`}
 function renderFraming(o,windowRange,loc){
   const setup=fov(),activeSetupItem=activeSetup(),aspect=2.15,setupW=setup?.width||1.5,setupH=setup?.height||1,frameCenter=frameCenterForObject(o);
   const frameCenterRa=frameCenter.raDeg,frameCenterDec=frameCenter.decDeg;
@@ -3147,13 +3100,12 @@ function renderInfo(){
   </div>
   <div class="card help-article subtab-panel ${currentInfoSubTab==='help'?'active':''}"><div class="section-title-row"><div><h2>${esc(tx('helpTitle'))}</h2><div class="small muted">${esc(tx('helpSub'))}</div><div class="help-language-note">${esc(tx('helpNote'))}</div></div><div class="data-actions"><button type="button" data-open-help-section="help-storage">${esc(language==='en'?'Open integrated help':'Integrierte Hilfe öffnen')}</button><a class="button primary" href="${docLink('pdf')}" target="_blank" rel="noopener">${esc(tx('helpPdf'))}</a></div></div>
     <div class="help-toc">${[['help-news','Neuerungen'],['help-storage','Datenspeicherung'],['help-first','Erste Schritte'],['help-plan','Planungsnacht'],['help-profiles','Planungsprofile'],['help-weather','Wetter'],['help-multiweather','Mehrnächte-Wetter'],['help-aurora','Polarlicht-Hinweis'],['help-cloudmap','Wolkenkarte'],['help-meteoblue','Meteoblue'],['help-weather-sources','Zusätzliche Wetterquellen'],['help-filters','Objektfilter'],['help-objects','Objektliste'],['help-details','Objektdetails'],['help-framing','Rahmung'],['help-horizon','Horizont'],['help-equipment','Ausrüstung'],['help-settings','Einstellungen'],['help-backup','Sicherung'],['help-browser-storage','Browserdaten-FAQ'],['help-pwa','PWA'],['help-troubleshooting','Fehlerbehebung'],['help-values','Bewertungswerte']].map(([id,label])=>`<a href="#${id}">${label}</a>`).join('')}</div>
-    <section id="help-news"><h3>Neuerungen</h3><p>Die Neuerungen werden versionsweise angezeigt. Die aktuelle Version steht zuerst; danach folgen die vorherigen Versionsschritte.</p>${versionNotesHtml(language)}</section>
     <section id="help-storage"><h3>Datenspeicherung, Cookies und Browsercache</h3><p>Alle persönlichen Daten werden im gerade verwendeten Browser und Browserprofil gespeichert. IndexedDB enthält die fachlichen Daten, Cache Storage die für den Offlinebetrieb benötigten App-Dateien. Cookies sind nicht der Hauptspeicher. Ein normaler Cache-Löschvorgang betrifft die Einstellungen meist nicht; das Löschen aller Websitedaten der Installationsadresse kann sie jedoch entfernen. Auch ein Wechsel der Domain oder des Browserprofils erzeugt einen getrennten Speicherbereich. Übertrage Daten deshalb mit einer externen Sicherung.</p></section>
     <section id="help-first"><h3>Erste Schritte</h3><p>Prüfe zuerst unter Ausrüstung Teleskop, Kamera und Montierung. Lege anschließend unter Standorte & Horizont deinen Aufnahmeort, mindestens ein Horizontprofil und den jeweiligen Standard fest. Wähle in der Planung Standort, Datum, Planungszeitraum, Teleskop, Kamera, Horizontprofil und Wetterdarstellung. Danach kannst du Objektfilter setzen und ein Objekt durch Klick auf die gesamte Tabellenzeile öffnen.</p></section>
     <section id="help-plan"><h3>Planungsnacht</h3><p>Die Standortauswahl links neben den Datumsfeldern gilt nur für die aktuelle Planung. Koordinaten und Höhe stehen direkt darunter. Sonnen-, Dämmerungs- und Mondzeiten werden für diesen Standort berechnet. Der Planungszeitraum begrenzt Bewertung, Sichtbarkeitsdauer, Wetterzusammenfassung und Höhenprofile.</p></section>
     <section id="help-profiles"><h3>Profile für diese Planung</h3><p>Planungszeitraum, Aufnahmequalitätsprofil, Darstellungsprofil, Wetteransicht, Teleskop, Kamera und Horizontprofil können für die aktuelle Nacht temporär gewählt werden. Teleskop und Kamera wirken sofort auf Bildfeld, Framingbewertung und Aladin-Rahmung; das Horizontprofil auf die Horizontansicht. Keine dieser Auswahlen überschreibt einen gespeicherten Standard. Dauerhafte Standards werden ausschließlich in den Einstellungen festgelegt.</p></section>
     <section id="help-weather"><h3>Wetter und Modellkonsens</h3><p>Der Modellkonsens kombiniert DWD ICON, ECMWF IFS und NOAA GFS mit den gespeicherten Prozentgewichten. Einzelmodelle sind zur Kontrolle auswählbar. Die farbigen Felder bewerten die erwartete Aufnahmequalität. Die effektive Transparenz berücksichtigt die Bewölkung; der ergänzende atmosphärische Wert beschreibt die Klarheit ohne Wolkeneinfluss.</p></section>
-    <section id="help-multiweather"><h3>Mehrnächte-Wetterverlauf</h3><p>Der Button in der Rubrik „Stündlicher Wetterverlauf“ öffnet eine zusätzliche Tab-Ansicht für die aktuelle Planungsnacht und weitere Nächte. Die Anzahl der zusätzlichen Nächte wird in den zentralen Einstellungen festgelegt; Standard ist 3. Die Tabellen verwenden denselben Standort, denselben Planungszeitraum und dieselbe Wetterdarstellung wie die Planung.</p></section><section id="help-aurora"><h3>Polarlicht-Hinweis</h3><p>Beim Öffnen der App werden Polarlichtdaten automatisch geladen. Die Bewertung nutzt maschinenlesbare Kp-Daten von NOAA/SWPC und, soweit verfügbar, die GFZ-Kp-Prognose. NOAA-Warnmeldungen werden als Kontext angezeigt, setzen aber nicht allein eine lokale Warnfarbe.</p><p>Die Warnstufen beziehen sich auf den aktuell gewählten Standort. Die eingestellten Kp-Schwellen werden vereinfacht an die geografische Breite angepasst: in hohen Breiten reicht niedrigere geomagnetische Aktivität, in niedrigen Breiten ist ein stärkeres Ereignis erforderlich. Gelb bedeutet erhöhte geomagnetische Aktivität, Orange bedeutet „Polarlicht am Standort möglich“, Rot eine deutlichere Lage. Reine Meldungszahlen ohne auswertbare Kp-Stärke erzeugen keine lokale Polarlichtwarnung.</p><p>Das Polarlicht-Dashboard zeigt Datenstatus, beobachtete und prognostizierte Kp-Werte sowie NOAA- und GFZ-Kontrollgrafiken. Der Button „Polarlichtdaten aktualisieren“ lädt Daten und Grafiken neu; die Grafiken dienen zur Plausibilitätsprüfung und ersetzen nicht die automatische Bewertung.</p></section><section id="help-cloudmap"><h3>Astro-Wolkenmodell</h3><p>Das Astro-Wolkenmodell ist eine eigene Planungsrubrik und kann wie der stündliche Wetterverlauf ein- oder ausgeklappt werden. In der Planung kann temporär zwischen „Karte + Wolken“ und „Nur Wolken“ gewechselt werden. Die kombinierte Ansicht nutzt eine bewusst dunkle, reduzierte topografische Basiskarte. Wolken erscheinen bei allen Modellen einheitlich weiß: je höher der Wolkenanteil, desto deckender die Fläche. Der Modus Modellabweichung bleibt farbig und zeigt die Streuung der drei Modelle.</p><p>Die Prozentangaben stehen an den tatsächlichen Prognosepunkten. 25, 49 oder 81 Prognosepunkte bestimmen die Datenmenge. Die Glättung verändert nur die Darstellung, nicht die Wetterdaten. Zwischenbilder werden aus stündlichen Modellwerten interpoliert und erhöhen nicht die Prognosegenauigkeit.</p><p><strong>Praxisbeispiel:</strong> Ein Standortwert von 15 % Bewölkung sieht gut aus. Liegt aber westlich eine 80-%-Wolkenkante und die Verlagerung zeigt auf den Standort, ist die Nacht riskanter als die Einzelzahl vermuten lässt. Umgekehrt kann ein mäßiger Kartenmittelwert akzeptabel sein, wenn der Standort dauerhaft in einer klaren Lücke bleibt.</p><p><strong>Niederschlag:</strong> „Niederschlag gesamt“ enthält Regen, Schauer und Schnee. Die Ebenen „Regen“ und „Schnee“ zeigen die Einzelanteile und helfen zu erkennen, welche Art von Niederschlag gemeint ist.</p></section>
+    <section id="help-multiweather"><h3>Mehrnächte-Wetterverlauf</h3><p>Der Button in der Rubrik „Stündlicher Wetterverlauf“ öffnet eine zusätzliche Tab-Ansicht für die aktuelle Planungsnacht und weitere Nächte. Die Anzahl der zusätzlichen Nächte wird in den zentralen Einstellungen festgelegt; Standard ist 3. Die Tabellen verwenden denselben Standort, denselben Planungszeitraum und dieselbe Wetterdarstellung wie die Planung.</p></section><section id="help-aurora"><h3>Polarlicht-Hinweis</h3><p>Beim Öffnen der App werden Polarlichtdaten automatisch geladen. Die Funktion wertet maschinenlesbare Weltraumwetterdaten aus und zeigt im Bereich Planungsnacht einen farbigen Hinweis. Das einstellbare Aktualisierungsintervall 0 bedeutet: beim Start und danach nur manuell. Hinweise sind Vorwarnungen, keine Garantie für sichtbare Polarlichter.</p><p>Die Warnstufen beziehen sich auf den aktuell gewählten Standort. Die App passt die eingestellten Kp-Schwellen vereinfacht an die geografische Breite an: in hohen Breiten reicht niedrigere geomagnetische Aktivität, in niedrigen Breiten ist ein stärkeres Ereignis erforderlich. Gelb bedeutet erhöhte geomagnetische Aktivität, Orange bedeutet „Polarlicht am Standort möglich“, Rot eine deutlichere Lage. Reine Meldungszahlen ohne auswertbare G- oder Kp-Stärke erzeugen keine lokale Polarlichtwarnung.</p></section><section id="help-cloudmap"><h3>Astro-Wolkenmodell</h3><p>Das Astro-Wolkenmodell ist eine eigene Planungsrubrik und kann wie der stündliche Wetterverlauf ein- oder ausgeklappt werden. In der Planung kann temporär zwischen „Karte + Wolken“ und „Nur Wolken“ gewechselt werden. Die kombinierte Ansicht nutzt eine bewusst dunkle, reduzierte topografische Basiskarte. Wolken erscheinen bei allen Modellen einheitlich weiß: je höher der Wolkenanteil, desto deckender die Fläche. Der Modus Modellabweichung bleibt farbig und zeigt die Streuung der drei Modelle.</p><p>Die Prozentangaben stehen an den tatsächlichen Prognosepunkten. 25, 49 oder 81 Prognosepunkte bestimmen die Datenmenge. Die Glättung verändert nur die Darstellung, nicht die Wetterdaten. Zwischenbilder werden aus stündlichen Modellwerten interpoliert und erhöhen nicht die Prognosegenauigkeit.</p><p><strong>Praxisbeispiel:</strong> Ein Standortwert von 15 % Bewölkung sieht gut aus. Liegt aber westlich eine 80-%-Wolkenkante und die Verlagerung zeigt auf den Standort, ist die Nacht riskanter als die Einzelzahl vermuten lässt. Umgekehrt kann ein mäßiger Kartenmittelwert akzeptabel sein, wenn der Standort dauerhaft in einer klaren Lücke bleibt.</p><p><strong>Niederschlag:</strong> „Niederschlag gesamt“ enthält Regen, Schauer und Schnee. Die Ebenen „Regen“ und „Schnee“ zeigen die Einzelanteile und helfen zu erkennen, welche Art von Niederschlag gemeint ist.</p></section>
     <section id="help-meteoblue"><h3>Meteoblue-Kontrollquellen</h3><p>Astronomy Seeing und Wetterkarten sind unabhängige Zusatzquellen und fließen nicht in den automatischen Konsens ein. Nutze sie zum Vergleich mit der eigenen Modellberechnung. Über Großansicht können die eingebetteten Karten bildschirmfüllend geöffnet werden. Die eingebetteten Karten starten näher am Planungsstandort, damit lokale Strukturen schneller erkennbar sind.</p><p><strong>Praxisbeispiel:</strong> Vor einer längeren Fahrt prüfst du zuerst das Astro-Wolkenmodell und öffnest danach die Meteoblue-Wolken-/Niederschlagskarte als externen Tab. Die eingebettete Meteoblue-Karte dient als schnelle Windanimationsansicht; Wolken und Niederschlag öffnest du gezielt über den separaten externen Meteoblue-Button.</p></section><section id="help-weather-sources"><h3>Zusätzliche Wetterquellen</h3><p>Die zusätzlichen Wetterquellen sind als Tabs organisiert. Meteoblue, Clear Outside, Windy und Ventusky nutzen den aktuell gewählten Planungsstandort und werden erst geladen, wenn der jeweilige Tab angewählt wird. Sie sind externe Kontrollquellen und fließen nicht automatisch in die Astro-Bewertung ein. Clear Outside wird als Prognosebild eingebunden und kann zusätzlich in einem separaten Browser-Tab geöffnet werden.</p><p><strong>Praxisbeispiel:</strong> Öffne die Tabs nacheinander, wenn du die eigene Astro-Wolkenkarte mit externen Quellen vergleichen möchtest. Windy und Ventusky dienen als interaktive Karten, Meteoblue als zusätzliche Kontrollansicht und Clear Outside als kompakte Prognosegrafik. Eine separate Wettervergleichsansicht mit gemeinsamer Zeitsteuerung wurde entfernt, weil die externen eingebetteten Karten ihre Zeitachsen nicht zuverlässig gemeinsam übernehmen.</p></section>
     <section id="help-filters"><h3>Objektfilter</h3><p>Filtere nach Katalog, Objekttyp, Magnitude, Mindesthöhe, Sichtbarkeitsdauer, Mondabstand und Objektgröße. Die Suche innerhalb der aktiven Filter verfeinert diese Auswahl. Die Direktsuche rechts daneben sucht dagegen nach Katalognummer, Objektname oder Alias und ignoriert bewusst alle anderen gesetzten Filter. So findest du zum Beispiel SH 2-119 oder NGC 7000 auch dann, wenn ein Katalog, Objekttyp, Größenbereich oder eine Mindesthöhe sie gerade ausblenden würde.</p><p>Texteingaben werden nach 1,5 Sekunden übernommen, damit nicht nach jedem Zeichen neu gerechnet wird; Enter oder „Filter anwenden“ startet sofort. Aktive Suchfelder werden hervorgehoben. Änderungen setzen die Ergebnisliste auf Seite 1 zurück. „Basisfilter zurücksetzen“ stellt nur die Werte dieser Basisfilter-Rubrik auf Standard zurück; Kataloge, Aufnahmefilter, Objekttypen, Ausrüstung und Anzeigeprofile bleiben unverändert.</p><p>Der Katalogfilter LDN/LBN enthält in dieser Version benannte LDN-Dunkelnebel. LBN-Objekte sind noch nicht als eigener Katalog importiert. Größenwerte der LDN-Objekte werden aus der katalogisierten Fläche als äquivalenter Kreis-Durchmesser berechnet und dienen als praktische Filter- und Rahmungshilfe.</p></section>
     <section id="help-objects"><h3>Objektliste und Mini-Höhenprofile</h3><p>Die Liste ist paginiert. Im Darstellungsprofil können die Informationen über eine aufklappbare Auswahlliste ein- oder ausgeschaltet und per Drag-and-drop beziehungsweise Auf-/Ab-Schaltflächen sortiert werden. Der Objektname bleibt immer sichtbar.</p><p>„Beste Stunde“ ist die Stunde mit dem höchsten Qualitätswert innerhalb des nautischen Planungszeitraums, sofern das Objekt über Mindesthöhe und persönlichem Horizont liegt. Meridian und Kulmination bleiben getrennte Informationen. Das Mini-Höhenprofil verwendet den gewählten Planungszeitraum und zeigt Dämmerungsbereiche, Mindesthöhe, Maximum und optional den aktiven persönlichen Horizont. Die Objektliste kann zusätzlich die Zeit über dem persönlichen Horizont anzeigen.</p></section>

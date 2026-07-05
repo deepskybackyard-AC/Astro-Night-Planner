@@ -1,11 +1,11 @@
-/* Astro Night Planner 1.3.1 - Produktiv-Cache */
+/* Astro Night Planner 1.4.0 - Produktions-Cache */
 'use strict';
 const ENV = 'prod';
-const VERSION = '1.3.1';
+const VERSION = '1.4.0';
 const CACHE_NAME = `astro-night-planner-${ENV}-${VERSION}`;
 const CORE = [
   './', './index.html', './manifest.webmanifest', './VERSION.json', './icon.svg', './icon-192.png', './icon-512.png',
-  './assets/build-config.js', './assets/styles.css', './assets/app.js', './assets/catalog.generated.json', './assets/andreas-cordt-logo.png', './aladin-frame.html', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH.html', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH.pdf', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH_DE.html', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH_DE.pdf', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH_EN.html', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH_EN.pdf'
+  './assets/build-config.js', './assets/styles.css', './assets/app.js', './assets/catalog.generated.json', './assets/andreas-cordt-logo.png', './aladin-frame.html', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH.html', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH.pdf', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH_DE.html', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH_DE.pdf', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH_EN.html', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH_EN.pdf', './tools/ANP-Local-Survey-Server-1.0.zip'
 ];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(CORE)).then(() => self.skipWaiting()));
@@ -15,11 +15,19 @@ self.addEventListener('activate', event => {
     keys.filter(key => key.startsWith(`astro-night-planner-${ENV}-`) && key !== CACHE_NAME).map(key => caches.delete(key))
   )).then(() => self.clients.claim()));
 });
+const isLocalSurveyHost = url => {
+  const host = url.hostname;
+  if (host === '127.0.0.1' || host === 'localhost' || host.endsWith('.localhost')) return true;
+  if (/^192\.168\./.test(host) || /^10\./.test(host)) return true;
+  const match = host.match(/^172\.(\d+)\./);
+  return Boolean(match && Number(match[1]) >= 16 && Number(match[1]) <= 31);
+};
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
   const url = new URL(event.request.url);
+  if (isLocalSurveyHost(url)) return;
   if (url.origin !== self.location.origin) {
-    event.respondWith(fetch(event.request).catch(() => new Response('', {status:503,statusText:'Offline'})));
+    event.respondWith(fetch(event.request));
     return;
   }
   if (event.request.mode === 'navigate') {

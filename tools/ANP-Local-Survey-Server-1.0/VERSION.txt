@@ -1,0 +1,5 @@
+Astro Night Planner Local Survey Server
+Version: 1.0
+Build: stable-control-worker
+
+This build separates the Windows control window/tray from the local web-server worker. The tray menu and Exit action stay responsive even when the browser configuration page is closed or a server request is slow.

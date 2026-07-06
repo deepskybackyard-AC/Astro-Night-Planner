@@ -1,21 +1,21 @@
 {
-  "version": "1.4.0",
-  "release": "1.4.0",
+  "version": "1.4.1",
+  "release": "1.4.1",
   "environment": "prod",
-  "builtAt": "2026-07-05T21:45:00Z",
-  "notes": "Produktivversion 1.4.0: lokale HiPS-Surveys mit ANP Local Survey Server, verbesserte Aladin-Rahmung, Mond-/Tagesbutton-Erweiterungen und ausführliche Hilfe.",
+  "builtAt": "2026-07-06T18:30:00Z",
+  "notes": "Produktivversion 1.4.1: zusätzliche Linux/macOS-Variante und ausführliche HTML-Anleitungen für lokale Survey-Server.",
   "changes": {
     "de": [
-      "Lokale HiPS-Surveys können über den ANP Local Survey Server 1.0 bereitgestellt, geprüft und bevorzugt verwendet werden.",
-      "Aladin-Rahmung unterstützt temporäre Kombinationen aus Teleskop, Reducer/Korrektor/Barlow und Kamera sowie das Speichern neuer Setups.",
-      "Planungsnacht und Tagesbuttons zeigen Mondinformationen klarer; die Mondhöhe in den Tagesbuttons bezieht sich auf den gewählten Planungszeitraum.",
-      "Hilfe und Handbuch beschreiben lokale Surveys, Fallback, Ordnerstruktur, Tray-Bedienung, Autostart und Fehlerbehebung ausführlich."
+      "README-Inhalte der Local-Survey-Server-Pakete als ausführliche HTML-Anleitungen in der App-Hilfe verlinkt.",
+      "Zusätzliches natives Linux/macOS-Paket für lokale HiPS-Surveys ohne Wine und ohne Python-Abhängigkeit.",
+      "Lokale Survey-Einstellungen mit getrennten Downloads für Windows, Linux/macOS und Python-Fallback.",
+      "Hilfe und Handbuch erklären alle Varianten inklusive systemd-user, LaunchAgent und Beispielen."
     ],
     "en": [
-      "Local HiPS surveys can be served, checked and preferred through ANP Local Survey Server 1.0.",
-      "Aladin framing supports temporary telescope, reducer/corrector/Barlow and camera combinations and saving new setups.",
-      "Planning night and date buttons show Moon information more clearly; Moon altitude in date buttons refers to the selected planning window.",
-      "Help and manual describe local surveys, fallback, folder structure, tray usage, autostart and troubleshooting in detail."
+      "README content of the Local Survey Server packages is now available as detailed HTML guides linked from the app help.",
+      "Additional native Linux/macOS package for local HiPS surveys without Wine and without a Python dependency.",
+      "Local survey settings now have separate downloads for Windows, Linux/macOS and Python fallback.",
+      "Help and manual explain all variants including systemd user service, LaunchAgent and examples."
     ]
   }
 }

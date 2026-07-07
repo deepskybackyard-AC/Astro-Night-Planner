@@ -1,11 +1,11 @@
-/* Astro Night Planner 1.4.1 - Produktiv-Cache */
+/* Astro Night Planner 1.4.2 - Produktiv-Cache */
 'use strict';
 const ENV = 'prod';
-const VERSION = '1.4.1';
+const VERSION = '1.4.2';
 const CACHE_NAME = `astro-night-planner-${ENV}-${VERSION}`;
 const CORE = [
   './', './index.html', './manifest.webmanifest', './VERSION.json', './icon.svg', './icon-192.png', './icon-512.png',
-  './assets/build-config.js', './assets/styles.css', './assets/app.js', './assets/catalog.generated.json', './assets/andreas-cordt-logo.png', './aladin-frame.html', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH.html', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH.pdf', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH_DE.html', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH_DE.pdf', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH_EN.html', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH_EN.pdf', './tools/ANP-Local-Survey-Server-1.0.zip', './tools/ANP-Local-Survey-Server-Linux-macOS-1.0.zip', './tools/ANP-Local-Survey-Server-Python-1.0.zip', './docs/local-survey/index-de.html', './docs/local-survey/index-en.html', './docs/local-survey/windows-de.html', './docs/local-survey/windows-en.html', './docs/local-survey/linux-macos-de.html', './docs/local-survey/linux-macos-en.html', './docs/local-survey/linux-autostart-de.html', './docs/local-survey/linux-autostart-en.html', './docs/local-survey/macos-autostart-de.html', './docs/local-survey/macos-autostart-en.html', './docs/local-survey/python-de.html', './docs/local-survey/python-en.html'
+  './assets/build-config.js', './assets/styles.css', './assets/app.js', './assets/catalog.generated.json', './assets/andreas-cordt-logo.png', './aladin-frame.html', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH.html', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH.pdf', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH_DE.html', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH_DE.pdf', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH_EN.html', './docs/ASTRO_NIGHT_PLANNER_HANDBUCH_EN.pdf', './tools/ANP-Local-Survey-Server-1.1.zip', './tools/ANP-Local-Survey-Server-Linux-macOS-1.1.zip', './tools/ANP-Local-Survey-Server-Python-1.0.zip', './docs/local-survey/index-de.html', './docs/local-survey/index-en.html', './docs/local-survey/windows-de.html', './docs/local-survey/windows-en.html', './docs/local-survey/linux-macos-de.html', './docs/local-survey/linux-macos-en.html', './docs/local-survey/linux-autostart-de.html', './docs/local-survey/linux-autostart-en.html', './docs/local-survey/macos-autostart-de.html', './docs/local-survey/macos-autostart-en.html', './docs/local-survey/python-de.html', './docs/local-survey/python-en.html', './docs/local-survey/downloads-de.html', './docs/local-survey/downloads-en.html', './docs/NEUERUNGEN.html', './docs/NEUERUNGEN_DE.html', './docs/NEUERUNGEN_EN.html'
 ];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(CORE)).then(() => self.skipWaiting()));

@@ -735,3 +735,11 @@ body{padding-bottom:0}
 
 .temporary-equipment-notice{margin:-4px 0 12px}
 .planning-night-selector{margin-top:2px!important}
+
+/* 1.4.2 local survey folder selection and download management */
+.input-button-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:stretch;margin-top:5px}
+.input-button-row button{white-space:normal;min-width:190px}
+@media(max-width:760px){.input-button-row{grid-template-columns:1fr}.input-button-row button{min-width:0}}
+
+/* 1.4.2 product update notice */
+.update-banner #updateBannerText{display:flex;flex-direction:column;gap:4px;min-width:0}.update-critical{color:#ffd75e;font-weight:900}.update-details-link{color:#d9edff;white-space:nowrap;font-weight:800}.release-critical{border:2px solid #ffd75e;background:rgba(255,215,94,.12);color:#ffd75e;border-radius:12px;padding:12px 14px;margin:12px 0;font-weight:750}

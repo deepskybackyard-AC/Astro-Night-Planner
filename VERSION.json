@@ -1,21 +1,23 @@
 {
-  "version": "1.4.1",
-  "release": "1.4.1",
+  "version": "1.4.2",
+  "release": "1.4.2",
   "environment": "prod",
-  "builtAt": "2026-07-06T18:30:00Z",
-  "notes": "Produktivversion 1.4.1: zusätzliche Linux/macOS-Variante und ausführliche HTML-Anleitungen für lokale Survey-Server.",
+  "builtAt": "2026-07-07T21:52:05Z",
+  "notes": "🟨 WICHTIG: ANP-Local-Survey-Server.exe durch die Version aus dem Paket ANP Local Survey Server 1.1 ersetzen.",
   "changes": {
     "de": [
-      "README-Inhalte der Local-Survey-Server-Pakete als ausführliche HTML-Anleitungen in der App-Hilfe verlinkt.",
-      "Zusätzliches natives Linux/macOS-Paket für lokale HiPS-Surveys ohne Wine und ohne Python-Abhängigkeit.",
-      "Lokale Survey-Einstellungen mit getrennten Downloads für Windows, Linux/macOS und Python-Fallback.",
-      "Hilfe und Handbuch erklären alle Varianten inklusive systemd-user, LaunchAgent und Beispielen."
+      "🟨 WICHTIG: ANP-Local-Survey-Server.exe vollständig beenden und durch die Datei aus dem Paket ANP Local Survey Server 1.1 ersetzen. Der Dateiname bleibt unverändert."
     ],
     "en": [
-      "README content of the Local Survey Server packages is now available as detailed HTML guides linked from the app help.",
-      "Additional native Linux/macOS package for local HiPS surveys without Wine and without a Python dependency.",
-      "Local survey settings now have separate downloads for Windows, Linux/macOS and Python fallback.",
-      "Help and manual explain all variants including systemd user service, LaunchAgent and examples."
+      "🟨 IMPORTANT: Fully exit ANP-Local-Survey-Server.exe and replace it with the file from the ANP Local Survey Server 1.1 package. The executable name remains unchanged."
     ]
+  },
+  "criticalUpdate": {
+    "de": "ANP-Local-Survey-Server.exe vollständig beenden und durch die EXE aus ANP Local Survey Server 1.1 ersetzen.",
+    "en": "Fully exit ANP-Local-Survey-Server.exe and replace it with the executable from ANP Local Survey Server 1.1."
+  },
+  "detailsUrl": {
+    "de": "docs/NEUERUNGEN_DE.html",
+    "en": "docs/NEUERUNGEN_EN.html"
   }
 }

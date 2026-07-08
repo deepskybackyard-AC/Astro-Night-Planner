@@ -1,20 +1,20 @@
 {
-  "version": "1.4.2",
-  "release": "1.4.2",
+  "version": "1.4.3",
+  "release": "1.4.3",
   "environment": "prod",
-  "builtAt": "2026-07-07T21:52:05Z",
-  "notes": "🟨 WICHTIG: ANP-Local-Survey-Server.exe durch die Version aus dem Paket ANP Local Survey Server 1.1 ersetzen.",
+  "builtAt": "2026-07-08T21:46:41Z",
+  "notes": "🟨 WICHTIG: ANP-Local-Survey-Server.exe durch die Datei aus dem aktualisierten Paket ANP Local Survey Server 1.1 ersetzen.",
   "changes": {
     "de": [
-      "🟨 WICHTIG: ANP-Local-Survey-Server.exe vollständig beenden und durch die Datei aus dem Paket ANP Local Survey Server 1.1 ersetzen. Der Dateiname bleibt unverändert."
+      "🟨 WICHTIG: ANP-Local-Survey-Server.exe vollständig über das Tray-Menü beenden und durch die EXE aus dem aktualisierten Paket ANP Local Survey Server 1.1 ersetzen. Der Dateiname bleibt unverändert."
     ],
     "en": [
-      "🟨 IMPORTANT: Fully exit ANP-Local-Survey-Server.exe and replace it with the file from the ANP Local Survey Server 1.1 package. The executable name remains unchanged."
+      "🟨 IMPORTANT: Fully exit ANP-Local-Survey-Server.exe from its tray menu and replace it with the executable from the updated ANP Local Survey Server 1.1 package. The executable name remains unchanged."
     ]
   },
   "criticalUpdate": {
-    "de": "ANP-Local-Survey-Server.exe vollständig beenden und durch die EXE aus ANP Local Survey Server 1.1 ersetzen.",
-    "en": "Fully exit ANP-Local-Survey-Server.exe and replace it with the executable from ANP Local Survey Server 1.1."
+    "de": "ANP-Local-Survey-Server.exe vollständig über das Tray-Menü beenden und durch die EXE aus dem aktualisierten Paket ANP Local Survey Server 1.1 ersetzen. Der Dateiname bleibt unverändert.",
+    "en": "Fully exit ANP-Local-Survey-Server.exe from its tray menu and replace it with the executable from the updated ANP Local Survey Server 1.1 package. The executable name remains unchanged."
   },
   "detailsUrl": {
     "de": "docs/NEUERUNGEN_DE.html",
